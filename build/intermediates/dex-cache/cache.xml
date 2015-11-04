@@ -2,6 +2,13 @@
 <items version="2" >
 
     <item
+        jar="C:\Program Files\AndroidSDK\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="P:\cs301\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-5d673726b7e23d0e086e44922cdfc203ce83cb80.jar" />
+    </item>
+    <item
         jar="P:\cs301\SettlersOfCatan\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
         jumboMode="false"
         revision="22.0.1"
@@ -14,13 +21,6 @@
         revision="22.0.1"
         sha1="f8efd0096475e0daf054267b61544e10dc776503">
         <dex dex="P:\cs301\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\classes-496fdb4374318de497a0cb70569ab75421d70f57.jar" />
-    </item>
-    <item
-        jar="C:\Program Files\AndroidSDK\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
-        <dex dex="P:\cs301\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-5d673726b7e23d0e086e44922cdfc203ce83cb80.jar" />
     </item>
 
 </items>

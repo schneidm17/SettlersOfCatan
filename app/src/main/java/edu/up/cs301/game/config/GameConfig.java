@@ -630,7 +630,7 @@ public class GameConfig {
 	/**
 	 * sets the remote player type
 	 * 
-	 * @param
+	 * @param idx
 	 * 		the index in the list of available types that
 	 * 		corresponds to the player type to which the
 	 * 		remote player is to be set
