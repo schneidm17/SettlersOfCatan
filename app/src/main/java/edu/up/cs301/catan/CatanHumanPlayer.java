@@ -1,5 +1,6 @@
 package edu.up.cs301.catan;
 
+import android.graphics.Canvas;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -23,12 +24,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 	/* instance variables */
 
     // These variables will reference widgets that will be modified during play
-    private TextView    playerScoreTextView = null;
-    private TextView    oppScoreTextView    = null;
-    private TextView    turnTotalTextView   = null;
-    private TextView    messageTextView     = null;
-    private ImageButton dieImageButton      = null;
-    private Button      holdButton          = null;
+    CatanSurfaceView mySurfaceView;
+    Button rotateUpButton;
+    Button rotateRightButton;
+    Button rotateDownButton;
+    Button rotateLeftButton;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -66,12 +66,31 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      * this method gets called when the user clicks the '+' or '-' button. It
      * creates a new CounterMoveAction to return to the parent activity.
      *
-     * @param button
+     * @param v
      * 		the button that was clicked
      */
-    public void onClick(View button) {
-        //TODO  You will implement this method to send appropriate action objects to the game
-
+    public void onClick(View v) {
+        if (v.equals(rotateUpButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateUp();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateRightButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateRight();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateDownButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateDown();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateLeftButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateLeft();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        }
     }// onClick
 
     /**
@@ -90,18 +109,17 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         activity.setContentView(R.layout.catan_layout);
 
         //Initialize the widget reference member variables
-        this.playerScoreTextView = (TextView)activity.findViewById(R.id.yourScoreValue);
-        this.oppScoreTextView    = (TextView)activity.findViewById(R.id.oppScoreValue);
-        this.turnTotalTextView   = (TextView)activity.findViewById(R.id.turnTotalValue);
-        this.messageTextView     = (TextView)activity.findViewById(R.id.messageTextView);
-        this.dieImageButton      = (ImageButton)activity.findViewById(R.id.dieButton);
-        this.holdButton          = (Button)activity.findViewById(R.id.holdButton);
+        mySurfaceView = (CatanSurfaceView) activity.findViewById(R.id.gameMainSurfaceView);
+        rotateUpButton = (Button) activity.findViewById(R.id.goUpButton);
+        rotateRightButton = (Button) activity.findViewById(R.id.goRightButton);
+        rotateDownButton = (Button) activity.findViewById(R.id.goDownButton);
+        rotateLeftButton = (Button) activity.findViewById(R.id.goLeftButton);
 
-        //Listen for button presses
-        dieImageButton.setOnClickListener(this);
-        holdButton.setOnClickListener(this);
+        rotateUpButton.setOnClickListener(this);
+        rotateRightButton.setOnClickListener(this);
+        rotateDownButton.setOnClickListener(this);
+        rotateLeftButton.setOnClickListener(this);
 
     }//setAsGui
-
 }// class CounterHumanPlayer
 

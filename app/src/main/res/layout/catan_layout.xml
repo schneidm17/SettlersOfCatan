@@ -1,125 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:id="@+id/top_gui_layout"
     android:layout_height="match_parent"
-    android:padding="10dp"
     android:weightSum="1">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Settlers of Catan"
-        android:id="@+id/titleText"
-        android:textSize="48sp"
-        android:textColor="#FF0099"
-        android:textColorHighlight="#000000"
-        android:textStyle="italic"
-        android:gravity="center"
-        android:typeface="serif" />
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.11">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-        <TableLayout
-            android:layout_width="wrap_content"
+        <edu.up.cs301.catan.CatanSurfaceView
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp">
+            android:id="@+id/gameMainSurfaceView"
+            android:background="#ff00A1E1" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Your Score:"
-                    android:id="@+id/yourScoreText"
-                    android:textStyle="bold"
-                    android:gravity="right"
-                    android:paddingRight="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="0"
-                    android:id="@+id/yourScoreValue"
-                    android:singleLine="false" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Opponent&apos;s Score:"
-                    android:id="@+id/oppScoreText"
-                    android:textStyle="bold"
-                    android:paddingRight="10dp"
-                    android:gravity="right" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="0"
-                    android:id="@+id/oppScoreValue"
-                    android:paddingRight="25dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Turn Total:"
-                    android:id="@+id/turnTotalText"
-                    android:paddingTop="25dp"
-                    android:gravity="right"
-                    android:paddingRight="10dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="0"
-                    android:id="@+id/turnTotalValue" />
-            </TableRow>
-        </TableLayout>
-
-        <ImageButton
+        <Button
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dieButton"
-            android:src="@drawable/face1" />
+            android:text="↑"
+            android:id="@+id/goUpButton"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-    </LinearLayout>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="→"
+            android:id="@+id/goRightButton"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
 
-    <Button
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="↓"
+            android:id="@+id/goDownButton"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:id="@+id/goLeftButton"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true" />
+
+
+    </RelativeLayout>
+
+    <TableLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HOLD"
-        android:id="@+id/holdButton" />
+        android:layout_height="match_parent"
+        android:background="#dddddd">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/messageTextView"
-        android:paddingLeft="10dp"
-        android:paddingTop="30dp" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Build Road"
+                android:id="@+id/button" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Build Settlement"
+                android:id="@+id/button2" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Build City"
+                android:id="@+id/button3" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End Turn"
+                android:id="@+id/button4" />
+        </TableRow>
+
+    </TableLayout>
 
 </LinearLayout>
