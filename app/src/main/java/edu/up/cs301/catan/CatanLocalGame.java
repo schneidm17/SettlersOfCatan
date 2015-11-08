@@ -1,5 +1,12 @@
 package edu.up.cs301.catan;
 
+import edu.up.cs301.catan.actions.CatanBuildRoadAction;
+import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
+import edu.up.cs301.catan.actions.CatanMoveRobberAction;
+import edu.up.cs301.catan.actions.CatanRemoveResAction;
+import edu.up.cs301.catan.actions.CatanRollAction;
+import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.actionMsg.GameAction;
@@ -12,11 +19,13 @@ import edu.up.cs301.game.actionMsg.GameAction;
  */
 public class CatanLocalGame extends LocalGame {
 
+    private CatanGameState gameState;
+
     /**
      * This ctor creates a new game state
      */
     public CatanLocalGame() {
-        //TODO  You will implement this constructor
+        gameState = new CatanGameState(players.length);
     }
 
     /**
@@ -24,8 +33,7 @@ public class CatanLocalGame extends LocalGame {
      */
     @Override
     public boolean canMove(int playerIdx) {
-        //TODO  You will implement this method
-        return false;
+        return playerIdx == gameState.getPlayersID();
     }
 
     /**
@@ -35,7 +43,40 @@ public class CatanLocalGame extends LocalGame {
      */
     @Override
     public boolean makeMove(GameAction action) {
-        //TODO  You will implement this method
+
+        if(this.canMove(this.getPlayerIdx(action.getPlayer())))
+        {
+            if(action instanceof CatanBuildRoadAction)
+            {
+                gameState.buildRoad(((CatanBuildRoadAction) action).spot);
+            }
+            else if(action instanceof CatanBuildSettlementAction)
+            {
+                gameState.buildSettlement(((CatanBuildSettlementAction) action).spot);
+            }
+            else if(action instanceof CatanEndTurnAction)
+            {
+                gameState.endTurn();
+            }
+            else if(action instanceof CatanMoveRobberAction)
+            {
+                gameState.moveRobber(((CatanMoveRobberAction) action).spot);
+            }
+            else if(action instanceof CatanRemoveResAction)
+            {
+                gameState.removeResources(((CatanRemoveResAction) action).woodToLose,((CatanRemoveResAction) action).sheepToLose,
+                        ((CatanRemoveResAction) action).wheatToLose, ((CatanRemoveResAction) action).brickToLose,
+                        ((CatanRemoveResAction) action).rockToLose);
+            }
+            else if(action instanceof CatanRollAction)
+            {
+                gameState.roll();
+            }
+            else if(action instanceof CatanUpgradeSettlementAction)
+            {
+                gameState.upgradeSettlement(((CatanUpgradeSettlementAction) action).spot);
+            }
+        }
         return false;
 
     }//makeMove
