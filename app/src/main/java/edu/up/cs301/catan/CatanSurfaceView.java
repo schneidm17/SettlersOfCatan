@@ -72,8 +72,8 @@ public class CatanSurfaceView extends SurfaceView {
             {0, 0}, {0, -2 * r3}, {0, -4 * r3}, {3, 3 * r3}, {3, r3}, {3, -r3}, {3, -3 * r3},
             {6, 2 * r3}, {6, 0}, {6, -2 * r3}};
 
-    private int tileColors[] = {stone, wool, wood, wheat, brick, wool, brick,
-            wheat, wood, sand, wood, stone, wood, stone, wheat, wool, brick, wheat, wool};
+    private int tileColors[] = {wood, wool, wheat, brick, stone, brick, wool, sand, wood, wheat,
+            wood, wheat, brick, wool, wool, stone, stone, wheat, wood};
 
     public final double sites[][] = {{-7, 3 * r3}, {-8, 2 * r3}, {-7, 1 * r3},
             {-8, 0}, {-7, -1 * r3}, {-8, -2 * r3}, {-7, -3 * r3}, {-4, 4 * r3}, {-5, 3 * r3},

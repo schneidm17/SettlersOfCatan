@@ -4,7 +4,7 @@ import java.util.Random;
 import edu.up.cs301.game.infoMsg.GameState;
 
 /**
- * SOCGameState
+ * CatanGameState
  *
  * This class represents an instance of the game's data.
  * Within it holds all the data for the game of Catan, as well as the methods
@@ -16,7 +16,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  *
  * @version Nov 2015
  * */
-public class SOCGameState extends GameState {
+public class CatanGameState extends GameState {
     private int playersID; //ID of the player whose turn it is
     private int numPlayers; //number of players for this game
     private int[] scores; //The scores of each of the players
@@ -60,7 +60,7 @@ public class SOCGameState extends GameState {
     //Default constructor for the game state that, sets first player to player0, initializes all
     //players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
     //the roads, tiles, buildings, and players hands.
-    public SOCGameState(int numPlayers)
+    public CatanGameState(int numPlayers)
     {
         playersID = 0;
         this.numPlayers = numPlayers;
@@ -109,9 +109,9 @@ public class SOCGameState extends GameState {
     }
 
     //Constructor to set all instance variables to values passed in as parameters
-    public SOCGameState(int ID, int numPlayers, int score0, int score1, int score2, int score3, int die1, int die2,
-                        int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
-                        boolean[] robberWasRolled)
+    public CatanGameState(int ID, int numPlayers, int score0, int score1, int score2, int score3, int die1, int die2,
+                          int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
+                          boolean[] robberWasRolled)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
@@ -131,7 +131,7 @@ public class SOCGameState extends GameState {
     }
 
     //Copy constructor to create an identical version of the given game state
-    public SOCGameState(SOCGameState soc){
+    public CatanGameState(CatanGameState soc){
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScore0(), soc.getScore1(), soc.getScore2(), soc.getScore3(),
                 soc.getDie1(), soc.getDie2(), soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
                 soc.getHands(), soc.getRobberWasRolled());
