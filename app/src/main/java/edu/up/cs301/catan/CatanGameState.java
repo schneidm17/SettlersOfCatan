@@ -28,6 +28,7 @@ public class CatanGameState extends GameState {
     private Building[] buildings; //all the building spots
     private Hand[] hands; //the players' hands
     private boolean[] robberWasRolled; //denotes if a 7 was rolled before and player has reacted
+    private boolean rolled7;//whether or not a 7 was rolled and robber can be moved
     public static final int VICTORY_POINTS_TO_WIN = 5;
 
     //List of all roads adjacent to a given road
@@ -71,6 +72,7 @@ public class CatanGameState extends GameState {
         die1 = 1;
         die2 = 1;
         robber = 7;
+        rolled7 = false;
 
         //Initialize robberWasRolled array
         robberWasRolled = new boolean[numPlayers];
@@ -109,17 +111,14 @@ public class CatanGameState extends GameState {
     }
 
     //Constructor to set all instance variables to values passed in as parameters
-    public CatanGameState(int ID, int numPlayers, int score0, int score1, int score2, int score3, int die1, int die2,
+    public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
-                          boolean[] robberWasRolled)
+                          boolean[] robberWasRolled, boolean rolled7)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
-        int[] scores = new int[numPlayers];
-        scores[0] = score0;
-        scores[1] = score1;
-        scores[2] = score2;
-        scores[3] = score3;
+        this.scores = new int[numPlayers];
+        this.scores = scores;
         this.die1 = die1;
         this.die2 = die2;
         this.robber = robber;
@@ -128,13 +127,14 @@ public class CatanGameState extends GameState {
         this.buildings = buildings;
         this.hands = hands;
         this.robberWasRolled = robberWasRolled;
+        this.rolled7 = rolled7;
     }
 
     //Copy constructor to create an identical version of the given game state
     public CatanGameState(CatanGameState soc){
-        this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScore0(), soc.getScore1(), soc.getScore2(), soc.getScore3(),
-                soc.getDie1(), soc.getDie2(), soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
-                soc.getHands(), soc.getRobberWasRolled());
+        this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
+                soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
+                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7());
     }
 
     //Method to return the player who's turn it currently is
@@ -150,27 +150,9 @@ public class CatanGameState extends GameState {
     }
 
     //Method to return the score of player 0
-    public int getScore0()
+    public int[] getScores()
     {
-        return scores[0];
-    }
-
-    //Method to return the score of player 1
-    public int getScore1()
-    {
-        return scores[1];
-    }
-
-    //Method to return the score of player 2
-    public int getScore2()
-    {
-        return scores[2];
-    }
-
-    //Method to return the score of player 3
-    public int getScore3()
-    {
-        return scores[3];
+        return scores;
     }
 
     //Method to return the value of the first die
@@ -250,6 +232,7 @@ public class CatanGameState extends GameState {
         }
         else
         {
+            rolled7 = true;
             for(int i = 0; i < robberWasRolled.length; i++)
             {
                 robberWasRolled[i] = true;
@@ -260,28 +243,27 @@ public class CatanGameState extends GameState {
     //Method to move robber
     public boolean moveRobber(int spot)
     {
-
-        robber = spot;
-        byte[] adjList = tileToBuildingAdjList[spot];
-
-        for(byte i = 0; i < adjList.length; i++)
+        if(rolled7)
         {
-            if(buildings[adjList[i]].getPlayer() != Building.EMPTY &&
-                    buildings[adjList[i]].getPlayer() != playersID &&
-                    hands[buildings[adjList[i]].getPlayer()].getTotal() != 0)
-            {
-                int resourceToSteal = rng.nextInt(5)+1; //adds randomness to the resource selection
-                for(int j = 0; j < 6; j++)
-                {
-                    int type = (j + resourceToSteal) % 6;
-                    if(!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type))
-                    {
-                        hands[buildings[adjList[i]].getPlayer()].stealResource(type);
-                        hands[playersID].addResource(type);
-                        return true;
+            robber = spot;
+            byte[] adjList = tileToBuildingAdjList[spot];
+
+            for(byte i = 0; i < adjList.length; i++) {
+                if (buildings[adjList[i]].getPlayer() != Building.EMPTY &&
+                        buildings[adjList[i]].getPlayer() != playersID &&
+                        hands[buildings[adjList[i]].getPlayer()].getTotal() != 0) {
+                    int resourceToSteal = rng.nextInt(5) + 1; //adds randomness to the resource selection
+                    for (int j = 0; j < 6; j++) {
+                        int type = (j + resourceToSteal) % 6;
+                        if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
+                            hands[buildings[adjList[i]].getPlayer()].stealResource(type);
+                            hands[playersID].addResource(type);
+                            return true;
+                        }
                     }
                 }
             }
+            rolled7 = false; //Resets the boolean for next turn
         }
 
         return false;
@@ -309,6 +291,11 @@ public class CatanGameState extends GameState {
     public boolean[] getRobberWasRolled()
     {
         return robberWasRolled;
+    }
+
+    //Method to return if a 7 was rolled
+    public boolean isRolled7() {
+        return rolled7;
     }
 
     //Method to return the list of roads

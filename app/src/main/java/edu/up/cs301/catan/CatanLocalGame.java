@@ -49,32 +49,39 @@ public class CatanLocalGame extends LocalGame {
             if(action instanceof CatanBuildRoadAction)
             {
                 gameState.buildRoad(((CatanBuildRoadAction) action).spot);
+                return true;
             }
             else if(action instanceof CatanBuildSettlementAction)
             {
                 gameState.buildSettlement(((CatanBuildSettlementAction) action).spot);
+                return true;
             }
             else if(action instanceof CatanEndTurnAction)
             {
                 gameState.endTurn();
+                return true;
             }
             else if(action instanceof CatanMoveRobberAction)
             {
                 gameState.moveRobber(((CatanMoveRobberAction) action).spot);
+                return true;
             }
             else if(action instanceof CatanRemoveResAction)
             {
                 gameState.removeResources(((CatanRemoveResAction) action).woodToLose,((CatanRemoveResAction) action).sheepToLose,
                         ((CatanRemoveResAction) action).wheatToLose, ((CatanRemoveResAction) action).brickToLose,
                         ((CatanRemoveResAction) action).rockToLose);
+                return true;
             }
             else if(action instanceof CatanRollAction)
             {
                 gameState.roll();
+                return true;
             }
             else if(action instanceof CatanUpgradeSettlementAction)
             {
                 gameState.upgradeSettlement(((CatanUpgradeSettlementAction) action).spot);
+                return true;
             }
         }
         return false;
@@ -86,7 +93,8 @@ public class CatanLocalGame extends LocalGame {
      */
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
-        //TODO  You will implement this method
+        CatanGameState copy = new CatanGameState(gameState);
+        p.sendInfo(copy);
     }//sendUpdatedSate
 
     /**
@@ -98,7 +106,11 @@ public class CatanLocalGame extends LocalGame {
      */
     @Override
     public String checkIfGameOver() {
-        //TODO  You will implement this method
+        int[] scores = gameState.getScores();
+        if(scores[gameState.getPlayersID()] >= CatanGameState.VICTORY_POINTS_TO_WIN)
+        {
+            return "Player " + gameState.getPlayersID() + " wins!";
+        }
         return null;
     }
 

@@ -26,7 +26,10 @@ public class CatanComputerPlayer extends GameComputerPlayer {
      */
     @Override
     protected void receiveInfo(GameInfo info) {
-        // TODO  You will implement this method
+        if(info instanceof CatanGameState)
+        {
+            //TODO ai stuff
+        }
     }//receiveInfo
 
 }

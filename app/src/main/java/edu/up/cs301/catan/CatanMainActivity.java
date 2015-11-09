@@ -47,9 +47,10 @@ public class CatanMainActivity extends GameMainActivity {
             }});
 
         // Create a game configuration class for Counter:
-        GameConfig defaultConfig = new GameConfig(playerTypes, 2, 4, "Catan", PORT_NUMBER);
+        GameConfig defaultConfig = new GameConfig(playerTypes, 3, 4, "Catan", PORT_NUMBER);
         defaultConfig.addPlayer("Human", 0); // player 1: a human player
         defaultConfig.addPlayer("Computer", 1); // player 2: a computer player
+        defaultConfig.addPlayer("Computer", 2); // player 3: a computer player
         defaultConfig.setRemoteData("Remote Player", "", 0);
 
         return defaultConfig;
