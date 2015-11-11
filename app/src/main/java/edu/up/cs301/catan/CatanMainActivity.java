@@ -24,8 +24,8 @@ public class CatanMainActivity extends GameMainActivity {
 
     /**
      * Create the default configuration for this game:
-     * - one human player vs. one computer player
-     * - minimum of 1 player, maximum of 2
+     * - one human player vs. several computer player
+     * - minimum of 3 player, maximum of 4
      *
      * @return
      * 		the new configuration object, representing the default configuration
@@ -41,9 +41,13 @@ public class CatanMainActivity extends GameMainActivity {
             public GamePlayer createPlayer(String name) {
                 return new CatanHumanPlayer(name);
             }});
-        playerTypes.add(new GamePlayerType("Computer Player") {
+        playerTypes.add(new GamePlayerType("Dumb Computer Player") {
             public GamePlayer createPlayer(String name) {
                 return new CatanComputerPlayer(name);
+            }});
+        playerTypes.add(new GamePlayerType("Smart Computer Player") {
+            public GamePlayer createPlayer(String name) {
+                return new CatanSmartComputerPlayer(name);
             }});
 
         // Create a game configuration class for Counter:
@@ -64,7 +68,9 @@ public class CatanMainActivity extends GameMainActivity {
      */
     @Override
     public LocalGame createLocalGame() {
-        return new CatanLocalGame();
+
+        return new CatanLocalGame(4); //TODO figure out how to pass numPlayers
+
     }
 
 }

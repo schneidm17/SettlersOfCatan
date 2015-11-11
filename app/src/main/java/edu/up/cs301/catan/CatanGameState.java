@@ -471,7 +471,7 @@ public class CatanGameState extends GameState {
     }
 
     //USED FOR TESTING ONLY
-    //Allows us to set up buildings to test methods dependant on buildign placement
+    //Allows us to set up buildings to test methods dependant on building placement
     public void generateBuilding(int spot, int player, int type)
     {
         buildings[spot].setIsEmpty(false);

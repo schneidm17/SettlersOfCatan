@@ -6,8 +6,8 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 /**
  * An AI for Catan
  *
- * @author Andrew M. Nuxoll
- * @version August 2015
+ * @author Jarrett Oney
+ * @version November 2015
  */
 public class CatanComputerPlayer extends GameComputerPlayer {
 
@@ -31,5 +31,10 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             //TODO ai stuff
         }
     }//receiveInfo
+
+    protected void randomizeRobber(CatanGameState gameState)
+    {
+        //TODO randomize robber placement
+    }
 
 }

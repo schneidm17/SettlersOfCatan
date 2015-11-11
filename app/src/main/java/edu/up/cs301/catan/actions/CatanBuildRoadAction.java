@@ -13,7 +13,7 @@ public class CatanBuildRoadAction extends GameAction {
     /**
      * Constructor for GameAction
      *
-     * @param player The player who instanciated the action
+     * @param player The player who instantiated the action
      * @param spot The spot to build the road
      */
     public CatanBuildRoadAction(GamePlayer player, int spot)
