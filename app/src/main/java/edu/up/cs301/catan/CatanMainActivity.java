@@ -14,8 +14,8 @@ import edu.up.cs301.catan.CatanLocalGame;
 /**
  * this is the primary activity for Catan
  *
- * @author Andrew M. Nuxoll
- * @version August 2015
+ * @author Oney, Goldey, Schneider
+ * @version November 2015
  */
 public class CatanMainActivity extends GameMainActivity {
 

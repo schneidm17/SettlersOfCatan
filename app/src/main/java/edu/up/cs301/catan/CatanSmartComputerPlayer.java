@@ -3,7 +3,10 @@ package edu.up.cs301.catan;
 import edu.up.cs301.game.infoMsg.GameInfo;
 
 /**
- * Created by oney18 on 11/10/2015.
+ * The hard AI for Catan
+ *
+ * @author Oney, Goldey, Schneider
+ * @version November 2015
  */
 public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 

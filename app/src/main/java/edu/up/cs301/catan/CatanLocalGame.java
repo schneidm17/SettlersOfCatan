@@ -14,8 +14,8 @@ import edu.up.cs301.game.actionMsg.GameAction;
 /**
  * class CatanLocalGame controls the play of the game
  *
- * @author Andrew M. Nuxoll
- * @version August 2015
+ * @author Oney, Goldey, Schneider
+ * @version November 2015
  */
 public class CatanLocalGame extends LocalGame {
 

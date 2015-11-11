@@ -16,8 +16,8 @@ import edu.up.cs301.game.infoMsg.GameInfo;
  * A GUI for a human to play Catan. This default version displays the GUI but is incomplete
  *
  *
- * @author Andrew M. Nuxoll
- * @version August 2015
+ * @author Oney, Goldey, Schneider
+ * @version November 2015
  */
 public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener {
 

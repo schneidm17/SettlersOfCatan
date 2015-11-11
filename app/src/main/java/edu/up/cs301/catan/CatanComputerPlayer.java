@@ -4,9 +4,9 @@ import edu.up.cs301.game.GameComputerPlayer;
 import edu.up.cs301.game.infoMsg.GameInfo;
 
 /**
- * An AI for Catan
+ * The easy AI for Catan
  *
- * @author Jarrett Oney
+ * @author Oney, Goldey, Schneider
  * @version November 2015
  */
 public class CatanComputerPlayer extends GameComputerPlayer {

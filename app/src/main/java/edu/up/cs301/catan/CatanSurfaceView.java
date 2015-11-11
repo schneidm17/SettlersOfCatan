@@ -10,6 +10,8 @@ import android.view.SurfaceView;
 
 /**
  * Created by schneidm17 on 11/3/2015.
+ *
+ * The gameboard view for Catan.
  */
 public class CatanSurfaceView extends SurfaceView {
 

@@ -4,7 +4,11 @@ import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
 
 /**
- * Created by oney18 on 11/7/2015.
+ * @author Oney, Goldey, Schneider
+ * @version Nov 2015
+ *
+ * Purpose:
+ * Represents an EndTurn action sent to the localGame.
  */
 public class CatanEndTurnAction extends GameAction {
 
