@@ -1,12 +1,16 @@
 package edu.up.cs301.catan;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
+
+import edu.up.cs301.game.R;
 
 /**
  * Created by schneidm17 on 11/3/2015.
@@ -35,9 +39,9 @@ public class CatanSurfaceView extends SurfaceView {
     private float cx; //the horizontal center of this SurfaceView
     private float cy; //the vertical center of this SurfaceView
 
-    public final double d = 30; //distance of the camera from the origin (constant)
-    public final double p = 25; //distance of the view plane from the origin (constant)
-    public final double s = 350; //scale factor on the view plane
+    public final double d = 24; //distance of the camera from the origin (constant)
+    public final double p = 18; //distance of the view plane from the origin (constant)
+    public final double s = 250; //scale factor on the view plane
     public final double deg = 0.017453292519943295; //conversion factor for deg to rad
     public final double r3 = Math.sqrt(3); //square root of 3
 
@@ -46,6 +50,7 @@ public class CatanSurfaceView extends SurfaceView {
      * They are declared here to cut down on runtime.
      */
     Path path; //temporary path (frequently reused);
+    Bitmap bitmap; //temporary bitmap (frequently reused);
     Paint temp; //style Paint.Style.FILL (frequently reused);
     Paint outline; //style Paint.Style.STROKE
 
@@ -62,6 +67,11 @@ public class CatanSurfaceView extends SurfaceView {
     int orangePlayer = 0xFFFF8000;
     int bluePlayer = 0xFF0000FF;
     int whitePlayer = 0xFFFFFFFF;
+
+    /*
+     * These bitmaps represent the numbers on the board
+     */
+    Bitmap num2, num3, num4, num5, num6, num8, num9, num10, num11, num12;
 
     /*
      * These are the physical locations on the board of every piece that we might draw
@@ -132,6 +142,17 @@ public class CatanSurfaceView extends SurfaceView {
         outline.setColor(Color.BLACK);
         outline.setStyle(Paint.Style.STROKE);
         outline.setStrokeWidth(1);
+
+        num2 = BitmapFactory.decodeResource(getResources(), R.drawable.num_2);
+        num3 = BitmapFactory.decodeResource(getResources(), R.drawable.num_3);
+        num4 = BitmapFactory.decodeResource(getResources(), R.drawable.num_4);
+        num5 = BitmapFactory.decodeResource(getResources(), R.drawable.num_5);
+        num6 = BitmapFactory.decodeResource(getResources(), R.drawable.num_6);
+        num8 = BitmapFactory.decodeResource(getResources(), R.drawable.num_8);
+        num9 = BitmapFactory.decodeResource(getResources(), R.drawable.num_9);
+        num10 = BitmapFactory.decodeResource(getResources(), R.drawable.num_10);
+        num11 = BitmapFactory.decodeResource(getResources(), R.drawable.num_11);
+        num12 = BitmapFactory.decodeResource(getResources(), R.drawable.num_12);
     }
 
     @Override
@@ -165,6 +186,7 @@ public class CatanSurfaceView extends SurfaceView {
         drawSet(canvas, bluePlayer, 44);
         drawSet(canvas, orangePlayer, 13);
         drawSet(canvas, orangePlayer, 42);
+
     }
 
     public void drawRoad(Canvas canvas, int color, int location) {
@@ -248,7 +270,7 @@ public class CatanSurfaceView extends SurfaceView {
             double y = tiles[i][1];
 
             path.reset();
-            path.moveTo(mapX(x + 2, y, 0),      mapY(x + 2, y, 0));
+            path.moveTo(mapX(x + 2, y, 0), mapY(x + 2, y, 0));
             path.lineTo(mapX(x + 1, y + r3, 0), mapY(x + 1, y + r3, 0));
             path.lineTo(mapX(x - 1, y + r3, 0), mapY(x - 1, y + r3, 0));
             path.lineTo(mapX(x - 2, y, 0),      mapY(x - 2, y, 0));
@@ -256,9 +278,68 @@ public class CatanSurfaceView extends SurfaceView {
             path.lineTo(mapX(x + 1, y - r3, 0), mapY(x + 1, y - r3, 0));
             path.close();
 
-            temp.setColor(tileColors[i]);
+            switch (CatanGameState.tileTypes[i]) {
+                case Tile.BRICK:
+                    temp.setColor(brick);
+                    break;
+                case Tile.WHEAT:
+                    temp.setColor(wheat);
+                    break;
+                case Tile.WOOL:
+                    temp.setColor(wool);
+                    break;
+                case Tile.LUMBER:
+                    temp.setColor(wood);
+                    break;
+                case Tile.ORE:
+                    temp.setColor(stone);
+                    break;
+                default:
+                    temp.setColor(sand);
+                    break;
+            }
             canvas.drawPath(path, temp);
             canvas.drawPath(path, outline);
+            int numSize=(int)(2000/distance(x,y,0));
+
+            switch (CatanGameState.rollNums[i]) {
+                case 2:
+                    bitmap = Bitmap.createScaledBitmap(num2, numSize, numSize, true);
+                    break;
+                case 3:
+                    bitmap = Bitmap.createScaledBitmap(num3, numSize, numSize, true);
+                    break;
+                case 4:
+                    bitmap = Bitmap.createScaledBitmap(num4, numSize, numSize, true);
+                    break;
+                case 5:
+                    bitmap = Bitmap.createScaledBitmap(num5, numSize, numSize, true);
+                    break;
+                case 6:
+                    bitmap = Bitmap.createScaledBitmap(num6, numSize, numSize, true);
+                    break;
+                case 8:
+                    bitmap = Bitmap.createScaledBitmap(num8, numSize, numSize, true);
+                    break;
+                case 9:
+                    bitmap = Bitmap.createScaledBitmap(num9, numSize, numSize, true);
+                    break;
+                case 10:
+                    bitmap = Bitmap.createScaledBitmap(num10, numSize, numSize, true);
+                    break;
+                case 11:
+                    bitmap = Bitmap.createScaledBitmap(num11, numSize, numSize, true);
+                    break;
+                case 12:
+                    bitmap = Bitmap.createScaledBitmap(num12, numSize, numSize, true);
+                    break;
+                default:
+                    bitmap = null;
+                    break;
+            }
+            if(bitmap!=null)
+                canvas.drawBitmap(bitmap, mapX(x, y, 0)-numSize/2, mapY(x, y, 0)-numSize/2, null);
+
         }
     }
 
@@ -276,14 +357,14 @@ public class CatanSurfaceView extends SurfaceView {
         else if (theta > 180)
             theta -= 360;
 
-        a = p * Math.sin(phi * deg) * Math.cos(theta * deg); //x value of view plane axis
-        b = p * Math.sin(phi * deg) * Math.sin(theta * deg); //y value of view plane axis
-        c = p * Math.cos(phi * deg); //z value of view plane axis (in R3)
-        k1 = s * Math.cos(deg * theta);
-        k2 = -s * Math.sin(deg * theta);
-        k3 = -s * Math.cos(deg * theta) * Math.cos(deg * phi);
-        k4 = -s * Math.sin(deg * theta) * Math.cos(deg * phi);
-        k5 = s * Math.sin(deg * phi);
+        a = Math.sin(phi*deg)*Math.cos(theta * deg);
+        b = Math.sin(phi*deg)*Math.sin(theta*deg);
+        c = Math.cos(phi*deg);
+        k1 = -s*(d-p)*Math.sin(theta * deg);
+        k2 = s*(d-p)*Math.cos(theta * deg);
+        k3 = -s*(d-p)*Math.cos(phi*deg)*Math.cos(theta*deg);
+        k4 = -s*(d-p)*Math.cos(phi * deg)*Math.sin(theta * deg);
+        k5 = s*(d-p)*Math.sin(phi*deg);
         cy = this.getHeight() / 2.0f;
         cx = this.getWidth() / 2.0f;
     }
@@ -295,11 +376,10 @@ public class CatanSurfaceView extends SurfaceView {
      * @param x the x coordinate of a point in 3D space
      * @param y the y coordinate of a point in 3D space
      * @param z the z coordinate of a point in 3D space
-     * @return the x coordinate on the screen of the point {x,y,x} in 3D space
+     * @return the x coordinate on the screen of the point {x,y,z} in 3D space
      */
     public float mapX(double x, double y, double z) {
-        double t = (p * p - x * a - y * b - z * c) / (d * p - x * a - y * b - c * z);
-        return cx + (float) ((b - y - t * (d * b / p - y)) * k1 + (a - x - t * (d * a / p - x)) * k2);
+        return cx+(float)((x*k1 + y*k2)/(a*x + b*y + c*z - d));
     }
 
     /**
@@ -309,13 +389,48 @@ public class CatanSurfaceView extends SurfaceView {
      * @param x the x coordinate of a point in 3D space
      * @param y the y coordinate of a point in 3D space
      * @param z the z coordinate of a point in 3D space
-     * @return the y coordinate on the screen of the point {x,y,x} in 3D space
+     * @return the y coordinate on the screen of the point {x,y,z} in 3D space
      */
     public float mapY(double x, double y, double z) {
-        double t = (p * p - x * a - y * b - z * c) / (d * p - x * a - y * b - c * z);
-        return cy + (float) ((a - x - t * (d * a / p - x)) * k3 +
-                (b - y - t * (d * b / p - y)) * k4 + (c - z - t * (d * c / p - z)) * k5);
+        return cy+(int)((x*k3 + y*k4 + z*k5)/(a*x + b*y + c*z - d));
     }
+
+    /**
+     * inverseMapX returns the x coordinate of the point {x,y,0} in 3D space
+     * that is mapped to the point {x,y} on the screen with mapX() and mapY()
+     *
+     * @param x the x coordinate of a point on the screen
+     * @param y the y coordinate of a point on the screen
+     * @return the x coordinate of the point {x,y,0} in 3D space
+     */
+    public double inverseMapX(double x, double y) {
+        return d*(k4*(x-cx)-k2*(y-cy))/((a*k4-b*k3)*(x-cx)+(b*k1-a*k2)*(y-cy)+k2*k3-k1*k4);
+    }
+
+    /**
+     * inverseMapY returns the y coordinate of the point {x,y,0} in 3D space
+     * that is mapped to the point {x,y} on the screen with mapX() and mapY()
+     *
+     * @param x the x coordinate of a point on the screen
+     * @param y the y coordinate of a point on the screen
+     * @return the y coordinate of the point {x,y,0} in 3D space
+     */
+    public double inverseMapY(double x, double y) {
+        return d*(k3*(x-cx)-k1*(y-cy))/((b*k3-a*k4)*(x-cx)+(a*k2-b*k1)*(y-cy)+k1*k4-k2*k3);
+    }
+
+    /**
+     * distance returns the distance from the camera at {d, theta, phi} to the point {x,y,z}
+     *
+     * @param x the x coordinate of a point in 3D space
+     * @param y the y coordinate of a point in 3D space
+     * @param z the z coordinate of a point in 3D space
+     * @return the distance from the camera to the point {x,y,z} in 3D space
+     */
+    public double distance(double x, double y, double z) {
+        return Math.sqrt((d*a - x) * (d*a - x) + (d*b - y) * (d*b - y) + (d*c - z) * (d*c - z));
+    }
+
 
     public void drawFace(Canvas canvas, int color, double[][] pts) {
         double[] v1 = {pts[0][0] - pts[1][0], pts[0][1] - pts[1][1], pts[0][2] - pts[1][2]};
@@ -325,7 +440,7 @@ public class CatanSurfaceView extends SurfaceView {
         v3[0] /= normV3; v3[1] /= normV3; v3[2] /= normV3; //normalize the vector
 
         //parameterize the vector from the camera to the face
-        double[] cam = {pts[0][0] - a*d/p, pts[0][1] - b*d/p, pts[0][2] - c*d/p};
+        double[] cam = {pts[0][0] - a*d, pts[0][1] - b*d, pts[0][2] - c*d};
         double normCam = Math.sqrt(cam[0]*cam[0] + cam[1]*cam[1] + cam[2]*cam[2]);
         cam[0] /= normCam; cam[1] /= normCam; cam[2] /= normCam;
 
