@@ -69,7 +69,7 @@ public class CatanMainActivity extends GameMainActivity {
     @Override
     public LocalGame createLocalGame() {
 
-        return new CatanLocalGame(4); //TODO figure out how to pass numPlayers
+        return new CatanLocalGame();
 
     }
 

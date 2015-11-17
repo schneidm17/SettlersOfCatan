@@ -28,7 +28,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
     protected void receiveInfo(GameInfo info) {
         if(info instanceof CatanGameState)
         {
-            //TODO ai stuff
+
         }
     }//receiveInfo
 
