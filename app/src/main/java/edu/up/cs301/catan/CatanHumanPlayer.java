@@ -29,6 +29,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button rotateRightButton;
     Button rotateDownButton;
     Button rotateLeftButton;
+    Button buildRoad;
+    Button buildSettlement;
+    Button buildCity;
+    Button endTurn;
+    Button cancel;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -120,6 +125,40 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateDownButton.setOnClickListener(this);
         rotateLeftButton.setOnClickListener(this);
 
+        //Initialize the buttons in the side panel
+        //TODO:Change button ids
+        buildRoad = (Button)activity.findViewById(R.id.button);
+        buildSettlement = (Button)activity.findViewById(R.id.button2);
+        buildCity = (Button)activity.findViewById(R.id.button3);
+        endTurn = (Button)activity.findViewById(R.id.button4);
+        //cancel = (Button)activity.findViewById(R.id.button5);
+
+        buildRoad.setOnClickListener(this);
+        buildSettlement.setOnClickListener(this);
+        buildCity.setOnClickListener(this);
+        endTurn.setOnClickListener(this);
+        //cancel.setOnClickListener(this);
+
     }//setAsGui
+
+    public void buildRoad(){
+
+    }
+
+    public void buildSettlement(){
+
+    }
+
+    public void buildCity(){
+
+    }
+
+    public void endTurn(){
+
+    }
+
+    public void cancel(){
+
+    }
 }// class CounterHumanPlayer
 

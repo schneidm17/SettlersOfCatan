@@ -68,7 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Build Road"
-                android:id="@+id/button" />
+                android:id="@+id/button"
+                android:onClick="buildRoad()" />
         </TableRow>
 
         <TableRow
@@ -79,7 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Build Settlement"
-                android:id="@+id/button2" />
+                android:id="@+id/button2"
+                android:onClick="buildSettlement()" />
         </TableRow>
 
         <TableRow
@@ -90,7 +92,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Build City"
-                android:id="@+id/button3" />
+                android:id="@+id/button3"
+                android:onClick="buildCity()" />
         </TableRow>
 
         <TableRow
@@ -101,7 +104,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="End Turn"
-                android:id="@+id/button4" />
+                android:id="@+id/button4"
+                android:onClick="endTurn()" />
         </TableRow>
 
     </TableLayout>
