@@ -21,6 +21,7 @@ import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -309,15 +310,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateDownButton.setOnClickListener(this);
         rotateLeftButton.setOnClickListener(this);
 
-        //Initialize the buttons and images in the side panel
+        //Initialize the buttons in the side panel
         //TODO:Change button ids
         buildRoad = (Button)activity.findViewById(R.id.button);
         buildSettlement = (Button)activity.findViewById(R.id.button2);
         buildCity = (Button)activity.findViewById(R.id.button3);
         endTurn = (Button)activity.findViewById(R.id.button4);
         done = (Button)activity.findViewById(R.id.button5);
-        dice1 = (ImageView)activity.findViewById(R.id.dice1);
-        dice2 = (ImageView)activity.findViewById(R.id.dice2);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);
