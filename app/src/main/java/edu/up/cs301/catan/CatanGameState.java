@@ -111,12 +111,11 @@ public class CatanGameState extends GameState {
     //Default constructor for the game state that, sets first player to player0, initializes all
     //players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
     //the roads, tiles, buildings, and players hands.
-    public CatanGameState(int numPlayers)
+    public CatanGameState()
     {
         playersID = 0;
-        this.numPlayers = numPlayers;
-        scores = new int[numPlayers];
-        for(int i = 0; i < numPlayers; i++){
+        scores = new int[4];
+        for(int i = 0; i < 4; i++){
             scores[i] = 0;
         }
         die1 = 1;
@@ -125,7 +124,7 @@ public class CatanGameState extends GameState {
         rolled7 = false;
 
         //Initialize robberWasRolled array
-        robberWasRolled = new boolean[numPlayers];
+        robberWasRolled = new boolean[4];
         for(int i = 0; i < robberWasRolled.length; i++)
         {
             robberWasRolled[i] = false;
@@ -187,6 +186,11 @@ public class CatanGameState extends GameState {
                 soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7());
     }
 
+    //Setter for the numPLayers in the game, needed due to how framework is set up
+    public void setNumPlayers(int numPlayers)
+    {
+        this.numPlayers = numPlayers;
+    }
     //Method to return the player who's turn it currently is
     public int getPlayersID()
     {
@@ -372,19 +376,26 @@ public class CatanGameState extends GameState {
         return hands;
     }
 
-    //Method to build a road in a given spot, returns true if the road is built, false otherwise
-    public boolean buildRoad(int spot)
+    //Method to check if player has the resources to build a road, used here and in GUI
+    public boolean playerHasRoadRes()
+    {
+        //If player doesn't have enough resources return false
+        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1)
+        {
+            return false; //lacking resources!
+        }
+        else {
+            return true; //Player has the resources
+        }
+    }
+
+    //Method to check if building a road is possible, used here and for GUI
+    public boolean canBuildRoad(int spot)
     {
         //If road is filled return false
         if(!roads[spot].isEmpty())
         {
             return false;
-        }
-
-        //If player doesn't have enough resources return false
-        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1)
-        {
-            return false; //lacking resources!
         }
 
         //Make sure that the player building the road has another road adjacent to the spot they
@@ -395,31 +406,49 @@ public class CatanGameState extends GameState {
         {
             if(roads[roadList[i]].getPlayer() == playersID)
             {
-                roads[spot].setPlayer(playersID);
-                roads[spot].setIsEmpty(false);
-                hands[playersID].removeBrick(1);
-                hands[playersID].removeLumber(1);
-                return true;
+                return true; //Player has adjacent road, can build in spot
             }
         }
-
-        //Return false if the player doesn't have any adjacent roads and cannot build
-        return false;
+        return false; //spot is empty, but no adjacent roads
     }
-
-    //Method to build a settlement in a given spot, returns true if the settlement is built, false
-    //otherwise
-    public boolean buildSettlement(int spot)
+    //Method to build a road in a given spot, returns true if the road is built, false otherwise
+    public boolean buildRoad(int spot)
     {
-        //If building spot is already filled return false
-        if(!buildings[spot].isEmpty())
-        {
+        if(this.canBuildRoad(spot) && this.playerHasRoadRes()) {
+            //Checks if the player can build a road at that spot
+            roads[spot].setPlayer(playersID);
+            roads[spot].setIsEmpty(false);
+            hands[playersID].removeBrick(1);
+            hands[playersID].removeLumber(1);
+            return true;
+        }
+        else {
+            //Return false if cannot build
             return false;
         }
+    }
 
+
+    //Method to see if the player has the resources to build a settlement
+    public boolean playerHasSettlementRes()
+    {
         //If player doesn't have enough resources return false
         if(hands[playersID].getWheat() < 1 || hands[playersID].getWool() < 1 ||
                 hands[playersID].getLumber() < 1 || hands[playersID].getBrick() < 1)
+        {
+            return false;
+        }
+        else
+        {
+            return true; //Player has the resources
+        }
+    }
+
+    //Method to see if a player can build a settlement in a spot
+    public boolean canBuildSettlement(int spot)
+    {
+        //If building spot is already filled return false
+        if(!buildings[spot].isEmpty())
         {
             return false;
         }
@@ -443,32 +472,57 @@ public class CatanGameState extends GameState {
             //If a adjacent road belong to the player they can build a settlement
             if(roads[roadAdjList[i]].getPlayer() == playersID)
             {
-                //If the player can build, build the building and set the road to not empty
-                buildings[spot].setIsEmpty(false);
-                buildings[spot].setTypeOfBuilding(Building.SETTLEMENT);
-                buildings[spot].setPlayer(playersID);
-
-                //Remove resources
-                hands[playersID].removeLumber(1);
-                hands[playersID].removeBrick(1);
-                hands[playersID].removeWheat(1);
-                hands[playersID].removeWool(1);
-
-                //Add a point to the player who built the settlement
-                scores[playersID]++;
-
-                //Return true
+                //Return true as there is an adjacent road, no building in adjacent spots
                 return true;
             }
         }
+        return false; //No adjacent roads
+    }
+    //Method to build a settlement in a given spot, returns true if the settlement is built, false
+    //otherwise
+    public boolean buildSettlement(int spot)
+    {
+        if(this.canBuildRoad(spot) && this.playerHasSettlementRes())
+        {
+            //If the player can build, build the building and set the road to not empty
+            buildings[spot].setIsEmpty(false);
+            buildings[spot].setTypeOfBuilding(Building.SETTLEMENT);
+            buildings[spot].setPlayer(playersID);
 
-        //If there was no adjacent road return false
-        return false;
+            //Remove resources
+            hands[playersID].removeLumber(1);
+            hands[playersID].removeBrick(1);
+            hands[playersID].removeWheat(1);
+            hands[playersID].removeWool(1);
+
+            //Add a point to the player who built the settlement
+            scores[playersID]++;
+
+            //Return true as can build
+            return true;
+        }
+       else
+        {
+            return false; //cannot build so returns false
+        }
 
     }
+    //Method to see if the player has the resources needed to upgrade a settlement
+    public boolean playerHasCityRes()
+    {
+        //Make sure the playyer has the correct number of resources, if not return false
+        if(hands[playersID].getOre() < 3 || hands[playersID].getWheat() < 2)
+        {
+            return false; //lacking resources!
+        }
+        else
+        {
+            return true;
+        }
+    }
 
-    //Method to upgrade from a settlement to a city
-    public boolean upgradeSettlement(int spot)
+    //Method to see if a spot can be upgraded into a city
+    public boolean canUpgradeSettlement(int spot)
     {
         //Make sure the player owns the spot they want to upgrade and can be upgraded, if not return
         //false
@@ -476,23 +530,31 @@ public class CatanGameState extends GameState {
         {
             return false;
         }
-
-        //Make sure the playyer has the correct number of resources, if not return false
-        if(hands[playersID].getOre() < 3 || hands[playersID].getWheat() < 2)
+        else
         {
-            return false; //lacking resources!
+            return true;
         }
+    }
 
-        //Set the building to a city, remove resources
-        buildings[spot].setTypeOfBuilding(Building.CITY);
-        hands[playersID].removeOre(3);
-        hands[playersID].removeWheat(2);
+    //Method to upgrade from a settlement to a city
+    public boolean upgradeSettlement(int spot)
+    {
+        if(this.playerHasCityRes() && this.canUpgradeSettlement(spot)) {
+            //Set the building to a city, remove resources
+            buildings[spot].setTypeOfBuilding(Building.CITY);
+            hands[playersID].removeOre(3);
+            hands[playersID].removeWheat(2);
 
-        //Add a point to the player who built the city
-        scores[playersID]++;
+            //Add a point to the player who built the city
+            scores[playersID]++;
 
-        //Return true
-        return true;
+            //Return true
+            return true;
+        }
+        else
+        {
+            return false; //cannot build
+        }
     }
 
     //Moves the turn to the next player in the rotation
