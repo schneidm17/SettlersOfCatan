@@ -1,5 +1,7 @@
 package edu.up.cs301.catan;
 
+import android.view.View;
+
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameMainActivity;

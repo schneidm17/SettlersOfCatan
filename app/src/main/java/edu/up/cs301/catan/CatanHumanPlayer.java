@@ -1,12 +1,15 @@
 package edu.up.cs301.catan;
 
 import android.graphics.Canvas;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -33,7 +36,12 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button buildSettlement;
     Button buildCity;
     Button endTurn;
-    Button cancel;
+    Button done;
+
+    //Booleans to control what has been clicked
+    Boolean buildRoadClicked = false;
+    Boolean buildSettlementClicked = false;
+    Boolean buildCityClicked = false;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -64,7 +72,31 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     @Override
     public void receiveInfo(GameInfo info) {
         //TODO Update the canvas
+        if( info instanceof CatanGameState){
+            CatanGameState gameState = (CatanGameState) info;
 
+            gameState.givePlayerResources(0);
+
+            //Make done button invisible
+            //done.setVisibility(View.GONE);
+
+            //Make buttons visible if the player has resources
+            if(!gameState.playerHasRoadRes()){
+                buildRoad.setVisibility(View.GONE);
+            }else{
+                buildRoad.setVisibility(View.VISIBLE);
+            }
+            if(!gameState.playerHasCityRes()){
+                buildCity.setVisibility(View.GONE);
+            }else{
+                buildCity.setVisibility(View.VISIBLE);
+            }
+            if(!gameState.playerHasSettlementRes()){
+                buildSettlement.setVisibility(View.GONE);
+            }else{
+                buildSettlement.setVisibility(View.VISIBLE);
+            }
+        }
     }//receiveInfo
 
     /**
@@ -95,6 +127,36 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             mySurfaceView.rotateLeft();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
+        } else if (v.equals(buildRoad)){
+            //Set built road boolean to true
+            buildRoadClicked = true;
+
+            //Make end turn button text be cancel
+            endTurn.setText("Cancel");
+
+            //Set other buttons un-clickable
+            buildSettlement.setClickable(false);
+            buildCity.setClickable(false);
+
+            //TODO:Figure out what was clicked on surface view
+        } else if (v.equals(buildSettlement)){
+            buildSettlementClicked = true;
+            buildRoad.setClickable(false);
+            buildCity.setClickable(false);
+            endTurn.setText("Cancel");
+            //TODO:Figure out what was clicked on surface view
+        } else if (v.equals(buildCity)){
+            buildCityClicked = true;
+            buildSettlement.setClickable(false);
+            buildRoad.setClickable(false);
+            endTurn.setText("Cancel");
+            //TODO:Figure out what was clicked on surface view
+        } else if (v.equals(endTurn)){
+            if (endTurn.getText().equals("End Turn")){
+
+            }else if (endTurn.getText().equals("Cancel")){
+                //if (buildRoadClicked)
+            }
         }
     }// onClick
 
@@ -131,34 +193,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         buildSettlement = (Button)activity.findViewById(R.id.button2);
         buildCity = (Button)activity.findViewById(R.id.button3);
         endTurn = (Button)activity.findViewById(R.id.button4);
-        //cancel = (Button)activity.findViewById(R.id.button5);
+        //done = (Button)activity.findViewById(R.id.button5);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);
         buildCity.setOnClickListener(this);
         endTurn.setOnClickListener(this);
-        //cancel.setOnClickListener(this);
-
     }//setAsGui
 
-    public void buildRoad(){
-
-    }
-
-    public void buildSettlement(){
-
-    }
-
-    public void buildCity(){
-
-    }
-
-    public void endTurn(){
-
-    }
-
-    public void cancel(){
-
-    }
 }// class CounterHumanPlayer
 
