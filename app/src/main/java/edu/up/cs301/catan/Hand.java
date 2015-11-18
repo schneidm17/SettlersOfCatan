@@ -1,11 +1,13 @@
 package edu.up.cs301.catan;
 
+import java.io.Serializable;
+
 /**
  * Created by oney18 on 10/27/2015.
  *
  * Class used to keep track of how many cards a player has at any time
  */
-public class Hand {
+public class Hand implements Serializable{
     private int wheat;
     private int wool;
     private int lumber;
@@ -13,7 +15,7 @@ public class Hand {
     private int ore;
 
     //Initializes the hand with no resources in it
-    Hand()
+    public Hand()
     {
         wheat = 0;
         wool = 0;

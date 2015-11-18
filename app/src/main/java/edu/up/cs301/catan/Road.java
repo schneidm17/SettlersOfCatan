@@ -1,13 +1,15 @@
 package edu.up.cs301.catan;
 
 import android.graphics.Color;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by goldey17 on 10/27/2015.
  * Class to create a road object which contains all the information relating to roads.
  */
-public class Road {
+public class Road implements Serializable {
     //Instance Variables
     private int number;
     private boolean isEmpty;
