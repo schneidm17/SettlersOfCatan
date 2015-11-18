@@ -50,7 +50,7 @@ int id goUpButton 0x7f0a0002
 int id ipCodeLabel 0x7f0a0017
 int id localGameTab 0x7f0a0011
 int id localTabLayout 0x7f0a0012
-int id menu_settings 0x7f0a0025
+int id menu_settings 0x7f0a0028
 int id playGameButton 0x7f0a000f
 int id playerNameEditText 0x7f0a001d
 int id playerNameHeadingText 0x7f0a0019
@@ -69,6 +69,9 @@ int id tableHeadingRow 0x7f0a0018
 int id textView1 0x7f0a0016
 int id textView2 0x7f0a001c
 int id top_gui_layout 0x7f0a0000
+int id wonPopupCancel 0x7f0a0027
+int id wonPopupLayout 0x7f0a0025
+int id wonPopupText 0x7f0a0026
 int layout catan_layout 0x7f040000
 int layout game_config_main 0x7f040001
 int layout game_config_tabhost 0x7f040002
@@ -76,6 +79,7 @@ int layout game_local_tab 0x7f040003
 int layout game_no_gui 0x7f040004
 int layout game_player_list_row 0x7f040005
 int layout game_remote_tab 0x7f040006
+int layout robber_popup 0x7f040007
 int menu game_main 0x7f090000
 int mipmap ic_launcher 0x7f030000
 int string add_player 0x7f080000
