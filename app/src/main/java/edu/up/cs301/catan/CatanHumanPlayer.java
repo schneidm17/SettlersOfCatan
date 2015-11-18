@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -190,6 +191,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             //TODO:Figure out what was clicked on surface view
         } else if (v.equals(endTurn)){
             if (endTurn.getText().equals("End Turn")){
+
+                game.sendAction(new CatanEndTurnAction(this));
 
             }else if (endTurn.getText().equals("Cancel")){
                 if (buildRoadClicked) {

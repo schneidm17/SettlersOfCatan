@@ -21,10 +21,13 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
     @Override
     protected void receiveInfo(GameInfo info) {
+        /**
         if(info instanceof CatanGameState)
         {
             //TODO ranks moves, chooses what do to
         }
+         */
+        super.receiveInfo(info);
     }//receiveInfo
 
     protected void placeRobber(CatanGameState gameState)

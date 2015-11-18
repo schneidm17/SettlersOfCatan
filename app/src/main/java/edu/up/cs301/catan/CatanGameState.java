@@ -30,6 +30,9 @@ public class CatanGameState extends GameState {
     private boolean[] robberWasRolled; //denotes if a 7 was rolled before and player has reacted
     private boolean rolled7;//whether or not a 7 was rolled and robber can be moved
     private boolean needToRoll;
+    private boolean [][] initialSetup;
+    private boolean round1Placing;
+    private boolean round2Placing;
     public static final int VICTORY_POINTS_TO_WIN = 5;
 
     //List of all roads adjacent to a given road
@@ -124,6 +127,8 @@ public class CatanGameState extends GameState {
         robber = 7;
         rolled7 = false;
         needToRoll = false;
+        round1Placing = true;
+        round2Placing = false;
 
         //Initialize robberWasRolled array
         robberWasRolled = new boolean[4];
@@ -159,12 +164,23 @@ public class CatanGameState extends GameState {
         {
             hands[i] = new Hand();
         }
+
+        //Initialize the start game boolean array
+        initialSetup = new boolean [4][2];
+        for(int i = 0; i < 4; i++)
+        {
+            for(int j = 0; j < 2; j++)
+            {
+                initialSetup[i][j] = false;
+            }
+        }
     }
 
     //Constructor to set all instance variables to values passed in as parameters
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
-                          boolean[] robberWasRolled, boolean rolled7, boolean needToRoll)
+                          boolean[] robberWasRolled, boolean rolled7, boolean needToRoll,
+                          boolean round1Placing, boolean round2Placing)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
@@ -180,13 +196,17 @@ public class CatanGameState extends GameState {
         this.robberWasRolled = robberWasRolled;
         this.rolled7 = rolled7;
         this.needToRoll = needToRoll;
+        this.round1Placing = round1Placing;
+        this.round2Placing = round2Placing;
+
     }
 
     //Copy constructor to create an identical version of the given game state
     public CatanGameState(CatanGameState soc){
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
                 soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
-                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll());
+                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll(),
+                soc.getRound1Placing(), soc.getRound2Placing());
     }
 
     //Setter for the numPLayers in the game, needed due to how framework is set up
@@ -223,7 +243,19 @@ public class CatanGameState extends GameState {
     {
         return die2;
     }
-    
+
+    //Method to return if the game is in round 1 placing
+    public boolean getRound1Placing()
+    {
+        return round1Placing;
+    }
+
+    //Method to return if the game is in round 1 placing
+    public boolean getRound2Placing()
+    {
+        return round2Placing;
+    }
+
     //Method to return the added value of the two dice
     public int getRoll()
     {
@@ -408,9 +440,9 @@ public class CatanGameState extends GameState {
     public boolean playerHasRoadRes()
     {
         //If player doesn't have enough resources return false
-        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1)
+        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1 || hands[playersID].getRoadsAvail() == 0)
         {
-            return false; //lacking resources!
+            return false; //lacking resources or pieces!
         }
         else {
             return true; //Player has the resources
@@ -448,6 +480,7 @@ public class CatanGameState extends GameState {
             roads[spot].setIsEmpty(false);
             hands[playersID].removeBrick(1);
             hands[playersID].removeLumber(1);
+            hands[playersID].buildRoad();
             return true;
         }
         else {
@@ -462,13 +495,14 @@ public class CatanGameState extends GameState {
     {
         //If player doesn't have enough resources return false
         if(hands[playersID].getWheat() < 1 || hands[playersID].getWool() < 1 ||
-                hands[playersID].getLumber() < 1 || hands[playersID].getBrick() < 1)
+                hands[playersID].getLumber() < 1 || hands[playersID].getBrick() < 1 ||
+                hands[playersID].getSettlementsAvail() == 0)
         {
             return false;
         }
         else
         {
-            return true; //Player has the resources
+            return true; //Player has the resources and piece available
         }
     }
 
@@ -522,6 +556,7 @@ public class CatanGameState extends GameState {
             hands[playersID].removeBrick(1);
             hands[playersID].removeWheat(1);
             hands[playersID].removeWool(1);
+            hands[playersID].buildSettlement();
 
             //Add a point to the player who built the settlement
             scores[playersID]++;
@@ -538,10 +573,11 @@ public class CatanGameState extends GameState {
     //Method to see if the player has the resources needed to upgrade a settlement
     public boolean playerHasCityRes()
     {
-        //Make sure the playyer has the correct number of resources, if not return false
-        if(hands[playersID].getOre() < 3 || hands[playersID].getWheat() < 2)
+        //Make sure the player has the correct number of resources, if not return false
+        if(hands[playersID].getOre() < 3 || hands[playersID].getWheat() < 2 ||
+                hands[playersID].getCitiesAvail() == 0)
         {
-            return false; //lacking resources!
+            return false; //lacking resources or pieces!
         }
         else
         {
@@ -572,6 +608,7 @@ public class CatanGameState extends GameState {
             buildings[spot].setTypeOfBuilding(Building.CITY);
             hands[playersID].removeOre(3);
             hands[playersID].removeWheat(2);
+            hands[playersID].upgradeSettlement();
 
             //Add a point to the player who built the city
             scores[playersID]++;
