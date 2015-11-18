@@ -152,7 +152,7 @@ public class CatanGameState extends GameState {
         }
 
         //Initialize all the players hands
-        hands = new Hand[numPlayers];
+        hands = new Hand[4];
         for(int i = 0; i < hands.length; i++)
         {
             hands[i] = new Hand();

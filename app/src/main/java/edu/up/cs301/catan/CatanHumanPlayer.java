@@ -1,6 +1,7 @@
 package edu.up.cs301.catan;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -75,26 +76,32 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         if( info instanceof CatanGameState){
             CatanGameState gameState = (CatanGameState) info;
 
-            gameState.givePlayerResources(0);
+           gameState.givePlayerResources(0);
 
             //Make done button invisible
-            //done.setVisibility(View.GONE);
+            done.setVisibility(View.GONE);
 
             //Make buttons visible if the player has resources
             if(!gameState.playerHasRoadRes()){
-                buildRoad.setVisibility(View.GONE);
+                buildRoad.setClickable(false);
+                buildRoad.setTextColor(Color.GRAY);
             }else{
-                buildRoad.setVisibility(View.VISIBLE);
+                buildRoad.setClickable(true);
+                buildRoad.setTextColor(Color.BLACK);
             }
             if(!gameState.playerHasCityRes()){
-                buildCity.setVisibility(View.GONE);
+                buildCity.setClickable(false);
+                buildCity.setTextColor(Color.GRAY);
             }else{
                 buildCity.setVisibility(View.VISIBLE);
+                buildCity.setTextColor(Color.BLACK);
             }
             if(!gameState.playerHasSettlementRes()){
-                buildSettlement.setVisibility(View.GONE);
+                buildSettlement.setClickable(false);
+                buildSettlement.setTextColor(Color.GRAY);
             }else{
                 buildSettlement.setVisibility(View.VISIBLE);
+                buildSettlement.setTextColor(Color.BLACK);
             }
         }
     }//receiveInfo
@@ -128,34 +135,91 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
         } else if (v.equals(buildRoad)){
-            //Set built road boolean to true
+            //Set build road boolean to true
             buildRoadClicked = true;
 
             //Make end turn button text be cancel
             endTurn.setText("Cancel");
 
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
             //Set other buttons un-clickable
+            buildRoad.setClickable(false);
             buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
 
             //TODO:Figure out what was clicked on surface view
         } else if (v.equals(buildSettlement)){
+            //Set build settlement boolean to true
             buildSettlementClicked = true;
-            buildRoad.setClickable(false);
-            buildCity.setClickable(false);
+
+            //Make end turn button text be cancel
             endTurn.setText("Cancel");
-            //TODO:Figure out what was clicked on surface view
-        } else if (v.equals(buildCity)){
-            buildCityClicked = true;
+
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
+            //Set other buttons un-clickable
             buildSettlement.setClickable(false);
             buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
+
+            //TODO:Figure out what was clicked on surface view
+        } else if (v.equals(buildCity)){
+            //Set build settlement boolean to true
+            buildCityClicked = true;
+
+            //Make end turn button text be cancel
             endTurn.setText("Cancel");
+
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
+            //Set other buttons un-clickable
+            buildCity.setClickable(false);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+
             //TODO:Figure out what was clicked on surface view
         } else if (v.equals(endTurn)){
             if (endTurn.getText().equals("End Turn")){
 
             }else if (endTurn.getText().equals("Cancel")){
-                //if (buildRoadClicked)
+                if (buildRoadClicked) {
+                    buildRoadClicked = false;
+                }else if(buildSettlementClicked){
+                    buildSettlementClicked = false;
+                }else if(buildCityClicked){
+                    buildCityClicked = false;
+                }
+                //Reset Buttons
+                buildRoad.setClickable(true);
+                buildRoad.setTextColor(Color.BLACK);
+                buildSettlement.setClickable(true);
+                buildSettlement.setTextColor(Color.BLACK);
+                buildCity.setClickable(true);
+                buildCity.setTextColor(Color.BLACK);
+
+                //Make end turn button text be cancel
+                endTurn.setText("End Turn");
+
+                //Turn on done button
+                done.setVisibility(View.GONE);
+            }
+        } else if (v.equals(done)){
+            if (buildRoadClicked) {
+                //Do action
+            }else if(buildSettlementClicked){
+                //Do action
+            }else if(buildCityClicked){
+                //Do action
             }
         }
     }// onClick
@@ -193,7 +257,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         buildSettlement = (Button)activity.findViewById(R.id.button2);
         buildCity = (Button)activity.findViewById(R.id.button3);
         endTurn = (Button)activity.findViewById(R.id.button4);
-        //done = (Button)activity.findViewById(R.id.button5);
+        done = (Button)activity.findViewById(R.id.button5);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);
