@@ -18,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
@@ -26,7 +27,6 @@ import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
-import edu.up.cs301.game.util.MessageBox;
 
 /**
  * A GUI for a human to play Catan. This default version displays the GUI but is incomplete
