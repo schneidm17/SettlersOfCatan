@@ -29,6 +29,7 @@ public class CatanGameState extends GameState {
     private Hand[] hands; //the players' hands
     private boolean[] robberWasRolled; //denotes if a 7 was rolled before and player has reacted
     private boolean rolled7;//whether or not a 7 was rolled and robber can be moved
+    private boolean needToRoll;
     public static final int VICTORY_POINTS_TO_WIN = 5;
 
     //List of all roads adjacent to a given road
@@ -122,6 +123,7 @@ public class CatanGameState extends GameState {
         die2 = 1;
         robber = 7;
         rolled7 = false;
+        needToRoll = false;
 
         //Initialize robberWasRolled array
         robberWasRolled = new boolean[4];
@@ -162,7 +164,7 @@ public class CatanGameState extends GameState {
     //Constructor to set all instance variables to values passed in as parameters
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
-                          boolean[] robberWasRolled, boolean rolled7)
+                          boolean[] robberWasRolled, boolean rolled7, boolean needToRoll)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
@@ -177,13 +179,14 @@ public class CatanGameState extends GameState {
         this.hands = hands;
         this.robberWasRolled = robberWasRolled;
         this.rolled7 = rolled7;
+        this.needToRoll = needToRoll;
     }
 
     //Copy constructor to create an identical version of the given game state
     public CatanGameState(CatanGameState soc){
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
                 soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
-                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7());
+                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll());
     }
 
     //Setter for the numPLayers in the game, needed due to how framework is set up
@@ -292,6 +295,8 @@ public class CatanGameState extends GameState {
                 robberWasRolled[i] = true;
             }
         }
+
+        needToRoll = false;
     }
 
     //Method to move robber
@@ -327,12 +332,17 @@ public class CatanGameState extends GameState {
     public void removeResources(int woodToLose, int sheepToLose, int wheatToLose, int brickToLose,
                                 int rockToLose)
     {
+        int oldTot = hands[playersID].getTotal();
+
         hands[playersID].removeLumber(woodToLose);
         hands[playersID].removeWool(sheepToLose);
         hands[playersID].removeWheat(wheatToLose);
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
-        robberWasRolled[playersID] = false;
+
+        if(hands[playersID].getTotal() <= Math.ceil((double)(oldTot/2))) { //Makes sure correct amount removed
+            robberWasRolled[playersID] = false;
+        }
     }
 
     //Method to return where the robber is located
@@ -345,6 +355,24 @@ public class CatanGameState extends GameState {
     public boolean[] getRobberWasRolled()
     {
         return robberWasRolled;
+    }
+
+    //Method to return if a robber was rolled for individual player
+    public boolean getRobberWasRolledPlayer()
+    {
+        return robberWasRolled[playersID];
+    }
+
+    //Method to see if player needs to roll
+    public boolean getNeedToRoll()
+    {
+        return needToRoll;
+    }
+
+    //Method to get the current player's hand
+    public Hand getHand()
+    {
+        return hands[playersID];
     }
 
     //Method to return if a 7 was rolled
@@ -561,6 +589,7 @@ public class CatanGameState extends GameState {
     public void endTurn()
     {
         playersID = (playersID + 1) % numPlayers;
+        needToRoll = true;
     }
 
     //USED FOR TESTING ONLY

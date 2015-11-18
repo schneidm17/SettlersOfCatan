@@ -1,13 +1,15 @@
 package edu.up.cs301.catan;
 
 import android.graphics.Color;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by goldey17 on 10/27/2015.
  * Class to create a building object which contains all the information relating to a building.
  */
-public class Building {
+public class Building implements Serializable {
     //Instance Variables
     private int number;
     private boolean isEmpty;
