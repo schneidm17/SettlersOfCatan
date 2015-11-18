@@ -111,12 +111,11 @@ public class CatanGameState extends GameState {
     //Default constructor for the game state that, sets first player to player0, initializes all
     //players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
     //the roads, tiles, buildings, and players hands.
-    public CatanGameState(int numPlayers)
+    public CatanGameState()
     {
         playersID = 0;
-        this.numPlayers = numPlayers;
-        scores = new int[numPlayers];
-        for(int i = 0; i < numPlayers; i++){
+        scores = new int[4];
+        for(int i = 0; i < 4; i++){
             scores[i] = 0;
         }
         die1 = 1;
@@ -125,7 +124,7 @@ public class CatanGameState extends GameState {
         rolled7 = false;
 
         //Initialize robberWasRolled array
-        robberWasRolled = new boolean[numPlayers];
+        robberWasRolled = new boolean[4];
         for(int i = 0; i < robberWasRolled.length; i++)
         {
             robberWasRolled[i] = false;
@@ -187,6 +186,11 @@ public class CatanGameState extends GameState {
                 soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7());
     }
 
+    //Setter for the numPLayers in the game, needed due to how framework is set up
+    public void setNumPlayers(int numPlayers)
+    {
+        this.numPlayers = numPlayers;
+    }
     //Method to return the player who's turn it currently is
     public int getPlayersID()
     {

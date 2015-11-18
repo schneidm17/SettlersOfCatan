@@ -24,8 +24,8 @@ public class CatanLocalGame extends LocalGame {
     /**
      * This ctor creates a new game state
      */
-    public CatanLocalGame(int numPlayers) {
-        gameState = new CatanGameState(numPlayers);
+    public CatanLocalGame() {
+        gameState = new CatanGameState();
     }
 
     /**
@@ -112,6 +112,13 @@ public class CatanLocalGame extends LocalGame {
             return "Player " + gameState.getPlayersID() + " wins!";
         }
         return null;
+    }
+
+    @Override
+    public void start(GamePlayer[] players)
+    {
+        gameState.setNumPlayers(players.length);
+        super.start(players);
     }
 
 }// class CatanLocalGame
