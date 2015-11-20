@@ -135,7 +135,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     break;
             }
 
-           //gameState.givePlayerResources(0);
+           gameState.givePlayerResources(0);
 
             //Make done button invisible
             done.setVisibility(View.GONE);
@@ -317,6 +317,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         buildCity = (Button)activity.findViewById(R.id.button3);
         endTurn = (Button)activity.findViewById(R.id.button4);
         done = (Button)activity.findViewById(R.id.button5);
+        dice1 = (ImageView)activity.findViewById(R.id.dice1);
+        dice2 = (ImageView)activity.findViewById(R.id.dice2);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);
