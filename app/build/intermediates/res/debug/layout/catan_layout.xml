@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:padding="10dp">
+                android:padding="15dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -92,8 +92,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="wrap_content">
 
             <Button
                 android:layout_width="match_parent"
@@ -118,6 +117,462 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Your Resources"
+                android:id="@+id/textView" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/wheatLayout"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/numWheat"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat1"
+                    android:background="@drawable/card_wheat"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat2"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat3"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat4"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat5"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat6"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat7"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat8"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat9"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wheat10"
+                    android:background="@drawable/card_wheat_crop"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sheepLayout"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/numSheep"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep1"
+                    android:background="@drawable/card_sheep"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep2"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep3"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep4"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep5"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep6"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep7"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep8"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep9"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/sheep10"
+                    android:background="@drawable/card_sheep_crop"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/woodLayout"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/numWood"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood1"
+                    android:background="@drawable/card_lumber"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood2"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood3"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood4"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood5"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood6"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood7"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood8"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood9"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/wood10"
+                    android:background="@drawable/card_lumber_crop"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/brickLayout"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/numBrick"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick1"
+                    android:background="@drawable/card_brick"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick2"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick3"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick4"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick5"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick6"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick7"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick8"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick9"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/brick10"
+                    android:background="@drawable/card_brick_crop"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/oreLayout"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="0"
+                    android:id="@+id/numOre"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore1"
+                    android:background="@drawable/card_rock"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore2"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore3"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore4"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore5"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore6"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore7"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore8"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore9"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:id="@+id/ore10"
+                    android:background="@drawable/card_rock_crop"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <Button
@@ -136,4 +591,4 @@
 
     </LinearLayout>
 
-</LinearLayout><!-- From: file:/C:/Users/goldey17/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->
+</LinearLayout><!-- From: file:/Users/matthewschneider/AndroidStudioProjects/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->

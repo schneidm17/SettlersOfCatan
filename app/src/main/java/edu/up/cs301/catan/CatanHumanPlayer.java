@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
@@ -18,7 +20,6 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 
 /**
  * A GUI for a human to play Catan. This default version displays the GUI but is incomplete
- *
  *
  * @author Oney, Goldey, Schneider
  * @version November 2015
@@ -38,6 +39,16 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button buildCity;
     Button endTurn;
     Button done;
+    TextView numWheat;
+    TextView numSheep;
+    TextView numWood;
+    TextView numBrick;
+    TextView numOre;
+    ImageView[] wheatCards = new ImageView[10];
+    ImageView[] sheepCards = new ImageView[10];
+    ImageView[] woodCards = new ImageView[10];
+    ImageView[] brickCards = new ImageView[10];
+    ImageView[] oreCards = new ImageView[10];
 
     //Booleans to control what has been clicked
     Boolean buildRoadClicked = false;
@@ -57,8 +68,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     /**
      * Returns the GUI's top view object
      *
-     * @return
-     * 		the top object in the GUI's view heirarchy
+     * @return the top object in the GUI's view heirarchy
      */
     public View getTopView() {
         return myActivity.findViewById(R.id.top_gui_layout);
@@ -67,51 +77,89 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     /**
      * callback method when we get a message (e.g., from the game)
      *
-     * @param info
-     * 		the message
+     * @param info the message
      */
     @Override
     public void receiveInfo(GameInfo info) {
         //TODO Update the canvas
-        if( info instanceof CatanGameState){
+        if (info instanceof CatanGameState) {
             CatanGameState gameState = (CatanGameState) info;
 
-           gameState.givePlayerResources(0);
+            gameState.givePlayerResources(0);
 
             //Make done button invisible
             done.setVisibility(View.GONE);
 
             //Make buttons visible if the player has resources
-            if(!gameState.playerHasRoadRes()){
+            if (!gameState.playerHasRoadRes()) {
                 buildRoad.setClickable(false);
                 buildRoad.setTextColor(Color.GRAY);
-            }else{
+            } else {
                 buildRoad.setClickable(true);
                 buildRoad.setTextColor(Color.BLACK);
             }
-            if(!gameState.playerHasCityRes()){
+            if (!gameState.playerHasCityRes()) {
                 buildCity.setClickable(false);
                 buildCity.setTextColor(Color.GRAY);
-            }else{
+            } else {
                 buildCity.setVisibility(View.VISIBLE);
                 buildCity.setTextColor(Color.BLACK);
             }
-            if(!gameState.playerHasSettlementRes()){
+            if (!gameState.playerHasSettlementRes()) {
                 buildSettlement.setClickable(false);
                 buildSettlement.setTextColor(Color.GRAY);
-            }else{
+            } else {
                 buildSettlement.setVisibility(View.VISIBLE);
                 buildSettlement.setTextColor(Color.BLACK);
             }
+
+            //display resource cards for user
+            Hand playerHand = gameState.getHand();
+            numWheat.setText("" + playerHand.getWheat());
+            numSheep.setText("" + playerHand.getWool());
+            numWood.setText("" + playerHand.getLumber());
+            numBrick.setText("" + playerHand.getBrick());
+            numOre.setText("" + playerHand.getOre());
+
+            for (int x = 0; x < 10; x++) {
+                if (x < playerHand.getWheat()) {
+                    wheatCards[x].setVisibility(View.VISIBLE);
+                } else {
+                    wheatCards[x].setVisibility(View.INVISIBLE);
+                }
+
+                if (x < playerHand.getWool()) {
+                    sheepCards[x].setVisibility(View.VISIBLE);
+                } else {
+                    sheepCards[x].setVisibility(View.INVISIBLE);
+                }
+
+                if (x < playerHand.getLumber()) {
+                    woodCards[x].setVisibility(View.VISIBLE);
+                } else {
+                    woodCards[x].setVisibility(View.INVISIBLE);
+                }
+
+                if (x < playerHand.getBrick()) {
+                    brickCards[x].setVisibility(View.VISIBLE);
+                } else {
+                    brickCards[x].setVisibility(View.INVISIBLE);
+                }
+
+                if (x < playerHand.getOre()) {
+                    oreCards[x].setVisibility(View.VISIBLE);
+                } else {
+                    oreCards[x].setVisibility(View.INVISIBLE);
+                }
+            }
         }
-    }//receiveInfo
+    }
 
     /**
      * this method gets called when the user clicks the '+' or '-' button. It
      * creates a new CounterMoveAction to return to the parent activity.
      *
-     * @param v
-     * 		the button that was clicked
+     * @param v the button that was clicked
      */
     public void onClick(View v) {
         if (v.equals(rotateUpButton)) {
@@ -134,7 +182,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             mySurfaceView.rotateLeft();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
-        } else if (v.equals(buildRoad)){
+        } else if (v.equals(buildRoad)) {
             //Set build road boolean to true
             buildRoadClicked = true;
 
@@ -152,7 +200,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildCity.setTextColor(Color.GRAY);
 
             //TODO:Figure out what was clicked on surface view
-        } else if (v.equals(buildSettlement)){
+        } else if (v.equals(buildSettlement)) {
             //Set build settlement boolean to true
             buildSettlementClicked = true;
 
@@ -170,7 +218,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildCity.setTextColor(Color.GRAY);
 
             //TODO:Figure out what was clicked on surface view
-        } else if (v.equals(buildCity)){
+        } else if (v.equals(buildCity)) {
             //Set build settlement boolean to true
             buildCityClicked = true;
 
@@ -188,15 +236,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildRoad.setTextColor(Color.GRAY);
 
             //TODO:Figure out what was clicked on surface view
-        } else if (v.equals(endTurn)){
-            if (endTurn.getText().equals("End Turn")){
+        } else if (v.equals(endTurn)) {
+            if (endTurn.getText().equals("End Turn")) {
 
-            }else if (endTurn.getText().equals("Cancel")){
+            } else if (endTurn.getText().equals("Cancel")) {
                 if (buildRoadClicked) {
                     buildRoadClicked = false;
-                }else if(buildSettlementClicked){
+                } else if (buildSettlementClicked) {
                     buildSettlementClicked = false;
-                }else if(buildCityClicked){
+                } else if (buildCityClicked) {
                     buildCityClicked = false;
                 }
                 //Reset Buttons
@@ -213,12 +261,12 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 //Turn on done button
                 done.setVisibility(View.GONE);
             }
-        } else if (v.equals(done)){
+        } else if (v.equals(done)) {
             if (buildRoadClicked) {
                 //Do action
-            }else if(buildSettlementClicked){
+            } else if (buildSettlementClicked) {
                 //Do action
-            }else if(buildCityClicked){
+            } else if (buildCityClicked) {
                 //Do action
             }
         }
@@ -228,8 +276,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      * callback method--our game has been chosen/rechosen to be the GUI,
      * called from the GUI thread
      *
-     * @param activity
-     * 		the activity under which we are running
+     * @param activity the activity under which we are running
      */
     public void setAsGui(GameMainActivity activity) {
 
@@ -253,16 +300,77 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
         //Initialize the buttons in the side panel
         //TODO:Change button ids
-        buildRoad = (Button)activity.findViewById(R.id.button);
-        buildSettlement = (Button)activity.findViewById(R.id.button2);
-        buildCity = (Button)activity.findViewById(R.id.button3);
-        endTurn = (Button)activity.findViewById(R.id.button4);
-        done = (Button)activity.findViewById(R.id.button5);
+        buildRoad = (Button) activity.findViewById(R.id.button);
+        buildSettlement = (Button) activity.findViewById(R.id.button2);
+        buildCity = (Button) activity.findViewById(R.id.button3);
+        endTurn = (Button) activity.findViewById(R.id.button4);
+        done = (Button) activity.findViewById(R.id.button5);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);
         buildCity.setOnClickListener(this);
         endTurn.setOnClickListener(this);
+
+        numWheat = (TextView) activity.findViewById(R.id.numWheat);
+        numSheep = (TextView) activity.findViewById(R.id.numSheep);
+        numWood = (TextView) activity.findViewById(R.id.numWood);
+        numBrick = (TextView) activity.findViewById(R.id.numBrick);
+        numOre = (TextView) activity.findViewById(R.id.numOre);
+
+        wheatCards[0] = (ImageView) activity.findViewById(R.id.wheat1);
+        wheatCards[1] = (ImageView) activity.findViewById(R.id.wheat2);
+        wheatCards[2] = (ImageView) activity.findViewById(R.id.wheat3);
+        wheatCards[3] = (ImageView) activity.findViewById(R.id.wheat4);
+        wheatCards[4] = (ImageView) activity.findViewById(R.id.wheat5);
+        wheatCards[5] = (ImageView) activity.findViewById(R.id.wheat6);
+        wheatCards[6] = (ImageView) activity.findViewById(R.id.wheat7);
+        wheatCards[7] = (ImageView) activity.findViewById(R.id.wheat8);
+        wheatCards[8] = (ImageView) activity.findViewById(R.id.wheat9);
+        wheatCards[9] = (ImageView) activity.findViewById(R.id.wheat10);
+
+        sheepCards[0] = (ImageView) activity.findViewById(R.id.sheep1);
+        sheepCards[1] = (ImageView) activity.findViewById(R.id.sheep2);
+        sheepCards[2] = (ImageView) activity.findViewById(R.id.sheep3);
+        sheepCards[3] = (ImageView) activity.findViewById(R.id.sheep4);
+        sheepCards[4] = (ImageView) activity.findViewById(R.id.sheep5);
+        sheepCards[5] = (ImageView) activity.findViewById(R.id.sheep6);
+        sheepCards[6] = (ImageView) activity.findViewById(R.id.sheep7);
+        sheepCards[7] = (ImageView) activity.findViewById(R.id.sheep8);
+        sheepCards[8] = (ImageView) activity.findViewById(R.id.sheep9);
+        sheepCards[9] = (ImageView) activity.findViewById(R.id.sheep10);
+
+        woodCards[0] = (ImageView) activity.findViewById(R.id.wood1);
+        woodCards[1] = (ImageView) activity.findViewById(R.id.wood2);
+        woodCards[2] = (ImageView) activity.findViewById(R.id.wood3);
+        woodCards[3] = (ImageView) activity.findViewById(R.id.wood4);
+        woodCards[4] = (ImageView) activity.findViewById(R.id.wood5);
+        woodCards[5] = (ImageView) activity.findViewById(R.id.wood6);
+        woodCards[6] = (ImageView) activity.findViewById(R.id.wood7);
+        woodCards[7] = (ImageView) activity.findViewById(R.id.wood8);
+        woodCards[8] = (ImageView) activity.findViewById(R.id.wood9);
+        woodCards[9] = (ImageView) activity.findViewById(R.id.wood10);
+
+        brickCards[0] = (ImageView) activity.findViewById(R.id.brick1);
+        brickCards[1] = (ImageView) activity.findViewById(R.id.brick2);
+        brickCards[2] = (ImageView) activity.findViewById(R.id.brick3);
+        brickCards[3] = (ImageView) activity.findViewById(R.id.brick4);
+        brickCards[4] = (ImageView) activity.findViewById(R.id.brick5);
+        brickCards[5] = (ImageView) activity.findViewById(R.id.brick6);
+        brickCards[6] = (ImageView) activity.findViewById(R.id.brick7);
+        brickCards[7] = (ImageView) activity.findViewById(R.id.brick8);
+        brickCards[8] = (ImageView) activity.findViewById(R.id.brick9);
+        brickCards[9] = (ImageView) activity.findViewById(R.id.brick10);
+
+        oreCards[0] = (ImageView) activity.findViewById(R.id.ore1);
+        oreCards[1] = (ImageView) activity.findViewById(R.id.ore2);
+        oreCards[2] = (ImageView) activity.findViewById(R.id.ore3);
+        oreCards[3] = (ImageView) activity.findViewById(R.id.ore4);
+        oreCards[4] = (ImageView) activity.findViewById(R.id.ore5);
+        oreCards[5] = (ImageView) activity.findViewById(R.id.ore6);
+        oreCards[6] = (ImageView) activity.findViewById(R.id.ore7);
+        oreCards[7] = (ImageView) activity.findViewById(R.id.ore8);
+        oreCards[8] = (ImageView) activity.findViewById(R.id.ore9);
+        oreCards[9] = (ImageView) activity.findViewById(R.id.ore10);
     }//setAsGui
 
 }// class CounterHumanPlayer
