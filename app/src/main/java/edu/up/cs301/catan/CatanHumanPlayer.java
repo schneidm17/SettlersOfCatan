@@ -144,8 +144,6 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     break;
             }
 
-           gameState.givePlayerResources(0);
-
             //Make done button invisible
             done.setVisibility(View.GONE);
 
@@ -161,14 +159,14 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 buildCity.setClickable(false);
                 buildCity.setTextColor(Color.GRAY);
             } else {
-                buildCity.setVisibility(View.VISIBLE);
+                buildCity.setClickable(true);
                 buildCity.setTextColor(Color.BLACK);
             }
             if (!gameState.playerHasSettlementRes()) {
                 buildSettlement.setClickable(false);
                 buildSettlement.setTextColor(Color.GRAY);
             } else {
-                buildSettlement.setVisibility(View.VISIBLE);
+                buildSettlement.setClickable(true);
                 buildSettlement.setTextColor(Color.BLACK);
             }
 

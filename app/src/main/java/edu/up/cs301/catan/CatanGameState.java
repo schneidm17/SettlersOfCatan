@@ -174,6 +174,8 @@ public class CatanGameState extends GameState {
                 initialSetup[i][j] = false;
             }
         }
+
+        givePlayerResources(0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
@@ -633,11 +635,11 @@ public class CatanGameState extends GameState {
     //Allows us to test features dependant on resources
     public void givePlayerResources(int player)
     {
-        hands[player].addBrick(10);
-        hands[player].addOre(10);
-        hands[player].addWool(10);
-        hands[player].addWheat(10);
-        hands[player].addLumber(10);
+        hands[player].addBrick(5);
+        hands[player].addOre(5);
+        hands[player].addWool(5);
+        hands[player].addWheat(5);
+        hands[player].addLumber(5);
     }
 
     //USED FOR TESTING ONLY
