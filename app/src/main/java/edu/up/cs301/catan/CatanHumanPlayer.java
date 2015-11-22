@@ -2,17 +2,29 @@ package edu.up.cs301.catan;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.Image;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
+import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
+import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
+import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -39,6 +51,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button buildCity;
     Button endTurn;
     Button done;
+    ImageView dice1;
+    ImageView dice2;
     TextView numWheat;
     TextView numSheep;
     TextView numWood;
@@ -85,7 +99,52 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         if (info instanceof CatanGameState) {
             CatanGameState gameState = (CatanGameState) info;
 
-            gameState.givePlayerResources(0);
+            int die1 = gameState.getDie1();
+            int die2 = gameState.getDie2();
+
+            switch (die1){
+                case 1:
+                    dice1.setBackgroundResource(R.drawable.dice_1_red);
+                    break;
+                case 2:
+                    dice1.setBackgroundResource(R.drawable.dice_2_red);
+                    break;
+                case 3:
+                    dice1.setBackgroundResource(R.drawable.dice_3_red);
+                    break;
+                case 4:
+                    dice1.setBackgroundResource(R.drawable.dice_4_red);
+                    break;
+                case 5:
+                    dice1.setBackgroundResource(R.drawable.dice_5_red);
+                    break;
+                default:
+                    dice1.setBackgroundResource(R.drawable.dice_6_red);
+                    break;
+            }
+
+            switch (die2){
+                case 1:
+                    dice2.setBackgroundResource(R.drawable.dice_1_yellow);
+                    break;
+                case 2:
+                    dice2.setBackgroundResource(R.drawable.dice_2_yellow);
+                    break;
+                case 3:
+                    dice2.setBackgroundResource(R.drawable.dice_3_yellow);
+                    break;
+                case 4:
+                    dice2.setBackgroundResource(R.drawable.dice_4_yellow);
+                    break;
+                case 5:
+                    dice2.setBackgroundResource(R.drawable.dice_5_yellow);
+                    break;
+                default:
+                    dice2.setBackgroundResource(R.drawable.dice_6_yellow);
+                    break;
+            }
+
+           gameState.givePlayerResources(0);
 
             //Make done button invisible
             done.setVisibility(View.GONE);
@@ -153,7 +212,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 }
             }
         }
-    }
+    }//receiveInfo
 
     /**
      * this method gets called when the user clicks the '+' or '-' button. It
@@ -236,10 +295,10 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildRoad.setTextColor(Color.GRAY);
 
             //TODO:Figure out what was clicked on surface view
-        } else if (v.equals(endTurn)) {
-            if (endTurn.getText().equals("End Turn")) {
-
-            } else if (endTurn.getText().equals("Cancel")) {
+        } else if (v.equals(endTurn)){
+            if (endTurn.getText().equals("End Turn")){
+                game.sendAction(new CatanEndTurnAction(this));
+            }else if (endTurn.getText().equals("Cancel")){
                 if (buildRoadClicked) {
                     buildRoadClicked = false;
                 } else if (buildSettlementClicked) {
@@ -263,11 +322,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
         } else if (v.equals(done)) {
             if (buildRoadClicked) {
-                //Do action
-            } else if (buildSettlementClicked) {
-                //Do action
-            } else if (buildCityClicked) {
-                //Do action
+                //game.sendAction(new CatanBuildRoadAction(this,spot));
+            }else if(buildSettlementClicked){
+                //game.sendAction(new CatanBuildSettlementAction(this,spot));
+            }else if(buildCityClicked){
+                //game.sendAction(new CatanUpgradeSettlementAction(this,spot));
             }
         }
     }// onClick
@@ -300,11 +359,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
         //Initialize the buttons in the side panel
         //TODO:Change button ids
-        buildRoad = (Button) activity.findViewById(R.id.button);
-        buildSettlement = (Button) activity.findViewById(R.id.button2);
-        buildCity = (Button) activity.findViewById(R.id.button3);
-        endTurn = (Button) activity.findViewById(R.id.button4);
-        done = (Button) activity.findViewById(R.id.button5);
+        buildRoad = (Button)activity.findViewById(R.id.button);
+        buildSettlement = (Button)activity.findViewById(R.id.button2);
+        buildCity = (Button)activity.findViewById(R.id.button3);
+        endTurn = (Button)activity.findViewById(R.id.button4);
+        done = (Button)activity.findViewById(R.id.button5);
+        dice1 = (ImageView)activity.findViewById(R.id.dice1);
+        dice2 = (ImageView)activity.findViewById(R.id.dice2);
 
         buildRoad.setOnClickListener(this);
         buildSettlement.setOnClickListener(this);

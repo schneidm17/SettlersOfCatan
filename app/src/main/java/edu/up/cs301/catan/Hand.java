@@ -13,6 +13,9 @@ public class Hand implements Serializable{
     private int lumber;
     private int brick;
     private int ore;
+    private int roadsAvail;
+    private int settlementsAvail;
+    private int citiesAvail;
 
     //Initializes the hand with no resources in it
     public Hand()
@@ -22,6 +25,9 @@ public class Hand implements Serializable{
         lumber = 0;
         brick = 0;
         ore = 0;
+        roadsAvail = 15;
+        settlementsAvail = 5;
+        citiesAvail = 4;
     }
 
     //used for 7 roll GUI
@@ -207,5 +213,42 @@ public class Hand implements Serializable{
             default:
                 return false;
         }
+    }
+
+    //Method to decrement how many roads the player can build
+    public void buildRoad()
+    {
+        roadsAvail--;
+    }
+
+    //Method to decrement how many settlements the player can build
+    public void buildSettlement()
+    {
+        settlementsAvail--;
+    }
+
+    //Method to decrement how many cities a player can build
+    public void upgradeSettlement()
+    {
+        settlementsAvail++;
+        citiesAvail--;
+    }
+
+    //Method to return how many roads the player can build
+    public int getRoadsAvail()
+    {
+        return roadsAvail;
+    }
+
+    //Method to return how many settlements the player can build
+    public int getSettlementsAvail()
+    {
+        return settlementsAvail;
+    }
+
+    //Method to return how many settlements the player can build
+    public int getCitiesAvail()
+    {
+        return citiesAvail;
     }
 }
