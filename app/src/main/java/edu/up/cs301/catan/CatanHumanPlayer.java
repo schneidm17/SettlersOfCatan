@@ -2,8 +2,6 @@ package edu.up.cs301.catan;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.media.Image;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,23 +9,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
-import android.widget.Switch;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
-import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanRemoveResAction;
 import edu.up.cs301.catan.actions.CatanRollAction;
 import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
-import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -45,6 +38,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
     // These variables will reference widgets that will be modified during play
     CatanSurfaceView mySurfaceView;
+    CatanGameState myGameState;
     Button rotateUpButton;
     Button rotateRightButton;
     Button rotateDownButton;
@@ -102,16 +96,17 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public void receiveInfo(GameInfo info) {
         //TODO Update the canvas
         if (info instanceof CatanGameState) {
-            final CatanGameState gameState = (CatanGameState) info;
+            final CatanGameState GAME_STATE = (CatanGameState) info;
 
             //if(gameState.getNeedToRoll()) game.sendAction(new CatanRollAction(this));
 
-            mySurfaceView.setGameState(gameState);
+            this.myGameState = (CatanGameState) info;
+            mySurfaceView.setGameState(this.myGameState);
 
-            int die1 = gameState.getDie1();
-            int die2 = gameState.getDie2();
+            int die1 = GAME_STATE.getDie1();
+            int die2 = GAME_STATE.getDie2();
 
-            if(gameState.getPlayersID() == playerNum){
+            if(GAME_STATE.getPlayersID() == playerNum){
                 switch (die1){
                     case 1:
                         dice1.setBackgroundResource(R.drawable.dice_1_red);
@@ -154,12 +149,54 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         break;
                 }
 
+                updateButtonStates();
+
+                //display resource cards for user
+                Hand playerHand = this.myGameState.getHand(this.myGameState.getPlayersID());
+                numWheat.setText("" + playerHand.getWheat());
+                numSheep.setText("" + playerHand.getWool());
+                numWood.setText("" + playerHand.getLumber());
+                numBrick.setText("" + playerHand.getBrick());
+                numOre.setText("" + playerHand.getOre());
+
+                for (int x = 0; x < 10; x++) {
+                    if (x < playerHand.getWheat()) {
+                        wheatCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        wheatCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getWool()) {
+                        sheepCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        sheepCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getLumber()) {
+                        woodCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        woodCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getBrick()) {
+                        brickCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        brickCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getOre()) {
+                        oreCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        oreCards[x].setVisibility(View.INVISIBLE);
+                    }
+                }
+
             }
 
-            boolean checker = gameState.getRobberWasRolledPlayer();
+            boolean checker = GAME_STATE.getRobberWasRolledPlayer();
             if(checker && !popupAlreadyOpen){
                 //Popup will only be created if it is the players turn to make a move
-                if(gameState.getHand(playerNum).getTotal() > 7 && playerNum == gameState.getPlayersID()){
+                if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
 
                     //If all checks passed a game is started and popup appears saying who won.
                     LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
@@ -177,26 +214,26 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     popupAlreadyOpen = true;
 
                     TextView text = (TextView)popupView.findViewById(R.id.robberPopupText);
-                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + (int) Math.ceil(gameState.getHand(playerNum).getTotal()*0.5) + " cards.");
+                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5) + " cards.");
 
                     final NumberPicker wood = (NumberPicker)popupView.findViewById(R.id.woodNumber);
-                    wood.setMaxValue(gameState.getHand(playerNum).getLumber());
+                    wood.setMaxValue(GAME_STATE.getHand(playerNum).getLumber());
                     wood.setMinValue(0);
 
                     final NumberPicker wheat = (NumberPicker)popupView.findViewById(R.id.wheatNumber);
-                    wheat.setMaxValue(gameState.getHand(playerNum).getWheat());
+                    wheat.setMaxValue(GAME_STATE.getHand(playerNum).getWheat());
                     wheat.setMinValue(0);
 
                     final NumberPicker rock = (NumberPicker)popupView.findViewById(R.id.rockNumber);
-                    rock.setMaxValue(gameState.getHand(playerNum).getOre());
+                    rock.setMaxValue(GAME_STATE.getHand(playerNum).getOre());
                     rock.setMinValue(0);
 
                     final NumberPicker brick = (NumberPicker)popupView.findViewById(R.id.brickNumber);
-                    brick.setMaxValue(gameState.getHand(playerNum).getBrick());
+                    brick.setMaxValue(GAME_STATE.getHand(playerNum).getBrick());
                     brick.setMinValue(0);
 
                     final NumberPicker sheep = (NumberPicker)popupView.findViewById(R.id.sheepNumber);
-                    sheep.setMaxValue(gameState.getHand(playerNum).getWool());
+                    sheep.setMaxValue(GAME_STATE.getHand(playerNum).getWool());
                     sheep.setMinValue(0);
 
                     //Instance of class used for anonymous onClick class
@@ -211,7 +248,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                             int wheatToLose = wheat.getValue();
                             int brickToLose = brick.getValue();
                             int rockToLose = rock.getValue();
-                            boolean pickedResources = ((woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose) == Math.ceil(gameState.getHand(playerNum).getTotal()*0.5));
+                            boolean pickedResources = ((woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5));
                             if(pickedResources){
                                 popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
                                 game.sendAction(new CatanRemoveResAction(player, woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
@@ -229,74 +266,79 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
 
             //TODO: have human player move robber
+        }
+    }//receiveInfo
 
+    private void updateButtonStates() {
+        if (myGameState == null)
+            return;
+
+        if (buildRoadClicked) {
+            //Make end turn button text be cancel
+            endTurn.setText("Cancel");
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
+            //Set other buttons un-clickable
+            buildRoad.setClickable(false);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
+        } else if (buildSettlementClicked) {
+            //Make end turn button text be cancel
+            endTurn.setText("Cancel");
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
+            //Set other buttons un-clickable
+            buildSettlement.setClickable(false);
+            buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
+        } else if (buildCityClicked) {
+            //Make end turn button text be cancel
+            endTurn.setText("Cancel");
+            //Turn on done button
+            done.setVisibility(View.VISIBLE);
+
+            //Set other buttons un-clickable
+            buildCity.setClickable(false);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+        } else {
+            //Make end turn button text be cancel
+            endTurn.setText("End Turn");
             //Make done button invisible
             done.setVisibility(View.GONE);
 
             //Make buttons visible if the player has resources
-            if (!gameState.playerHasRoadRes()) {
+            if (!myGameState.playerHasRoadRes()) {
                 buildRoad.setClickable(false);
                 buildRoad.setTextColor(Color.GRAY);
             } else {
                 buildRoad.setClickable(true);
                 buildRoad.setTextColor(Color.BLACK);
             }
-            if (!gameState.playerHasCityRes()) {
+            if (!myGameState.playerHasCityRes()) {
                 buildCity.setClickable(false);
                 buildCity.setTextColor(Color.GRAY);
             } else {
                 buildCity.setClickable(true);
                 buildCity.setTextColor(Color.BLACK);
             }
-            if (!gameState.playerHasSettlementRes()) {
+            if (!myGameState.playerHasSettlementRes()) {
                 buildSettlement.setClickable(false);
                 buildSettlement.setTextColor(Color.GRAY);
             } else {
                 buildSettlement.setClickable(true);
                 buildSettlement.setTextColor(Color.BLACK);
             }
-
-            //display resource cards for user
-            Hand playerHand = gameState.getHand(this.playerNum);
-            numWheat.setText("" + playerHand.getWheat());
-            numSheep.setText("" + playerHand.getWool());
-            numWood.setText("" + playerHand.getLumber());
-            numBrick.setText("" + playerHand.getBrick());
-            numOre.setText("" + playerHand.getOre());
-
-            for (int x = 0; x < 10; x++) {
-                if (x < playerHand.getWheat()) {
-                    wheatCards[x].setVisibility(View.VISIBLE);
-                } else {
-                    wheatCards[x].setVisibility(View.INVISIBLE);
-                }
-
-                if (x < playerHand.getWool()) {
-                    sheepCards[x].setVisibility(View.VISIBLE);
-                } else {
-                    sheepCards[x].setVisibility(View.INVISIBLE);
-                }
-
-                if (x < playerHand.getLumber()) {
-                    woodCards[x].setVisibility(View.VISIBLE);
-                } else {
-                    woodCards[x].setVisibility(View.INVISIBLE);
-                }
-
-                if (x < playerHand.getBrick()) {
-                    brickCards[x].setVisibility(View.VISIBLE);
-                } else {
-                    brickCards[x].setVisibility(View.INVISIBLE);
-                }
-
-                if (x < playerHand.getOre()) {
-                    oreCards[x].setVisibility(View.VISIBLE);
-                } else {
-                    oreCards[x].setVisibility(View.INVISIBLE);
-                }
-            }
         }
-    }//receiveInfo
+    }
 
     /**
      * this method gets called when the user clicks the '+' or '-' button. It
@@ -328,105 +370,61 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         } else if (v.equals(buildRoad)) {
             //Set build road boolean to true
             buildRoadClicked = true;
-
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-
-            //Turn on done button
-            done.setVisibility(View.VISIBLE);
-
-            //Set other buttons un-clickable
-            buildRoad.setClickable(false);
-            buildSettlement.setClickable(false);
-            buildSettlement.setTextColor(Color.GRAY);
-            buildCity.setClickable(false);
-            buildCity.setTextColor(Color.GRAY);
-
+            updateButtonStates(); //change button colors
             //Figure out what was clicked on surface view
             mySurfaceView.waitForRoadSelection(true);
         } else if (v.equals(buildSettlement)) {
             //Set build settlement boolean to true
             buildSettlementClicked = true;
-
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-
-            //Turn on done button
-            done.setVisibility(View.VISIBLE);
-
-            //Set other buttons un-clickable
-            buildSettlement.setClickable(false);
-            buildRoad.setClickable(false);
-            buildRoad.setTextColor(Color.GRAY);
-            buildCity.setClickable(false);
-            buildCity.setTextColor(Color.GRAY);
-
+            updateButtonStates(); //change button colors
             //Figure out what was clicked on surface view
             mySurfaceView.waitForSettlementSelection(true);
         } else if (v.equals(buildCity)) {
             //Set build settlement boolean to true
             buildCityClicked = true;
-
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-
-            //Turn on done button
-            done.setVisibility(View.VISIBLE);
-
-            //Set other buttons un-clickable
-            buildCity.setClickable(false);
-            buildSettlement.setClickable(false);
-            buildSettlement.setTextColor(Color.GRAY);
-            buildRoad.setClickable(false);
-            buildRoad.setTextColor(Color.GRAY);
-
+            updateButtonStates(); //change button colors
             //Figure out what was clicked on surface view
             mySurfaceView.waitForCitySelection(true);
         } else if (v.equals(endTurn)){
-            if (endTurn.getText().equals("End Turn")){
+            if (buildRoadClicked) {
+                buildRoadClicked = false;
+                mySurfaceView.waitForRoadSelection(false);
+                updateButtonStates(); //change button colors
+            } else if (buildSettlementClicked) {
+                buildSettlementClicked = false;
+                mySurfaceView.waitForSettlementSelection(false);
+                updateButtonStates(); //change button colors
+            } else if (buildCityClicked) {
+                buildCityClicked = false;
+                mySurfaceView.waitForCitySelection(false);
+                updateButtonStates(); //change button colors
+            } else {
+                //if the user pressed "End Turn"
                 game.sendAction(new CatanEndTurnAction(this));
-            }else if (endTurn.getText().equals("Cancel")){
-                if (buildRoadClicked) {
-                    buildRoadClicked = false;
-                    mySurfaceView.waitForRoadSelection(false);
-                } else if (buildSettlementClicked) {
-                    buildSettlementClicked = false;
-                    mySurfaceView.waitForSettlementSelection(false);
-                } else if (buildCityClicked) {
-                    buildCityClicked = false;
-                    mySurfaceView.waitForCitySelection(false);
-                }
-                //Reset Buttons
-                //TODO: This is the section causing issues and allowing for extra roads/settlements to be built
-                buildRoad.setClickable(true);
-                buildRoad.setTextColor(Color.BLACK);
-                buildSettlement.setClickable(true);
-                buildSettlement.setTextColor(Color.BLACK);
-                buildCity.setClickable(true);
-                buildCity.setTextColor(Color.BLACK);
-
-                //Make end turn button text be cancel
-                endTurn.setText("End Turn");
-
-                //Turn on done button
-                done.setVisibility(View.GONE);
             }
+
         } else if (v.equals(done)) {
             if (buildRoadClicked) {
+                buildRoadClicked=false;
                 int spot = mySurfaceView.getRoadLastSelected();
                 mySurfaceView.waitForRoadSelection(false);
+                updateButtonStates();
                 if(spot != -1) {
                     game.sendAction(new CatanBuildRoadAction(this,spot));
                 }
             } else if(buildSettlementClicked) {
+                buildSettlementClicked=false;
                 int spot = mySurfaceView.getBuildingLastSelected();
                 mySurfaceView.waitForSettlementSelection(false);
+                updateButtonStates();
                 if(spot != -1) {
                     game.sendAction(new CatanBuildSettlementAction(this,spot));
                 }
             } else if(buildCityClicked) {
+                buildCityClicked=false;
                 int spot = mySurfaceView.getBuildingLastSelected();
                 mySurfaceView.waitForCitySelection(false);
+                updateButtonStates();
                 if(spot != -1) {
                     game.sendAction(new CatanUpgradeSettlementAction(this,spot));
                 }

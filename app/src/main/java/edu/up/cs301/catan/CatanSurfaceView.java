@@ -295,6 +295,12 @@ public class CatanSurfaceView extends SurfaceView {
 
     public void drawCity(Canvas canvas, int color, int location) {
         //TODO draw city
+        double x = sites[location][0];
+        double y = sites[location][1];
+        temp.setColor(color);
+        canvas.drawCircle(mapX(x,y), mapY(x,y), (float)(800/distance(x,y,0)), temp);
+
+        drawSet(canvas, color, location);
     }
 
     public void drawSelectedRoad(Canvas canvas, int location) {
@@ -333,7 +339,7 @@ public class CatanSurfaceView extends SurfaceView {
     public void drawSelectedBuilding(Canvas canvas, int location) {
         //if the user cannot build at a particular spot, don't draw it
         if(waitingForSettlementSelection && !gameState.canBuildSettlement(location) ||
-                 waitingForCitySelection && !gameState.canUpgradeSettlement(location)) {
+                waitingForCitySelection && !gameState.canUpgradeSettlement(location)) {
             return;
         }
 

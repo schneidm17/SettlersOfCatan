@@ -175,32 +175,22 @@ public class CatanGameState extends GameState {
             }
         }
 
-        givePlayerResources(0);
-
         //simulate a game board
-            givePlayerResources(0);
-            givePlayerResources(1);
-            givePlayerResources(2);
-            generateRoad(13,0);
-            generateRoad(14,0);
-            generateRoad(20,0);
-            generateRoad(28,0);
-            generateRoad(40,0);
-            generateRoad(41,0);
-            generateRoad(42,0);
-            generateRoad(25,1);
-            generateRoad(37,1);
-            generateRoad(24,1);
-            generateRoad(52,2);
-            generateRoad(56,2);
-            generateRoad(45,2);
-            generateBuilding(10,0,0);
-            generateBuilding(29,0,0);
-            generateBuilding(19,1,0);
-            generateBuilding(35,1,0);
-            generateBuilding(40,2,0);
-            generateBuilding(44,2,0);
-
+        givePlayerResources(0);
+        givePlayerResources(1);
+        givePlayerResources(2);
+        generateRoad(20,0);
+        generateRoad(42,0);
+        generateRoad(25,1);
+        generateRoad(37,1);
+        generateRoad(52,2);
+        generateRoad(56,2);
+        generateBuilding(21,0,0);
+        generateBuilding(31,0,0);
+        generateBuilding(19,1,0);
+        generateBuilding(35,1,0);
+        generateBuilding(40,2,0);
+        generateBuilding(44,2,0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
@@ -490,8 +480,20 @@ public class CatanGameState extends GameState {
     //Method to check if player has the resources to build a road, used here and in GUI
     public boolean playerHasRoadRes()
     {
+        //check if the player has a place to build
+        boolean placeToBuild = false;
+        for(int i=0; i<roads.length; i++) {
+            if(canBuildRoad(i)) {
+                placeToBuild=true;
+                break;
+            }
+        }
+        if(!placeToBuild) {
+            return false;
+        }
+
         //If player doesn't have enough resources return false
-        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1 || hands[playersID].getRoadsAvail() == 0)
+        if(hands[playersID].getBrick() < 1 || hands[playersID].getLumber() < 1 || hands[playersID].getRoadsAvail() <= 0)
         {
             return false; //lacking resources or pieces!
         }
@@ -553,10 +555,22 @@ public class CatanGameState extends GameState {
     //Method to see if the player has the resources to build a settlement
     public boolean playerHasSettlementRes()
     {
+        //check if the player has a place to build
+        boolean placeToBuild = false;
+        for(int i=0; i<buildings.length; i++) {
+            if(canBuildSettlement(i)) {
+                placeToBuild=true;
+                break;
+            }
+        }
+        if(!placeToBuild) {
+            return false;
+        }
+
         //If player doesn't have enough resources return false
         if(hands[playersID].getWheat() < 1 || hands[playersID].getWool() < 1 ||
                 hands[playersID].getLumber() < 1 || hands[playersID].getBrick() < 1 ||
-                hands[playersID].getSettlementsAvail() == 0)
+                hands[playersID].getSettlementsAvail() <= 0)
         {
             return false;
         }
@@ -624,7 +638,7 @@ public class CatanGameState extends GameState {
             //Return true as can build
             return true;
         }
-       else
+        else
         {
             return false; //cannot build so returns false
         }
@@ -633,6 +647,18 @@ public class CatanGameState extends GameState {
     //Method to see if the player has the resources needed to upgrade a settlement
     public boolean playerHasCityRes()
     {
+        //check if the player has a place to build
+        boolean placeToBuild = false;
+        for(int i=0; i<buildings.length; i++) {
+            if(canUpgradeSettlement(i)) {
+                placeToBuild=true;
+                break;
+            }
+        }
+        if(!placeToBuild) {
+            return false;
+        }
+
         //Make sure the player has the correct number of resources, if not return false
         if(hands[playersID].getOre() < 3 || hands[playersID].getWheat() < 2 ||
                 hands[playersID].getCitiesAvail() == 0)
