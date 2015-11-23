@@ -24,6 +24,8 @@ import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
+import edu.up.cs301.catan.actions.CatanRemoveResAction;
+import edu.up.cs301.catan.actions.CatanRollAction;
 import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.game.GameHumanPlayer;
@@ -100,6 +102,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         if (info instanceof CatanGameState) {
             final CatanGameState gameState = (CatanGameState) info;
 
+            //if(gameState.getNeedToRoll()) game.sendAction(new CatanRollAction(this));
+
             mySurfaceView.setGameState(gameState);
 
             int die1 = gameState.getDie1();
@@ -150,9 +154,10 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
             }
 
-            if((die1 + die2) == 7){
-                //TODO: figure out a way to not hard code this
-                if(gameState.getHands()[0].getTotal() > 7){
+            boolean checker = gameState.getRobberWasRolledPlayer();
+            if(checker){
+                //Popup will only be created if it is the players turn to make a move
+                if(gameState.getHand(playerNum).getTotal() > 7 && playerNum == gameState.getPlayersID()){
 
                     //If all checks passed a game is started and popup appears saying who won.
                     LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
@@ -165,39 +170,53 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
                     TextView text = (TextView)popupView.findViewById(R.id.robberPopupText);
-                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + gameState.getHands()[0].getTotal() / 2 + " cards.");
+                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + (int) Math.ceil(gameState.getHand(playerNum).getTotal()*0.5) + " cards.");
 
                     final NumberPicker wood = (NumberPicker)popupView.findViewById(R.id.woodNumber);
-                    wood.setMaxValue(gameState.getHands()[0].getLumber());
+                    wood.setMaxValue(gameState.getHand(playerNum).getLumber());
                     wood.setMinValue(0);
 
                     final NumberPicker wheat = (NumberPicker)popupView.findViewById(R.id.wheatNumber);
-                    wheat.setMaxValue(gameState.getHands()[0].getWheat());
+                    wheat.setMaxValue(gameState.getHand(playerNum).getWheat());
                     wheat.setMinValue(0);
 
                     final NumberPicker rock = (NumberPicker)popupView.findViewById(R.id.rockNumber);
-                    rock.setMaxValue(gameState.getHands()[0].getOre());
+                    rock.setMaxValue(gameState.getHand(playerNum).getOre());
                     rock.setMinValue(0);
 
                     final NumberPicker brick = (NumberPicker)popupView.findViewById(R.id.brickNumber);
-                    brick.setMaxValue(gameState.getHands()[0].getBrick());
+                    brick.setMaxValue(gameState.getHand(playerNum).getBrick());
                     brick.setMinValue(0);
 
                     final NumberPicker sheep = (NumberPicker)popupView.findViewById(R.id.sheepNumber);
-                    sheep.setMaxValue(gameState.getHands()[0].getWool());
+                    sheep.setMaxValue(gameState.getHand(playerNum).getWool());
                     sheep.setMinValue(0);
+
+                    //Instance of class used for anonymous onClick class
+                    final CatanHumanPlayer player = this;
 
                     //Dismisses the popup when the cancel button is clicked
                     Button btnDismiss = (Button) popupView.findViewById(R.id.robberPopupCancel);
                     btnDismiss.setOnClickListener(new Button.OnClickListener() {
                         public void onClick(View v) {
-                            boolean pickedResources = ((sheep.getValue() + wood.getValue() + brick.getValue() + wheat.getValue() + rock.getValue()) == gameState.getHands()[0].getTotal()/2);
+                            int woodToLose = wood.getValue();
+                            int sheepToLose = sheep.getValue();
+                            int wheatToLose = wheat.getValue();
+                            int brickToLose = brick.getValue();
+                            int rockToLose = rock.getValue();
+                            boolean pickedResources = ((woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose) == Math.ceil(gameState.getHand(playerNum).getTotal()*0.5));
                             if(pickedResources){
-                                popupWindow.dismiss();
-                                gameState.removeResources(0, wood.getValue(),sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
+                                popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
+                                game.sendAction(new CatanRemoveResAction(player, woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
+
+                                //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
                             }
                         }
                     });
+                }
+                else
+                {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
                 }
             }
 
@@ -230,7 +249,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
 
             //display resource cards for user
-            Hand playerHand = gameState.getHand();
+            Hand playerHand = gameState.getHand(this.playerNum);
             numWheat.setText("" + playerHand.getWheat());
             numSheep.setText("" + playerHand.getWool());
             numWood.setText("" + playerHand.getLumber());
@@ -370,6 +389,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     mySurfaceView.waitForCitySelection(false);
                 }
                 //Reset Buttons
+                //TODO: This is the section causing issues and allowing for extra roads/settlements to be built
                 buildRoad.setClickable(true);
                 buildRoad.setTextColor(Color.BLACK);
                 buildSettlement.setClickable(true);

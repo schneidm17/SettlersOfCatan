@@ -411,12 +411,12 @@ public class CatanGameState extends GameState {
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
 
-        if(hands[playersID].getTotal() <= Math.ceil((double)(oldTot/2))) { //Makes sure correct amount removed
+        if(hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
             robberWasRolled[playersID] = false;
         }
     }
 
-    //Method to remove resources from a hand other than the current player whose turn it is
+   /* //Method to remove resources from a hand other than the current player whose turn it is
     public void removeResources(int player, int woodToLose, int sheepToLose, int wheatToLose, int brickToLose,
                                 int rockToLose)
     {
@@ -425,7 +425,7 @@ public class CatanGameState extends GameState {
         hands[player].removeWheat(wheatToLose);
         hands[player].removeBrick(brickToLose);
         hands[player].removeOre(rockToLose);
-    }
+    }*/
 
 
     //Method to return where the robber is located
@@ -453,9 +453,9 @@ public class CatanGameState extends GameState {
     }
 
     //Method to get the current player's hand
-    public Hand getHand()
+    public Hand getHand(int playerNum)
     {
-        return hands[playersID];
+        return hands[playerNum];
     }
 
     //Method to return if a 7 was rolled
@@ -706,6 +706,7 @@ public class CatanGameState extends GameState {
     {
         roads[spot].setIsEmpty(false);
         roads[spot].setPlayer(player);
+        hands[player].buildRoad();
     }
 
     //USED FOR TESTING ONLY
@@ -715,6 +716,14 @@ public class CatanGameState extends GameState {
         buildings[spot].setIsEmpty(false);
         buildings[spot].setPlayer(player);
         buildings[spot].setTypeOfBuilding(type);
+        if(type == Building.SETTLEMENT)
+        {
+            hands[player].buildSettlement();
+        }
+        else
+        {
+            hands[player].upgradeSettlement();
+        }
     }
 
     //USED FOR TESTING ONLY

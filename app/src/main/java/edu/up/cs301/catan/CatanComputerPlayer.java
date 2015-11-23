@@ -22,7 +22,7 @@ import edu.up.cs301.game.infoMsg.GameInfo;
  */
 public class CatanComputerPlayer extends GameComputerPlayer {
 
-    private Random RNG; //Used for choosing what to do
+    protected Random RNG; //Used for choosing what to do
     /**
      * ctor does nothing extra
      */
@@ -50,7 +50,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
 
             if(gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
             {
-                Hand myHand = gameState.getHand();
+                Hand myHand = gameState.getHand(this.playerNum);
                 this.removeResources(myHand);
             }
 
@@ -145,43 +145,40 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             int wheatToLose = 0;
             int brickToLose = 0;
             int rockToLose = 0;
-            int totalToLose = (int)(myHand.getTotal() - Math.ceil((double) (myHand.getTotal()/2)));
+            int totalToLose = (int) Math.ceil(myHand.getTotal()*0.5);
 
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
             switch(RNG.nextInt(5))
             {
                 case 0:
-                    if(myHand.getLumber() > 0) {
+                    if(myHand.getLumber() - woodToLose> 0) {
                         woodToLose++;
-                        break;
                     }
+                    break;
 
                 case 1:
-                    if(myHand.getWool() > 0) {
+                    if(myHand.getWool() - sheepToLose> 0) {
                         sheepToLose++;
-                        break;
                     }
+                    break;
 
                 case 2:
-                    if(myHand.getWheat() > 0) {
+                    if(myHand.getWheat() - wheatToLose> 0) {
                         wheatToLose++;
-                        break;
                     }
+                    break;
 
                 case 3:
-                    if(myHand.getBrick() > 0) {
+                    if(myHand.getBrick() - brickToLose> 0) {
                         brickToLose++;
-                        break;
                     }
+                    break;
 
                 case 4:
-                    if(myHand.getOre() > 0) {
+                    if(myHand.getOre() - rockToLose> 0) {
                         sheepToLose++;
-                        break;
                     }
-
-                default:
-                    break; //reiterate again
+                    break;
 
             }
             game.sendAction(new CatanRemoveResAction(this, woodToLose, sheepToLose, wheatToLose,

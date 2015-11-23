@@ -2,25 +2,25 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\jgoldey\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
-        <dex dex="C:\Users\jgoldey\Desktop\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-35ed9d7b50393b40d70cc70b1fa0ffce87140b18.jar" />
-    </item>
-    <item
-        jar="C:\Users\jgoldey\Desktop\SettlersOfCatan\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="f8efd0096475e0daf054267b61544e10dc776503">
-        <dex dex="C:\Users\jgoldey\Desktop\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\classes-5c576ae1f45dbd070cf97424e67d9b833c5ed4f4.jar" />
-    </item>
-    <item
-        jar="C:\Users\jgoldey\Desktop\SettlersOfCatan\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
+        jar="C:\Users\jarre_000\AndroidStudioProjects\SettlersOfCatan\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
-        <dex dex="C:\Users\jgoldey\Desktop\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-4da87aa908aca55c92079a9f09d8d00d944d1cbb.jar" />
+        <dex dex="C:\Users\jarre_000\AndroidStudioProjects\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1-c1fe0c69580976f3c1bfd24849003c2ac35af0e1.jar" />
+    </item>
+    <item
+        jar="C:\Users\jarre_000\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.1\support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="C:\Users\jarre_000\AndroidStudioProjects\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.1-e7c75be4b928af8de84445106a61ac2353a68d02.jar" />
+    </item>
+    <item
+        jar="C:\Users\jarre_000\AndroidStudioProjects\SettlersOfCatan\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="C:\Users\jarre_000\AndroidStudioProjects\SettlersOfCatan\app\build\intermediates\pre-dexed\debug\classes-0c129e4bf7b5bbfbdb39a459fba2a3abfbd121d7.jar" />
     </item>
 
 </items>
