@@ -72,6 +72,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Boolean buildSettlementClicked = false;
     Boolean buildCityClicked = false;
 
+    public static Boolean popupAlreadyOpen = false;
+
     // the android activity that we are running
     private GameMainActivity myActivity;
 
@@ -109,7 +111,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             int die1 = gameState.getDie1();
             int die2 = gameState.getDie2();
 
-            if(gameState.getPlayersID() == 0){
+            if(gameState.getPlayersID() == playerNum){
                 switch (die1){
                     case 1:
                         dice1.setBackgroundResource(R.drawable.dice_1_red);
@@ -155,7 +157,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
 
             boolean checker = gameState.getRobberWasRolledPlayer();
-            if(checker){
+            if(checker && !popupAlreadyOpen){
                 //Popup will only be created if it is the players turn to make a move
                 if(gameState.getHand(playerNum).getTotal() > 7 && playerNum == gameState.getPlayersID()){
 
@@ -168,6 +170,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     //Opens up the popup at the center of the screen
                     final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+                    final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
+                    back_dim_layout.setVisibility(View.GONE);
+
+                    popupAlreadyOpen = true;
 
                     TextView text = (TextView)popupView.findViewById(R.id.robberPopupText);
                     text.setText("A seven has been rolled and you have over 7 cards you must discard " + (int) Math.ceil(gameState.getHand(playerNum).getTotal()*0.5) + " cards.");
@@ -208,8 +215,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                             if(pickedResources){
                                 popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
                                 game.sendAction(new CatanRemoveResAction(player, woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
-
                                 //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
+                                back_dim_layout.setVisibility(View.VISIBLE);
+                                CatanHumanPlayer.popupAlreadyOpen = false;
                             }
                         }
                     });
