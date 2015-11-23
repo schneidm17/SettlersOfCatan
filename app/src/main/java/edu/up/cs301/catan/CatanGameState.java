@@ -175,7 +175,8 @@ public class CatanGameState extends GameState {
             }
         }
 
-        /*
+        givePlayerResources(0);
+
         //simulate a game board
             givePlayerResources(0);
             givePlayerResources(1);
@@ -199,7 +200,7 @@ public class CatanGameState extends GameState {
             generateBuilding(35,1,0);
             generateBuilding(40,2,0);
             generateBuilding(44,2,0);
-        */
+
     }
 
     //Constructor to set all instance variables to values passed in as parameters
@@ -268,6 +269,18 @@ public class CatanGameState extends GameState {
     public int getDie2()
     {
         return die2;
+    }
+
+    //Method to set the value of the first die
+    public void setDie1(int newValue)
+    {
+        die1 = newValue;
+    }
+
+    //Method to set the value of the second die
+    public void setDie2(int newValue)
+    {
+        die2 = newValue;
     }
 
     //Method to return if the game is in round 1 placing
@@ -402,6 +415,18 @@ public class CatanGameState extends GameState {
             robberWasRolled[playersID] = false;
         }
     }
+
+    //Method to remove resources from a hand other than the current player whose turn it is
+    public void removeResources(int player, int woodToLose, int sheepToLose, int wheatToLose, int brickToLose,
+                                int rockToLose)
+    {
+        hands[player].removeLumber(woodToLose);
+        hands[player].removeWool(sheepToLose);
+        hands[player].removeWheat(wheatToLose);
+        hands[player].removeBrick(brickToLose);
+        hands[player].removeOre(rockToLose);
+    }
+
 
     //Method to return where the robber is located
     public int getRobber()

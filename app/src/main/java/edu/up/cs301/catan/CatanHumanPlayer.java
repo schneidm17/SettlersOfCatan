@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.ImageView;
@@ -97,54 +98,110 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public void receiveInfo(GameInfo info) {
         //TODO Update the canvas
         if (info instanceof CatanGameState) {
-            CatanGameState gameState = (CatanGameState) info;
+            final CatanGameState gameState = (CatanGameState) info;
 
             mySurfaceView.setGameState(gameState);
 
             int die1 = gameState.getDie1();
             int die2 = gameState.getDie2();
 
-            switch (die1){
-                case 1:
-                    dice1.setBackgroundResource(R.drawable.dice_1_red);
-                    break;
-                case 2:
-                    dice1.setBackgroundResource(R.drawable.dice_2_red);
-                    break;
-                case 3:
-                    dice1.setBackgroundResource(R.drawable.dice_3_red);
-                    break;
-                case 4:
-                    dice1.setBackgroundResource(R.drawable.dice_4_red);
-                    break;
-                case 5:
-                    dice1.setBackgroundResource(R.drawable.dice_5_red);
-                    break;
-                default:
-                    dice1.setBackgroundResource(R.drawable.dice_6_red);
-                    break;
+            if(gameState.getPlayersID() == 0){
+                switch (die1){
+                    case 1:
+                        dice1.setBackgroundResource(R.drawable.dice_1_red);
+                        break;
+                    case 2:
+                        dice1.setBackgroundResource(R.drawable.dice_2_red);
+                        break;
+                    case 3:
+                        dice1.setBackgroundResource(R.drawable.dice_3_red);
+                        break;
+                    case 4:
+                        dice1.setBackgroundResource(R.drawable.dice_4_red);
+                        break;
+                    case 5:
+                        dice1.setBackgroundResource(R.drawable.dice_5_red);
+                        break;
+                    default:
+                        dice1.setBackgroundResource(R.drawable.dice_6_red);
+                        break;
+                }
+
+                switch (die2){
+                    case 1:
+                        dice2.setBackgroundResource(R.drawable.dice_1_yellow);
+                        break;
+                    case 2:
+                        dice2.setBackgroundResource(R.drawable.dice_2_yellow);
+                        break;
+                    case 3:
+                        dice2.setBackgroundResource(R.drawable.dice_3_yellow);
+                        break;
+                    case 4:
+                        dice2.setBackgroundResource(R.drawable.dice_4_yellow);
+                        break;
+                    case 5:
+                        dice2.setBackgroundResource(R.drawable.dice_5_yellow);
+                        break;
+                    default:
+                        dice2.setBackgroundResource(R.drawable.dice_6_yellow);
+                        break;
+                }
+
             }
 
-            switch (die2){
-                case 1:
-                    dice2.setBackgroundResource(R.drawable.dice_1_yellow);
-                    break;
-                case 2:
-                    dice2.setBackgroundResource(R.drawable.dice_2_yellow);
-                    break;
-                case 3:
-                    dice2.setBackgroundResource(R.drawable.dice_3_yellow);
-                    break;
-                case 4:
-                    dice2.setBackgroundResource(R.drawable.dice_4_yellow);
-                    break;
-                case 5:
-                    dice2.setBackgroundResource(R.drawable.dice_5_yellow);
-                    break;
-                default:
-                    dice2.setBackgroundResource(R.drawable.dice_6_yellow);
-                    break;
+            if((die1 + die2) == 7){
+                //TODO: figure out a way to not hard code this
+                if(gameState.getHands()[0].getTotal() > 7){
+
+                    //If all checks passed a game is started and popup appears saying who won.
+                    LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
+
+                    //Opens up the robber popup
+                    final View popupView = layoutInflater.inflate(R.layout.robber_popup, null);
+
+                    //Opens up the popup at the center of the screen
+                    final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+                    TextView text = (TextView)popupView.findViewById(R.id.robberPopupText);
+                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + gameState.getHands()[0].getTotal() / 2 + " cards.");
+
+                    final NumberPicker wood = (NumberPicker)popupView.findViewById(R.id.woodNumber);
+                    wood.setMaxValue(gameState.getHands()[0].getLumber());
+                    wood.setMinValue(0);
+
+                    final NumberPicker wheat = (NumberPicker)popupView.findViewById(R.id.wheatNumber);
+                    wheat.setMaxValue(gameState.getHands()[0].getWheat());
+                    wheat.setMinValue(0);
+
+                    final NumberPicker rock = (NumberPicker)popupView.findViewById(R.id.rockNumber);
+                    rock.setMaxValue(gameState.getHands()[0].getOre());
+                    rock.setMinValue(0);
+
+                    final NumberPicker brick = (NumberPicker)popupView.findViewById(R.id.brickNumber);
+                    brick.setMaxValue(gameState.getHands()[0].getBrick());
+                    brick.setMinValue(0);
+
+                    final NumberPicker sheep = (NumberPicker)popupView.findViewById(R.id.sheepNumber);
+                    sheep.setMaxValue(gameState.getHands()[0].getWool());
+                    sheep.setMinValue(0);
+
+                    //Dismisses the popup when the cancel button is clicked
+                    Button btnDismiss = (Button) popupView.findViewById(R.id.robberPopupCancel);
+                    btnDismiss.setOnClickListener(new Button.OnClickListener() {
+                        public void onClick(View v) {
+                            boolean pickedResources = ((sheep.getValue() + wood.getValue() + brick.getValue() + wheat.getValue() + rock.getValue()) == gameState.getHands()[0].getTotal()/2);
+                            if(pickedResources){
+                                popupWindow.dismiss();
+                                gameState.removeResources(0, wood.getValue(),sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
+                            }
+                        }
+                    });
+                }
             }
+
+            //TODO: have human player move robber
 
             //Make done button invisible
             done.setVisibility(View.GONE);
@@ -331,22 +388,19 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 int spot = mySurfaceView.getRoadLastSelected();
                 mySurfaceView.waitForRoadSelection(false);
                 if(spot != -1) {
-                    //TODO: send road building action
-                    //game.sendAction(new CatanBuildRoadAction(this,spot));
+                    game.sendAction(new CatanBuildRoadAction(this,spot));
                 }
             } else if(buildSettlementClicked) {
                 int spot = mySurfaceView.getBuildingLastSelected();
                 mySurfaceView.waitForSettlementSelection(false);
                 if(spot != -1) {
-                    //TODO: send settlement building action
-                    //game.sendAction(new CatanBuildSettlementAction(this,spot));
+                    game.sendAction(new CatanBuildSettlementAction(this,spot));
                 }
             } else if(buildCityClicked) {
                 int spot = mySurfaceView.getBuildingLastSelected();
                 mySurfaceView.waitForCitySelection(false);
                 if(spot != -1) {
-                    //TODO: send settlement upgrade action
-                    //game.sendAction(new CatanUpgradeSettlementAction(this,spot));
+                    game.sendAction(new CatanUpgradeSettlementAction(this,spot));
                 }
             }
         }
