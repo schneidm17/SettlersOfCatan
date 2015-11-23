@@ -175,7 +175,31 @@ public class CatanGameState extends GameState {
             }
         }
 
-        givePlayerResources(0);
+        /*
+        //simulate a game board
+            givePlayerResources(0);
+            givePlayerResources(1);
+            givePlayerResources(2);
+            generateRoad(13,0);
+            generateRoad(14,0);
+            generateRoad(20,0);
+            generateRoad(28,0);
+            generateRoad(40,0);
+            generateRoad(41,0);
+            generateRoad(42,0);
+            generateRoad(25,1);
+            generateRoad(37,1);
+            generateRoad(24,1);
+            generateRoad(52,2);
+            generateRoad(56,2);
+            generateRoad(45,2);
+            generateBuilding(10,0,0);
+            generateBuilding(29,0,0);
+            generateBuilding(19,1,0);
+            generateBuilding(35,1,0);
+            generateBuilding(40,2,0);
+            generateBuilding(44,2,0);
+        */
     }
 
     //Constructor to set all instance variables to values passed in as parameters
@@ -460,19 +484,28 @@ public class CatanGameState extends GameState {
             return false;
         }
 
-        //Make sure that the player building the road has another road adjacent to the spot they
-        //want to build. If the player does, build road, set the road to not empty, remove
-        //resources, and return true
-        byte[] roadList = roadToRoadAdjList[spot];
-        for(int i = 0; i < roadList.length; i++ )
+        //Make sure that the player has another road or settlement adjacent to the spot they want to build.
+
+        //check nearby roads for a road owned by that player
+        for(int i = 0; i < roadToRoadAdjList[spot].length; i++ )
         {
-            if(roads[roadList[i]].getPlayer() == playersID)
+            if(roads[roadToRoadAdjList[spot][i]].getPlayer() == playersID)
             {
                 return true; //Player has adjacent road, can build in spot
             }
         }
+        //check nearby intersections for a settlement or city owned by that player
+        for(int i = 0; i < roadToBuildingAdjList[spot].length; i++ )
+        {
+            if(buildings[roadToBuildingAdjList[spot][i]].getPlayer() == playersID)
+            {
+                return true; //Player has adjacent road, can build in spot
+            }
+        }
+        //otherwise, return false
         return false; //spot is empty, but no adjacent roads
     }
+
     //Method to build a road in a given spot, returns true if the road is built, false otherwise
     public boolean buildRoad(int spot)
     {
@@ -546,7 +579,7 @@ public class CatanGameState extends GameState {
     //otherwise
     public boolean buildSettlement(int spot)
     {
-        if(this.canBuildRoad(spot) && this.playerHasSettlementRes())
+        if(this.canBuildSettlement(spot) && this.playerHasSettlementRes())
         {
             //If the player can build, build the building and set the road to not empty
             buildings[spot].setIsEmpty(false);

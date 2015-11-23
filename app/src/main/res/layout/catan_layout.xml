@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice1"
-                    android:background="@drawable/dice_3_red" />
+                    android:background="@drawable/dice_1_red" />
 
                 <Space
                     android:layout_width="20px"
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice2"
-                    android:background="@drawable/dice_5_yellow" />
+                    android:background="@drawable/dice_1_yellow" />
             </LinearLayout>
         </FrameLayout>
 

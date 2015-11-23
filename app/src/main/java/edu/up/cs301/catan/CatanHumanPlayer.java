@@ -36,7 +36,7 @@ import edu.up.cs301.game.infoMsg.GameInfo;
  * @author Oney, Goldey, Schneider
  * @version November 2015
  */
-public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener {
+public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener, View.OnTouchListener {
 
 	/* instance variables */
 
@@ -98,6 +98,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         //TODO Update the canvas
         if (info instanceof CatanGameState) {
             CatanGameState gameState = (CatanGameState) info;
+
+            mySurfaceView.setGameState(gameState);
 
             int die1 = gameState.getDie1();
             int die2 = gameState.getDie2();
@@ -256,7 +258,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
 
-            //TODO:Figure out what was clicked on surface view
+            //Figure out what was clicked on surface view
+            mySurfaceView.waitForRoadSelection(true);
         } else if (v.equals(buildSettlement)) {
             //Set build settlement boolean to true
             buildSettlementClicked = true;
@@ -274,7 +277,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
 
-            //TODO:Figure out what was clicked on surface view
+            //Figure out what was clicked on surface view
+            mySurfaceView.waitForSettlementSelection(true);
         } else if (v.equals(buildCity)) {
             //Set build settlement boolean to true
             buildCityClicked = true;
@@ -292,17 +296,21 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildRoad.setClickable(false);
             buildRoad.setTextColor(Color.GRAY);
 
-            //TODO:Figure out what was clicked on surface view
+            //Figure out what was clicked on surface view
+            mySurfaceView.waitForCitySelection(true);
         } else if (v.equals(endTurn)){
             if (endTurn.getText().equals("End Turn")){
                 game.sendAction(new CatanEndTurnAction(this));
             }else if (endTurn.getText().equals("Cancel")){
                 if (buildRoadClicked) {
                     buildRoadClicked = false;
+                    mySurfaceView.waitForRoadSelection(false);
                 } else if (buildSettlementClicked) {
                     buildSettlementClicked = false;
+                    mySurfaceView.waitForSettlementSelection(false);
                 } else if (buildCityClicked) {
                     buildCityClicked = false;
+                    mySurfaceView.waitForCitySelection(false);
                 }
                 //Reset Buttons
                 buildRoad.setClickable(true);
@@ -320,14 +328,42 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
         } else if (v.equals(done)) {
             if (buildRoadClicked) {
-                //game.sendAction(new CatanBuildRoadAction(this,spot));
-            }else if(buildSettlementClicked){
-                //game.sendAction(new CatanBuildSettlementAction(this,spot));
-            }else if(buildCityClicked){
-                //game.sendAction(new CatanUpgradeSettlementAction(this,spot));
+                int spot = mySurfaceView.getRoadLastSelected();
+                mySurfaceView.waitForRoadSelection(false);
+                if(spot != -1) {
+                    //TODO: send road building action
+                    //game.sendAction(new CatanBuildRoadAction(this,spot));
+                }
+            } else if(buildSettlementClicked) {
+                int spot = mySurfaceView.getBuildingLastSelected();
+                mySurfaceView.waitForSettlementSelection(false);
+                if(spot != -1) {
+                    //TODO: send settlement building action
+                    //game.sendAction(new CatanBuildSettlementAction(this,spot));
+                }
+            } else if(buildCityClicked) {
+                int spot = mySurfaceView.getBuildingLastSelected();
+                mySurfaceView.waitForCitySelection(false);
+                if(spot != -1) {
+                    //TODO: send settlement upgrade action
+                    //game.sendAction(new CatanUpgradeSettlementAction(this,spot));
+                }
             }
         }
     }// onClick
+
+    public boolean onTouch(View v, MotionEvent e) {
+        if(v.equals(mySurfaceView)) {
+            if (buildRoadClicked) {
+                mySurfaceView.selectRoad(e.getX(), e.getY());
+                return true;
+            } else if(buildSettlementClicked || buildCityClicked) {
+                mySurfaceView.selectBuilding(e.getX(), e.getY());
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * callback method--our game has been chosen/rechosen to be the GUI,
@@ -350,6 +386,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateDownButton = (Button) activity.findViewById(R.id.goDownButton);
         rotateLeftButton = (Button) activity.findViewById(R.id.goLeftButton);
 
+        mySurfaceView.setOnTouchListener(this);
         rotateUpButton.setOnClickListener(this);
         rotateRightButton.setOnClickListener(this);
         rotateDownButton.setOnClickListener(this);
@@ -369,6 +406,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         buildSettlement.setOnClickListener(this);
         buildCity.setOnClickListener(this);
         endTurn.setOnClickListener(this);
+        done.setOnClickListener(this);
 
         numWheat = (TextView) activity.findViewById(R.id.numWheat);
         numSheep = (TextView) activity.findViewById(R.id.numSheep);
