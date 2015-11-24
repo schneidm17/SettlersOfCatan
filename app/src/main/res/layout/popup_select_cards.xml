@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:id="@+id/cardSelectPopupLayout"
+    android:background="#ffffffff"
+    android:minWidth="400dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Cards"
+        android:id="@+id/cardSelectPopupTitle"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/cardSelectPopupText"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
+    <edu.up.cs301.catan.CardSelectView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:id="@+id/cardSelectionView"
+        android:background="#ffffffff" />
+
+    <Button
+        android:id="@+id/cardSelectDoneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:textSize="30sp"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

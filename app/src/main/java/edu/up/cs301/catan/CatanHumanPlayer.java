@@ -25,6 +25,7 @@ import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
+import edu.up.cs301.game.infoMsg.GameOverInfo;
 
 /**
  * A GUI for a human to play Catan. This default version displays the GUI but is incomplete
@@ -94,8 +95,19 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      */
     @Override
     public void receiveInfo(GameInfo info) {
-        //TODO Update the canvas
-        if (info instanceof CatanGameState) {
+        if(info instanceof GameOverInfo) {
+            //Make the buttons un-clickable
+            buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
+            endTurn.setClickable(false);
+            endTurn.setTextColor(Color.GRAY);
+            endTurn.setText("Game Over");
+            done.setVisibility(View.GONE);
+        } else if (info instanceof CatanGameState) {
             final CatanGameState GAME_STATE = (CatanGameState) info;
 
             //if(gameState.getNeedToRoll()) game.sendAction(new CatanRollAction(this));
@@ -193,6 +205,60 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
             }
 
+            if(GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen){
+                //Popup will only be created if it is the players turn to make a move
+                if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
+
+                    //If all checks passed a game is started and popup appears saying who won.
+                    LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
+
+                    //Opens up the robber popup
+                    final View popupView = layoutInflater.inflate(R.layout.popup_select_cards, null);
+
+                    //Opens up the popup at the center of the screen
+                    final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+                    final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
+                    back_dim_layout.setVisibility(View.GONE);
+
+                    popupAlreadyOpen = true;
+
+                    TextView text = (TextView)popupView.findViewById(R.id.cardSelectPopupText);
+                    text.setText("A seven has been rolled and you have "+GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal()+" cards\n" +
+                            "You must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5) + " cards.");
+
+                    final CardSelectView selectView = (CardSelectView)popupView.findViewById(R.id.cardSelectionView);
+                    selectView.setGameState(GAME_STATE);
+
+                    //Instance of class used for anonymous onClick class
+                    final CatanHumanPlayer player = this;
+
+                    //Dismisses the popup when the cancel button is clicked
+                    Button btnDismiss = (Button) popupView.findViewById(R.id.cardSelectDoneButton);
+                    btnDismiss.setOnClickListener(new Button.OnClickListener() {
+                        public void onClick(View v) {
+                            int[] cardsToLose = selectView.getCardsToRemove();
+                            boolean pickedResources = ((cardsToLose[0] + cardsToLose[1]+ cardsToLose[2]+ cardsToLose[3]+ cardsToLose[4]) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5));
+                            if(pickedResources){
+                                popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
+                                game.sendAction(new CatanRemoveResAction(player, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
+                                //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
+                                back_dim_layout.setVisibility(View.VISIBLE);
+                                CatanHumanPlayer.popupAlreadyOpen = false;
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
+                }
+            }
+
+            ///////////////////////////////  Jordan's popup window  ///////////////////////////////
+
+            /*
             boolean checker = GAME_STATE.getRobberWasRolledPlayer();
             if(checker && !popupAlreadyOpen){
                 //Popup will only be created if it is the players turn to make a move
@@ -264,6 +330,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
                 }
             }
+            */
+            ///////////////////////////////  Jordan's popup window  ///////////////////////////////
+
 
             //TODO: have human player move robber
         }

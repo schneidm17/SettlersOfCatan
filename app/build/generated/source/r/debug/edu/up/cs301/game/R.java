@@ -47,18 +47,24 @@ public final class R {
         public static final int dice_5_yellow=0x7f020013;
         public static final int dice_6_red=0x7f020014;
         public static final int dice_6_yellow=0x7f020015;
-        public static final int ic_action_search=0x7f020016;
-        public static final int num_10=0x7f020017;
-        public static final int num_11=0x7f020018;
-        public static final int num_12=0x7f020019;
-        public static final int num_2=0x7f02001a;
-        public static final int num_3=0x7f02001b;
-        public static final int num_4=0x7f02001c;
-        public static final int num_5=0x7f02001d;
-        public static final int num_6=0x7f02001e;
-        public static final int num_8=0x7f02001f;
-        public static final int num_9=0x7f020020;
-        public static final int purple_delete_button=0x7f020021;
+        public static final int hex_brick=0x7f020016;
+        public static final int hex_desert=0x7f020017;
+        public static final int hex_ore=0x7f020018;
+        public static final int hex_sheep=0x7f020019;
+        public static final int hex_wheat=0x7f02001a;
+        public static final int hex_wood=0x7f02001b;
+        public static final int ic_action_search=0x7f02001c;
+        public static final int num_10=0x7f02001d;
+        public static final int num_11=0x7f02001e;
+        public static final int num_12=0x7f02001f;
+        public static final int num_2=0x7f020020;
+        public static final int num_3=0x7f020021;
+        public static final int num_4=0x7f020022;
+        public static final int num_5=0x7f020023;
+        public static final int num_6=0x7f020024;
+        public static final int num_8=0x7f020025;
+        public static final int num_9=0x7f020026;
+        public static final int purple_delete_button=0x7f020027;
     }
     public static final class id {
         public static final int addPlayerButton=0x7f0a0058;
@@ -73,14 +79,19 @@ public final class R {
         public static final int brick7=0x7f0a0038;
         public static final int brick8=0x7f0a0039;
         public static final int brick9=0x7f0a003a;
-        public static final int brickLabel=0x7f0a0069;
+        public static final int brickLabel=0x7f0a006e;
         public static final int brickLayout=0x7f0a0030;
-        public static final int brickNumber=0x7f0a006e;
+        public static final int brickNumber=0x7f0a0073;
         public static final int button=0x7f0a0008;
         public static final int button2=0x7f0a0009;
         public static final int button3=0x7f0a000a;
         public static final int button4=0x7f0a0049;
         public static final int button5=0x7f0a0048;
+        public static final int cardSelectDoneButton=0x7f0a0066;
+        public static final int cardSelectPopupLayout=0x7f0a0062;
+        public static final int cardSelectPopupText=0x7f0a0064;
+        public static final int cardSelectPopupTitle=0x7f0a0063;
+        public static final int cardSelectionView=0x7f0a0065;
         public static final int configTableLayout=0x7f0a0052;
         public static final int delPlayerButton=0x7f0a005c;
         public static final int dice1=0x7f0a0006;
@@ -93,7 +104,7 @@ public final class R {
         public static final int ipCodeLabel=0x7f0a0054;
         public static final int localGameTab=0x7f0a004e;
         public static final int localTabLayout=0x7f0a004f;
-        public static final int menu_settings=0x7f0a0070;
+        public static final int menu_settings=0x7f0a0075;
         public static final int numBrick=0x7f0a0031;
         public static final int numOre=0x7f0a003d;
         public static final int numSheep=0x7f0a0019;
@@ -120,12 +131,12 @@ public final class R {
         public static final int remoteNameEditText=0x7f0a005e;
         public static final int remoteTabLayout=0x7f0a0051;
         public static final int remote_player_spinner=0x7f0a005f;
-        public static final int robberPopupCancel=0x7f0a006f;
-        public static final int robberPopupLayout=0x7f0a0062;
-        public static final int robberPopupText=0x7f0a0064;
-        public static final int robberPopupTitle=0x7f0a0063;
-        public static final int rockLabel=0x7f0a0067;
-        public static final int rockNumber=0x7f0a006c;
+        public static final int robberPopupCancel=0x7f0a0074;
+        public static final int robberPopupLayout=0x7f0a0067;
+        public static final int robberPopupText=0x7f0a0069;
+        public static final int robberPopupTitle=0x7f0a0068;
+        public static final int rockLabel=0x7f0a006c;
+        public static final int rockNumber=0x7f0a0071;
         public static final int saveConfigButton=0x7f0a004b;
         public static final int serverIPCode=0x7f0a0060;
         public static final int sheep1=0x7f0a001a;
@@ -138,9 +149,9 @@ public final class R {
         public static final int sheep7=0x7f0a0020;
         public static final int sheep8=0x7f0a0021;
         public static final int sheep9=0x7f0a0022;
-        public static final int sheepLabel=0x7f0a0068;
+        public static final int sheepLabel=0x7f0a006d;
         public static final int sheepLayout=0x7f0a0018;
-        public static final int sheepNumber=0x7f0a006d;
+        public static final int sheepNumber=0x7f0a0072;
         public static final int tabHost=0x7f0a004a;
         public static final int tableDataRow=0x7f0a005d;
         public static final int tableHeadingRow=0x7f0a0055;
@@ -158,9 +169,9 @@ public final class R {
         public static final int wheat7=0x7f0a0014;
         public static final int wheat8=0x7f0a0015;
         public static final int wheat9=0x7f0a0016;
-        public static final int wheatLabel=0x7f0a0066;
+        public static final int wheatLabel=0x7f0a006b;
         public static final int wheatLayout=0x7f0a000c;
-        public static final int wheatNumber=0x7f0a006b;
+        public static final int wheatNumber=0x7f0a0070;
         public static final int wood1=0x7f0a0026;
         public static final int wood10=0x7f0a002f;
         public static final int wood2=0x7f0a0027;
@@ -171,9 +182,9 @@ public final class R {
         public static final int wood7=0x7f0a002c;
         public static final int wood8=0x7f0a002d;
         public static final int wood9=0x7f0a002e;
-        public static final int woodLabel=0x7f0a0065;
+        public static final int woodLabel=0x7f0a006a;
         public static final int woodLayout=0x7f0a0024;
-        public static final int woodNumber=0x7f0a006a;
+        public static final int woodNumber=0x7f0a006f;
     }
     public static final class layout {
         public static final int catan_layout=0x7f040000;
@@ -183,7 +194,8 @@ public final class R {
         public static final int game_no_gui=0x7f040004;
         public static final int game_player_list_row=0x7f040005;
         public static final int game_remote_tab=0x7f040006;
-        public static final int robber_popup=0x7f040007;
+        public static final int popup_select_cards=0x7f040007;
+        public static final int robber_popup=0x7f040008;
     }
     public static final class menu {
         public static final int game_main=0x7f090000;

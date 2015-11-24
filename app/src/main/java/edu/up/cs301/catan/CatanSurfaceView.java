@@ -172,6 +172,9 @@ public class CatanSurfaceView extends SurfaceView {
         super.onDraw(canvas);
         updateABC();
 
+        //display certain debugging features on the surfaceView
+        boolean DEBUG=true;
+
         drawBoard(canvas);
         if(gameState==null)
             return;
@@ -204,6 +207,23 @@ public class CatanSurfaceView extends SurfaceView {
             for (int x = 0; x < roads.length; x++) {
                 drawSelectedRoad(canvas, x);
             }
+        }
+
+        if(DEBUG) {
+            temp.setColor(Color.BLACK);
+            temp.setTextSize(28);
+            canvas.drawText("Current player: "+gameState.getPlayersID(), 20, 50, temp);
+
+            Hand[] hands = gameState.getHands();
+            for(int i=0; i<hands.length; i++) {
+                canvas.drawText("Player "+i+" res:",          20, 100+200*i, temp);
+                canvas.drawText(hands[i].getWheat()+" Wheat", 80, 130+200*i, temp);
+                canvas.drawText(hands[i].getWool()+" Sheep",  80, 160+200*i, temp);
+                canvas.drawText(hands[i].getLumber()+" Wood", 80, 190+200*i, temp);
+                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220+200*i, temp);
+                canvas.drawText(hands[i].getOre()+" Ore",     80, 250+200*i, temp);
+            }
+
         }
 
         /*
