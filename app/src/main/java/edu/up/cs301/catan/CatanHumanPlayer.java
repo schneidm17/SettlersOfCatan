@@ -12,11 +12,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
@@ -72,6 +70,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public static Boolean popupAlreadyOpen = false;
     public static Boolean statsPopupAlreadyOpen = false;
     public static Boolean discardPopupOpened = false;
+    public static Boolean nextTrun = false;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -171,17 +170,40 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
                 updateButtonStates();
 
-                if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened){
+                if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTrun){
                     statsPopupAlreadyOpen = true;
+                    nextTrun = false;
                     int wheatGained = this.myGameState.getHand(playerNum).getWheat() - Integer.parseInt(numWheat.getText().toString());
                     int rockGained = this.myGameState.getHand(playerNum).getOre() - Integer.parseInt(numOre.getText().toString());
                     int woodGained = this.myGameState.getHand(playerNum).getLumber() - Integer.parseInt(numWood.getText().toString());
                     int brickGained = this.myGameState.getHand(playerNum).getBrick() - Integer.parseInt(numBrick.getText().toString());
                     int sheepGained = this.myGameState.getHand(playerNum).getWool() - Integer.parseInt(numSheep.getText().toString());
 
+                    String message = "Resources Gained or Lost: ";
+
+                    if (wheatGained != 0){
+                        message = message + "\n" + wheatGained + " Wheat";
+                    }
+                    if (sheepGained != 0){
+                        message = message + "\n" + sheepGained + " Sheep";
+                    }
+                    if (woodGained != 0){
+                        message = message + "\n" + woodGained + " Wood";
+                    }
+                    if (brickGained != 0){
+                        message = message + "\n" + brickGained + " Brick";
+                    }
+                    if (rockGained != 0){
+                        message = message + "\n" + rockGained + " Rock";
+                    }
+                    if (message.equals("Resources Gained or Lost: ")){
+                        message = "No Resources gained or lost.";
+                    }
+
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(myActivity);
-                    builder1.setMessage("Resources Gained or Lost: " + "\n" + wheatGained + " Wheat, " + rockGained + " Rock, " + woodGained + " Wood, " + brickGained + " Brick, and " + sheepGained + " Sheep." );
-                    builder1.setCancelable(true);
+                    builder1.setTitle("What has happened since your last turn:");
+                    builder1.setMessage(message);
+                    builder1.setCancelable(false);
                     builder1.setPositiveButton("Cancel",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -286,84 +308,6 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
                 }
             }
-
-            ///////////////////////////////  Jordan's popup window  ///////////////////////////////
-
-            /*
-            boolean checker = GAME_STATE.getRobberWasRolledPlayer();
-            if(checker && !popupAlreadyOpen){
-                //Popup will only be created if it is the players turn to make a move
-                if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
-
-                    //If all checks passed a game is started and popup appears saying who won.
-                    LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
-
-                    //Opens up the robber popup
-                    final View popupView = layoutInflater.inflate(R.layout.robber_popup, null);
-
-                    //Opens up the popup at the center of the screen
-                    final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-
-                    final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
-                    back_dim_layout.setVisibility(View.GONE);
-
-                    popupAlreadyOpen = true;
-
-                    TextView text = (TextView)popupView.findViewById(R.id.robberPopupText);
-                    text.setText("A seven has been rolled and you have over 7 cards you must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5) + " cards.");
-
-                    final NumberPicker wood = (NumberPicker)popupView.findViewById(R.id.woodNumber);
-                    wood.setMaxValue(GAME_STATE.getHand(playerNum).getLumber());
-                    wood.setMinValue(0);
-
-                    final NumberPicker wheat = (NumberPicker)popupView.findViewById(R.id.wheatNumber);
-                    wheat.setMaxValue(GAME_STATE.getHand(playerNum).getWheat());
-                    wheat.setMinValue(0);
-
-                    final NumberPicker rock = (NumberPicker)popupView.findViewById(R.id.rockNumber);
-                    rock.setMaxValue(GAME_STATE.getHand(playerNum).getOre());
-                    rock.setMinValue(0);
-
-                    final NumberPicker brick = (NumberPicker)popupView.findViewById(R.id.brickNumber);
-                    brick.setMaxValue(GAME_STATE.getHand(playerNum).getBrick());
-                    brick.setMinValue(0);
-
-                    final NumberPicker sheep = (NumberPicker)popupView.findViewById(R.id.sheepNumber);
-                    sheep.setMaxValue(GAME_STATE.getHand(playerNum).getWool());
-                    sheep.setMinValue(0);
-
-                    //Instance of class used for anonymous onClick class
-                    final CatanHumanPlayer player = this;
-
-                    //Dismisses the popup when the cancel button is clicked
-                    Button btnDismiss = (Button) popupView.findViewById(R.id.robberPopupCancel);
-                    btnDismiss.setOnClickListener(new Button.OnClickListener() {
-                        public void onClick(View v) {
-                            int woodToLose = wood.getValue();
-                            int sheepToLose = sheep.getValue();
-                            int wheatToLose = wheat.getValue();
-                            int brickToLose = brick.getValue();
-                            int rockToLose = rock.getValue();
-                            boolean pickedResources = ((woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5));
-                            if(pickedResources){
-                                popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
-                                game.sendAction(new CatanRemoveResAction(player, woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
-                                //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
-                                back_dim_layout.setVisibility(View.VISIBLE);
-                                CatanHumanPlayer.popupAlreadyOpen = false;
-                            }
-                        }
-                    });
-                }
-                else
-                {
-                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
-                }
-            }
-            */
-            ///////////////////////////////  Jordan's popup window  ///////////////////////////////
-
 
             //TODO: have human player move robber
         }
@@ -503,6 +447,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 game.sendAction(new CatanEndTurnAction(this));
                 //Make it so stats popup can open again
                 discardPopupOpened = false;
+                nextTrun = true;
             }
 
         } else if (v.equals(done)) {
