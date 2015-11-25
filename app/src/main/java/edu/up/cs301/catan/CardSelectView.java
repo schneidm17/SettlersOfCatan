@@ -144,9 +144,6 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
                     canvas.drawBitmap(cardImages[x], (int)(colEdges[x]+cropWidth*j+edge), 0, null);
                 }
             }
-
-
-
         }
     }
 
