@@ -43,65 +43,68 @@ public class CatanComputerPlayer extends GameComputerPlayer {
         {
             CatanGameState gameState = (CatanGameState) info;
 
-            if(gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
-            {
-                game.sendAction(new CatanRollAction(this));
-            }
-
-            if(gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
-            {
-                Hand myHand = gameState.getHand(this.playerNum);
-                this.removeResources(myHand);
-            }
-
-            if(gameState.isRolled7()) //Player needs to place the robber
-            {
-                this.randomizeRobber(gameState);
-            }
-
-            ArrayList<GameAction> actions = new ArrayList<GameAction>();
-
-            //Ending the turn is always an option
-            actions.add(new CatanEndTurnAction(this));
-
-            //If they can build roads, add them to the list
-            if(gameState.playerHasRoadRes())
-            {
-                for(int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++)
+            if(playerNum == gameState.getPlayersID()) {
+                if (gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
                 {
-                    if(gameState.canBuildRoad(i))
-                    {
-                        actions.add(new CatanBuildRoadAction(this, i));
+                    game.sendAction(new CatanRollAction(this));
+                }
+
+                if (gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
+                {
+                    Hand myHand = gameState.getHand(this.playerNum);
+                    this.removeResources(myHand);
+                }
+
+                if (gameState.isRolled7()) //Player needs to place the robber
+                {
+                    this.randomizeRobber(gameState);
+                }
+
+                ArrayList<GameAction> actions = new ArrayList<GameAction>();
+
+                //Ending the turn is always an option
+                actions.add(new CatanEndTurnAction(this));
+
+                //If they can upgrade a settlement, add them to the list
+                if (gameState.playerHasCityRes()) {
+                    for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        if (gameState.canUpgradeSettlement(i)) {
+                            actions.add(new CatanUpgradeSettlementAction(this, i));
+                        }
                     }
                 }
-            }
 
-            //If they can build settlements, add them to the list
-            if(gameState.playerHasSettlementRes())
-            {
-                for(int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++)
+                if(actions.size() > 1)
                 {
-                    if(gameState.canBuildSettlement(i))
-                    {
-                        actions.add(new CatanBuildSettlementAction(this, i));
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+
+                //If they can build settlements, add them to the list
+                if (gameState.playerHasSettlementRes()) {
+                    for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        if (gameState.canBuildSettlement(i)) {
+                            actions.add(new CatanBuildSettlementAction(this, i));
+                        }
                     }
                 }
-            }
 
-            //If they can upgrade a settlement, add them to the list
-            if(gameState.playerHasCityRes())
-            {
-                for(int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++)
+                if(actions.size() > 1)
                 {
-                    if(gameState.canUpgradeSettlement(i))
-                    {
-                        actions.add(new CatanUpgradeSettlementAction(this, i));
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+                //If they can build roads, add them to the list
+                if (gameState.playerHasRoadRes()) {
+                    for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
+                        if (gameState.canBuildRoad(i)) {
+                            actions.add(new CatanBuildRoadAction(this, i));
+                        }
                     }
                 }
-            }
 
-            RNG = new Random();
-            game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                game.sendAction(actions.get(RNG.nextInt(actions.size())));
+            }
 
         }
     }//receiveInfo
@@ -151,32 +154,32 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             switch(RNG.nextInt(5))
             {
                 case 0:
-                    if(myHand.getLumber() - woodToLose> 0) {
+                    if(myHand.getLumber() - woodToLose > 0) {
                         woodToLose++;
                     }
                     break;
 
                 case 1:
-                    if(myHand.getWool() - sheepToLose> 0) {
+                    if(myHand.getWool() - sheepToLose > 0) {
                         sheepToLose++;
                     }
                     break;
 
                 case 2:
-                    if(myHand.getWheat() - wheatToLose> 0) {
+                    if(myHand.getWheat() - wheatToLose > 0) {
                         wheatToLose++;
                     }
                     break;
 
                 case 3:
-                    if(myHand.getBrick() - brickToLose> 0) {
+                    if(myHand.getBrick() - brickToLose > 0) {
                         brickToLose++;
                     }
                     break;
 
                 case 4:
-                    if(myHand.getOre() - rockToLose> 0) {
-                        sheepToLose++;
+                    if(myHand.getOre() - rockToLose > 0) {
+                        rockToLose++;
                     }
                     break;
 

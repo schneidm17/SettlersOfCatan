@@ -1,5 +1,7 @@
 package edu.up.cs301.catan;
 
+import android.util.Log;
+
 import java.util.Random;
 import edu.up.cs301.game.infoMsg.GameState;
 
@@ -33,7 +35,7 @@ public class CatanGameState extends GameState {
     private boolean [][] initialSetup;
     private boolean round1Placing;
     private boolean round2Placing;
-    public static final int VICTORY_POINTS_TO_WIN = 5;
+    public static final int VICTORY_POINTS_TO_WIN = 8;
 
     //List of all roads adjacent to a given road
     public static final byte[][] roadToRoadAdjList = {{1, 6}, {0, 2, 7}, {1, 3, 7}, {2, 4, 8}, {3,
@@ -117,7 +119,7 @@ public class CatanGameState extends GameState {
     //the roads, tiles, buildings, and players hands.
     public CatanGameState()
     {
-        playersID = 0;
+        playersID = rng.nextInt(3);
         scores = new int[4];
         for(int i = 0; i < 4; i++){
             scores[i] = 0;
@@ -336,6 +338,7 @@ public class CatanGameState extends GameState {
         //Set dice to random values
         die1 = rng.nextInt(6) + 1;
         die2 = rng.nextInt(6) + 1;
+        Log.d("NEW ROLL:", ""+die1 + die2);
 
         if(die1 + die2 != 7) //not possible to give res on 7
         {
@@ -378,12 +381,13 @@ public class CatanGameState extends GameState {
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
+                            rolled7 = false; //Resets the boolean for next turn
+                            Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
                             return true;
                         }
                     }
                 }
             }
-            rolled7 = false; //Resets the boolean for next turn
         }
 
         return false;
@@ -400,10 +404,12 @@ public class CatanGameState extends GameState {
         hands[playersID].removeWheat(wheatToLose);
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
-
-        if(hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
+        Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
+        if(oldTot <= 7 || hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
             robberWasRolled[playersID] = false;
+            Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
         }
+        Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
     }
 
    /* //Method to remove resources from a hand other than the current player whose turn it is
@@ -713,6 +719,7 @@ public class CatanGameState extends GameState {
     {
         playersID = (playersID + 1) % numPlayers;
         needToRoll = true;
+        Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
     }
 
     //USED FOR TESTING ONLY

@@ -110,15 +110,19 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         } else if (info instanceof CatanGameState) {
             final CatanGameState GAME_STATE = (CatanGameState) info;
 
-            //if(gameState.getNeedToRoll()) game.sendAction(new CatanRollAction(this));
-
             this.myGameState = (CatanGameState) info;
             mySurfaceView.setGameState(this.myGameState);
+
+            if(myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID())
+            {
+                game.sendAction(new CatanRollAction(this));
+            }
 
             int die1 = GAME_STATE.getDie1();
             int die2 = GAME_STATE.getDie2();
 
             if(GAME_STATE.getPlayersID() == playerNum){
+
                 switch (die1){
                     case 1:
                         dice1.setBackgroundResource(R.drawable.dice_1_red);
@@ -250,7 +254,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         }
                     });
                 }
-                else
+                else if(playerNum == GAME_STATE.getPlayersID())
                 {
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
                 }

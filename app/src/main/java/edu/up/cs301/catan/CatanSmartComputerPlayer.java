@@ -1,5 +1,7 @@
 package edu.up.cs301.catan;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -42,81 +44,85 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         {
             CatanGameState gameState = (CatanGameState) info;
 
-            if(gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
-            {
-                game.sendAction(new CatanRollAction(this));
-                return;
-            }
-
-            if(gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
-            {
-                Hand myHand = gameState.getHand(this.playerNum);
-                this.removeResources(myHand);
-                return;
-            }
-
-            if(gameState.isRolled7()) //Player needs to place the robber
-            {
-                this.placeRobber(gameState);
-                return;
-            }
-
-            boolean[] resourcesHave = new boolean[5];
-            Building[] buildings = gameState.getBuildings();
-            Tile[] tiles = gameState.getTiles();
-            ArrayList<GameAction> actions = new ArrayList<GameAction>();
-
-            for(int i = 0; i < buildings.length; i++)
-            {
-                if(buildings[i].getPlayer() == this.playerNum) {
-                    byte[] adjList = CatanGameState.buildingToTileAdjList[i];
-                    for (int j = 0; j < adjList.length; j++) {
-                        resourcesHave[tiles[j].getResource() - 1] = true;
-                    }
-                }
-            }
-
-            //Ending the turn is always an option
-            actions.add(new CatanEndTurnAction(this));
-
-            //If they can build roads, add them to the list
-            if(gameState.playerHasRoadRes())
-            {
-                for(int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++)
+            if(playerNum == gameState.getPlayersID()) {
+                if (gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
                 {
-                    if(gameState.canBuildRoad(i))
-                    {
-                        actions.add(new CatanBuildRoadAction(this, i));
-                    }
+                    game.sendAction(new CatanRollAction(this));
+                    return;
                 }
-            }
 
-            //If they can build settlements, add them to the list
-            if(gameState.playerHasSettlementRes())
-            {
-                for(int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++)
+                if (gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
                 {
-                    if(gameState.canBuildSettlement(i))
-                    {
-                        actions.add(new CatanBuildSettlementAction(this, i));
-                    }
+                    Hand myHand = gameState.getHand(this.playerNum);
+                    this.removeResources(myHand);
+                    return;
                 }
-            }
 
-            //If they can upgrade a settlement, add them to the list
-            if(gameState.playerHasCityRes())
-            {
-                for(int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++)
+                if (gameState.isRolled7()) //Player needs to place the robber
                 {
-                    if(gameState.canUpgradeSettlement(i))
-                    {
-                        actions.add(new CatanUpgradeSettlementAction(this, i));
+                    this.placeRobber(gameState);
+                    return;
+                }
+
+                boolean[] resourcesHave = new boolean[5];
+                Building[] buildings = gameState.getBuildings();
+                Tile[] tiles = gameState.getTiles();
+                ArrayList<GameAction> actions = new ArrayList<GameAction>();
+
+                for (int i = 0; i < buildings.length; i++) {
+                    if (buildings[i].getPlayer() == this.playerNum) {
+                        byte[] adjList = CatanGameState.buildingToTileAdjList[i];
+                        for (int j = 0; j < adjList.length; j++) {
+                            resourcesHave[tiles[j].getResource() - 1] = true;
+                        }
                     }
                 }
-            }
 
-            RNG = new Random();
-            game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                //If they can upgrade a settlement, add them to the list
+                if (gameState.playerHasCityRes()) {
+                    for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        if (gameState.canUpgradeSettlement(i)) {
+                            actions.add(new CatanUpgradeSettlementAction(this, i));
+                        }
+                    }
+                }
+
+                if(actions.size() > 0)
+                {
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+
+                //If they can build settlements, add them to the list
+                if (gameState.playerHasSettlementRes()) {
+                    for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        if (gameState.canBuildSettlement(i)) {
+                            actions.add(new CatanBuildSettlementAction(this, i));
+                        }
+                    }
+                }
+
+                if(actions.size() > 0)
+                {
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+                //If they can build roads, add them to the list
+                if (gameState.playerHasRoadRes()) {
+                    for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
+                        if (gameState.canBuildRoad(i)) {
+                            actions.add(new CatanBuildRoadAction(this, i));
+                        }
+                    }
+                }
+
+                if(actions.size() > 0)
+                {
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+                game.sendAction(new CatanEndTurnAction(this));
+            }
 
         }
     }//receiveInfo
@@ -126,9 +132,10 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         Building[] buildings = gameState.getBuildings();
         int[] scores = gameState.getScores();
         ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>();
-        ArrayList<Integer> rankings = new ArrayList<Integer>();
 
-        for(int i = 0; i < Tile.TOTAL_NUMBER_OF_TILE_SPOTS; i++) {
+        int maxRank = -1;
+        int maxIndex = -1;
+        for(int i = 0; i < 19; i++) {
             boolean adjToPlayer = false;
             boolean adjToOthers = false;
             byte[] adjList = CatanGameState.tileToBuildingAdjList[i];
@@ -136,50 +143,40 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
             for(int j = 0; j < adjList.length; j++)
             {
-                if(buildings[j].getPlayer() == this.playerNum)
+                if(buildings[adjList[j]].getPlayer() == this.playerNum)
                 {
                     adjToPlayer = true;
+                    break;
                 }
-                else if(buildings[j].getPlayer() != Building.EMPTY)
+                else if(!buildings[adjList[j]].isEmpty())
                 {
                     adjToOthers = true;
                     ranking += 1;
 
                     //add ranking dependent on the players current points
-                    ranking += scores[buildings[j].getPlayer()];
+                    ranking += scores[buildings[adjList[j]].getPlayer()];
 
-                    if(buildings[j].getTypeOfBuilding() == Building.CITY)
+                    if(buildings[adjList[j]].getTypeOfBuilding() == Building.CITY)
                     {
                         //add 1 ranking if the building is a city
-                        ranking += 1;
+                        ranking += 3;
                     }
                 }
             }
 
-            if(!adjToPlayer && adjToOthers) //Tile i is not adjacent to player, can place there
+            if(!adjToPlayer && adjToOthers && ranking > maxRank) //Tile i is not adjacent to player, can place there
             {
-                actions.add(new CatanMoveRobberAction(this, i));
-                rankings.add(ranking);
+                maxRank = ranking;
+                maxIndex = i;
             }
         }
 
-        if(!actions.isEmpty())
-        {
-            int maxRank = -1;
-            int maxIndex = 0;
-
-            for(int i = 0; i < actions.size(); i++)
-            {
-                if(rankings.get(i) > maxRank)
-                {
-                    maxRank = rankings.get(i);
-                    maxIndex = i;
-                }
-            }
-            game.sendAction(actions.get(maxIndex));
+        if(0 <= maxIndex && maxIndex <19) {
+            game.sendAction(new CatanMoveRobberAction(this, maxIndex));
         }
         else //No possible choices, happens if player is adjacent to everything, revert to dumb
         {
+            Log.d("DUMB ALGORITHM USED: ", "player " + playerNum + " used dumb algorithm");
             super.randomizeRobber(gameState);
         }
     }
@@ -202,7 +199,13 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
                 while(true) //The breaks in the first if statements break this loop
                 {
-                    if(myHand.getWool() - sheepToLose > 1)
+                    if(myHand.getOre() - rockToLose > 3)
+                    {
+                        rockToLose++;
+                        break;
+                    }
+
+                    if(myHand.getWool() - sheepToLose > 2)
                     {
                         sheepToLose++;
                         break;
@@ -226,11 +229,6 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                         break;
                     }
 
-                    if(myHand.getOre() - rockToLose > 3)
-                    {
-                        rockToLose++;
-                        break;
-                    }
 
                     //Player has too much stuff, will randomly discard now
                     switch(RNG.nextInt(5)) {
