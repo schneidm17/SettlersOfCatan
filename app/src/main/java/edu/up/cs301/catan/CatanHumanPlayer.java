@@ -70,7 +70,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public static Boolean popupAlreadyOpen = false;
     public static Boolean statsPopupAlreadyOpen = false;
     public static Boolean discardPopupOpened = false;
-    public static Boolean nextTrun = false;
+    public static Boolean nextTurn = false;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -170,9 +170,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
                 updateButtonStates();
 
-                if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTrun){
+                if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTurn){
                     statsPopupAlreadyOpen = true;
-                    nextTrun = false;
+                    nextTurn = false;
                     int wheatGained = this.myGameState.getHand(playerNum).getWheat() - Integer.parseInt(numWheat.getText().toString());
                     int rockGained = this.myGameState.getHand(playerNum).getOre() - Integer.parseInt(numOre.getText().toString());
                     int woodGained = this.myGameState.getHand(playerNum).getLumber() - Integer.parseInt(numWood.getText().toString());
@@ -258,9 +258,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
 
             if(GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen){
-                discardPopupOpened = true;
                 //Popup will only be created if it is the players turn to make a move
                 if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
+                    discardPopupOpened = true;
 
                     //If all checks passed a game is started and popup appears saying who won.
                     LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
@@ -445,9 +445,10 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             } else {
                 //if the user pressed "End Turn"
                 game.sendAction(new CatanEndTurnAction(this));
+
                 //Make it so stats popup can open again
                 discardPopupOpened = false;
-                nextTrun = true;
+                nextTurn = true;
             }
 
         } else if (v.equals(done)) {

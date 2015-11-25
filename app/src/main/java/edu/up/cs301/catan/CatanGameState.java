@@ -178,9 +178,6 @@ public class CatanGameState extends GameState {
         }
 
         //simulate a game board
-        givePlayerResources(0);
-        givePlayerResources(1);
-        givePlayerResources(2);
         generateRoad(20,0);
         generateRoad(42,0);
         generateRoad(25,1);
