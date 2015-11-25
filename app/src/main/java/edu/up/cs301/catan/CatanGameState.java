@@ -287,12 +287,6 @@ public class CatanGameState extends GameState {
         return round2Placing;
     }
 
-    //Method to return the added value of the two dice
-    public int getRoll()
-    {
-        return die1 + die2;
-    }
-
     //Method to distribute a given resource to the buildings that are passed in
     public void distributeResources(byte[] buildList, int resource){
         for (byte j = 0; j < buildList.length; j++) {
@@ -404,25 +398,12 @@ public class CatanGameState extends GameState {
         hands[playersID].removeWheat(wheatToLose);
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
-        Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
         if(oldTot <= 7 || hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
             robberWasRolled[playersID] = false;
             Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
         }
         Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
     }
-
-   /* //Method to remove resources from a hand other than the current player whose turn it is
-    public void removeResources(int player, int woodToLose, int sheepToLose, int wheatToLose, int brickToLose,
-                                int rockToLose)
-    {
-        hands[player].removeLumber(woodToLose);
-        hands[player].removeWool(sheepToLose);
-        hands[player].removeWheat(wheatToLose);
-        hands[player].removeBrick(brickToLose);
-        hands[player].removeOre(rockToLose);
-    }*/
-
 
     //Method to return where the robber is located
     public int getRobber()
@@ -712,6 +693,31 @@ public class CatanGameState extends GameState {
         {
             return false; //cannot build
         }
+    }
+
+
+    //Place an initial house and road
+    public void initialBuilding(int buildSpot, int roadSpot)
+    {
+        if(buildSpot != 0 && roadSpot != 0) {
+            buildings[buildSpot].setIsEmpty(false);
+            buildings[buildSpot].setTypeOfBuilding(Building.SETTLEMENT);
+            buildings[buildSpot].setPlayer(playersID);
+            if(initialSetup[playersID][0])
+            {
+                initialSetup[playersID][1] = true;
+            }
+            else
+            {
+                initialSetup[playersID][0] = true;
+            }
+
+
+            roads[roadSpot].setPlayer(playersID);
+            roads[roadSpot].setIsEmpty(false);
+            hands[playersID].buildRoad();
+        }
+
     }
 
     //Moves the turn to the next player in the rotation

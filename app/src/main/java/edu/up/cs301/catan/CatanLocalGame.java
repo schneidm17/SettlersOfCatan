@@ -109,7 +109,7 @@ public class CatanLocalGame extends LocalGame {
         int[] scores = gameState.getScores();
         if(scores[gameState.getPlayersID()] >= CatanGameState.VICTORY_POINTS_TO_WIN)
         {
-            return "Player " + gameState.getPlayersID() + " wins!";
+            return "Player " + gameState.getPlayersID() + ", " + playerNames[gameState.getPlayersID()] +", wins!";
         }
         return null;
     }

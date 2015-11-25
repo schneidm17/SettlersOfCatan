@@ -44,6 +44,12 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             CatanGameState gameState = (CatanGameState) info;
 
             if(playerNum == gameState.getPlayersID()) {
+
+                if(gameState.getRound1Placing())
+                {
+
+                }
+
                 if (gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
                 {
                     game.sendAction(new CatanRollAction(this));
