@@ -1,5 +1,7 @@
 package edu.up.cs301.catan;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -68,6 +70,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Boolean buildCityClicked = false;
 
     public static Boolean popupAlreadyOpen = false;
+    public static Boolean statsPopupAlreadyOpen = false;
+    public static Boolean discardPopupOpened = false;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -96,7 +100,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     @Override
     public void receiveInfo(GameInfo info) {
         if(info instanceof GameOverInfo) {
-            //Make the buttons un-clickable
+            //Make the buttons un-clickable if the game has finished
             buildRoad.setClickable(false);
             buildRoad.setTextColor(Color.GRAY);
             buildSettlement.setClickable(false);
@@ -167,6 +171,28 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
                 updateButtonStates();
 
+                if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened){
+                    statsPopupAlreadyOpen = true;
+                    int wheatGained = this.myGameState.getHand(playerNum).getWheat() - Integer.parseInt(numWheat.getText().toString());
+                    int rockGained = this.myGameState.getHand(playerNum).getOre() - Integer.parseInt(numOre.getText().toString());
+                    int woodGained = this.myGameState.getHand(playerNum).getLumber() - Integer.parseInt(numWood.getText().toString());
+                    int brickGained = this.myGameState.getHand(playerNum).getBrick() - Integer.parseInt(numBrick.getText().toString());
+                    int sheepGained = this.myGameState.getHand(playerNum).getWool() - Integer.parseInt(numSheep.getText().toString());
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(myActivity);
+                    builder1.setMessage("Resources Gained or Lost: " + "\n" + wheatGained + " Wheat, " + rockGained + " Rock, " + woodGained + " Wood, " + brickGained + " Brick, and " + sheepGained + " Sheep." );
+                    builder1.setCancelable(true);
+                    builder1.setPositiveButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    CatanHumanPlayer.statsPopupAlreadyOpen = false;
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+
                 //display resource cards for user
                 Hand playerHand = this.myGameState.getHand(this.myGameState.getPlayersID());
                 numWheat.setText("" + playerHand.getWheat());
@@ -210,6 +236,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             }
 
             if(GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen){
+                discardPopupOpened = true;
                 //Popup will only be created if it is the players turn to make a move
                 if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
 
@@ -474,6 +501,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             } else {
                 //if the user pressed "End Turn"
                 game.sendAction(new CatanEndTurnAction(this));
+                //Make it so stats popup can open again
+                discardPopupOpened = false;
             }
 
         } else if (v.equals(done)) {
