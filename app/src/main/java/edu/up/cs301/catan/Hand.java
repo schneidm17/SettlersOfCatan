@@ -134,19 +134,19 @@ public class Hand implements Serializable{
         switch(type)
         {
             case Tile.LUMBER:
-                return lumber == 0;
+                return lumber <= 0;
 
             case Tile.ORE:
-                return ore == 0;
+                return ore <= 0;
 
             case Tile.BRICK:
-                return brick == 0;
+                return brick <= 0;
 
             case Tile.WOOL:
-                return wool == 0;
+                return wool <= 0;
 
             case Tile.WHEAT:
-                return wheat == 0;
+                return wheat <= 0;
 
             default:
                 return false;
