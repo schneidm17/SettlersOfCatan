@@ -121,12 +121,16 @@ public class CatanComputerPlayer extends GameComputerPlayer {
         ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>(19);
 
         for(int i = 0; i < Tile.TOTAL_NUMBER_OF_TILE_SPOTS; i++) {
+            if(i == gameState.getRobber()) {
+                continue;
+            }
+
             boolean adjToPlayer = false;
             byte[] adjList = CatanGameState.tileToBuildingAdjList[i];
 
             for(int j = 0; j < adjList.length; j++)
             {
-                if(buildings[j].getPlayer() == gameState.getPlayersID())
+                if(buildings[adjList[j]].getPlayer() == this.playerNum)
                 {
                     adjToPlayer = true;
                 }

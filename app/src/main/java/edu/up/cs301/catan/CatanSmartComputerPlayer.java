@@ -135,6 +135,9 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         int maxRank = -1;
         int maxIndex = -1;
         for(int i = 0; i < 19; i++) {
+            if(i==gameState.getRobber()) {
+                continue;
+            }
             boolean adjToPlayer = false;
             boolean adjToOthers = false;
             byte[] adjList = CatanGameState.tileToBuildingAdjList[i];

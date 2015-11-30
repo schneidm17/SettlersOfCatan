@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
@@ -176,8 +177,17 @@ public class CatanSurfaceView extends SurfaceView {
         boolean DEBUG=true;
 
         drawBoard(canvas);
-        if(gameState==null)
+        if(gameState==null) {
+            temp.setColor(0xB0FFFFFF);
+            canvas.drawPaint(temp);
+            Paint message = new Paint();
+            message.setColor(Color.BLACK);
+            message.setTextSize(100);
+            message.setTextAlign(Paint.Align.CENTER);
+            message.setTypeface(Typeface.SERIF);
+            canvas.drawText("No GameState loaded", cx, cy, message);
             return;
+        }
 
         Road[] myRoads = gameState.getRoads();
         Building[] myBuildings = gameState.getBuildings();
@@ -285,22 +295,21 @@ public class CatanSurfaceView extends SurfaceView {
     public void drawSet(Canvas canvas, int color, int location) {
         double x = sites[location][0];
         double y = sites[location][1];
-        double size = 0.25;
 
         double pts[][] = {
-                {x - size, y - size, 0},
-                {x + size, y - size, 0},
-                {x + size, y + size, 0},
-                {x - size, y + size, 0},
-                {x - size, y - size, size},
-                {x, y - size, 2 * size},
-                {x + size, y - size, size},
-                {x + size, y + size, size},
-                {x, y + size, 2 * size},
-                {x - size, y + size, size}};
+                {x - 0.25, y - 0.25, 0},
+                {x + 0.25, y - 0.25, 0},
+                {x + 0.25, y + 0.25, 0},
+                {x - 0.25, y + 0.25, 0},
+                {x - 0.25, y - 0.25, 0.25},
+                {x, y - 0.25, 0.45},
+                {x + 0.25, y - 0.25, 0.25},
+                {x + 0.25, y + 0.25, 0.25},
+                {x, y + 0.25, 0.45},
+                {x - 0.25, y + 0.25, 0.25}};
 
         double faces[][][] = {
-                {pts[0], pts[1], pts[2], pts[3]},
+                //{pts[0], pts[1], pts[2], pts[3]},//base of the settlement
                 {pts[1], pts[6], pts[7], pts[2]},
                 {pts[2], pts[7], pts[8], pts[9], pts[3]},
                 {pts[0], pts[3], pts[9], pts[4]},
@@ -314,13 +323,39 @@ public class CatanSurfaceView extends SurfaceView {
     }
 
     public void drawCity(Canvas canvas, int color, int location) {
-        //TODO draw city
         double x = sites[location][0];
         double y = sites[location][1];
-        temp.setColor(color);
-        canvas.drawCircle(mapX(x,y), mapY(x,y), (float)(800/distance(x,y,0)), temp);
 
-        drawSet(canvas, color, location);
+        double pts[][] = {
+                {x - 0.25, y - 0.25, 0},
+                {x + 0.75, y - 0.25, 0},
+                {x + 0.75, y + 0.25, 0},
+                {x - 0.25, y + 0.25, 0},
+                {x + 0.25, y - 0.25, 0.25},
+                {x + 0.75, y - 0.25, 0.25},
+                {x + 0.75, y + 0.25, 0.25},
+                {x + 0.25, y + 0.25, 0.25},
+                {x - 0.25, y - 0.25, 0.5},
+                {x,        y - 0.25, 0.75},
+                {x + 0.25, y - 0.25, 0.5},
+                {x + 0.25, y + 0.25, 0.5},
+                {x,        y + 0.25, 0.75},
+                {x - 0.25, y + 0.25, 0.5}};
+
+        double faces[][][] = {
+                {pts[4], pts[7], pts[6], pts[5]},
+                {pts[1], pts[5], pts[6], pts[2]},
+                {pts[4], pts[10], pts[11], pts[7]},
+                {pts[0], pts[3], pts[13], pts[8]},
+                {pts[2], pts[6], pts[7], pts[11], pts[12], pts[13], pts[3]},
+                {pts[0], pts[8], pts[9], pts[10], pts[4], pts[5], pts[1]},
+                {pts[12], pts[11], pts[10], pts[9]},
+                {pts[8], pts[13], pts[12], pts[9]}
+        };
+
+        for (double[][] face : faces) {
+            drawFace(canvas, color, face);
+        }
     }
 
     public void drawSelectedRoad(Canvas canvas, int location) {

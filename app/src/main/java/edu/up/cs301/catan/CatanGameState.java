@@ -178,21 +178,18 @@ public class CatanGameState extends GameState {
         }
 
         //simulate a game board
-        givePlayerResources(0);
-        givePlayerResources(1);
-        givePlayerResources(2);
         generateRoad(20,0);
         generateRoad(42,0);
         generateRoad(25,1);
-        generateRoad(37,1);
-        generateRoad(52,2);
+        generateRoad(37,2);
+        generateRoad(52,1);
         generateRoad(56,2);
         generateBuilding(21,0,0);
         generateBuilding(31,0,0);
         generateBuilding(19,1,0);
-        generateBuilding(35,1,0);
+        generateBuilding(44,1,0);
+        generateBuilding(35,2,0);
         generateBuilding(40,2,0);
-        generateBuilding(44,2,0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
