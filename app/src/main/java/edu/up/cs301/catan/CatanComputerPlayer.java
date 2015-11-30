@@ -118,7 +118,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
     protected void randomizeRobber(CatanGameState gameState)
     {
         Building[] buildings = gameState.getBuildings();
-        ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>();
+        ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>(19);
 
         for(int i = 0; i < Tile.TOTAL_NUMBER_OF_TILE_SPOTS; i++) {
             boolean adjToPlayer = false;

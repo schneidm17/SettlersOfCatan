@@ -364,6 +364,8 @@ public class CatanGameState extends GameState {
         {
             robber = spot;
             byte[] adjList = tileToBuildingAdjList[spot];
+            rolled7 = false; //Resets the boolean for next turn
+            Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
 
             for(byte i = 0; i < adjList.length; i++) {
                 if (buildings[adjList[i]].getPlayer() != Building.EMPTY &&
@@ -375,8 +377,6 @@ public class CatanGameState extends GameState {
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
-                            rolled7 = false; //Resets the boolean for next turn
-                            Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
                             return true;
                         }
                     }

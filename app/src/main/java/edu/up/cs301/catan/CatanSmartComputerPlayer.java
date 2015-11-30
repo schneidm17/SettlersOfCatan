@@ -67,7 +67,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 boolean[] resourcesHave = new boolean[5];
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
-                ArrayList<GameAction> actions = new ArrayList<GameAction>();
+                ArrayList<GameAction> actions = new ArrayList<GameAction>(30);
 
                 for (int i = 0; i < buildings.length; i++) {
                     if (buildings[i].getPlayer() == this.playerNum) {
@@ -131,7 +131,6 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
     {
         Building[] buildings = gameState.getBuildings();
         int[] scores = gameState.getScores();
-        ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>();
 
         int maxRank = -1;
         int maxIndex = -1;
@@ -185,7 +184,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
     {
         if(myHand.getTotal() <= 7)
         {
-            game.sendAction(new CatanRemoveResAction(this, 0 , 0, 0, 0, 0));
+            game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
         }
         else
         {
