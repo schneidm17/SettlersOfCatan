@@ -380,7 +380,6 @@ public class CatanGameState extends GameState {
                 }
             }
         }
-
         return false;
     }
 
@@ -598,10 +597,36 @@ public class CatanGameState extends GameState {
         }
         return false; //No adjacent roads
     }
+
+    //Method used in the initial placement during first two rounds
+    public boolean buildingSpotAvailable(int spot)
+    {
+        //If building spot is already filled return false
+        if(!buildings[spot].isEmpty())
+        {
+            return false;
+        }
+
+        //Get list of adjacent buildings and roads to the current spot
+        byte[] buildingAdjList = buildingToBuildingAdjList[spot];
+
+        //Check to see if a building is too close, if so return false
+        for(int i = 0; i < buildingAdjList.length; i++)
+        {
+            if(!buildings[buildingAdjList[i]].isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     //Method to build a settlement in a given spot, returns true if the settlement is built, false
     //otherwise
     public boolean buildSettlement(int spot)
     {
+        Hand myHand = hands[playersID];
         if(this.canBuildSettlement(spot) && this.playerHasSettlementRes())
         {
             //If the player can build, build the building and set the road to not empty
@@ -621,6 +646,23 @@ public class CatanGameState extends GameState {
 
             //Return true as can build
             return true;
+        }
+        else if(this.buildingSpotAvailable(spot) && myHand.getSettlementsAvail() > 3 && myHand.getCitiesAvail() == 4)
+            //Conditions indicate that the spot is available and the player has placed less than 2 settlements and no cities
+        {
+            //TODO INITIAL BUILDING PLACEMENT!!!
+            buildings[spot].setIsEmpty(false);
+            buildings[spot].setTypeOfBuilding(Building.SETTLEMENT);
+            buildings[spot].setPlayer(playersID);
+
+            hands[playersID].buildSettlement();
+
+            //Add a point to the player who built the settlement
+            scores[playersID]++;
+
+            //Return true as can build
+            return true;
+
         }
         else
         {

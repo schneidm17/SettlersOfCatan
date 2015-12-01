@@ -23,6 +23,7 @@ import edu.up.cs301.game.infoMsg.GameInfo;
  */
 public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
+    private boolean[] resourcesHave;
     /**
      * ctor does nothing extra
      *
@@ -30,6 +31,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
      */
     public CatanSmartComputerPlayer(String name) {
         super(name);
+        resourcesHave = new boolean[5];
+        for(int i = 0; i < resourcesHave.length; i++)
+        {
+            resourcesHave[i] = false;
+        }
     }
 
     /**
@@ -45,7 +51,9 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             CatanGameState gameState = (CatanGameState) info;
 
             if(playerNum == gameState.getPlayersID()) {
-                if (gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
+                Hand myHand = gameState.getHand(playerNum);
+
+                if (gameState.getNeedToRoll()) //A roll call is needed at beginning of turn
                 {
                     game.sendAction(new CatanRollAction(this));
                     return;
@@ -53,7 +61,6 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                 if (gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
                 {
-                    Hand myHand = gameState.getHand(this.playerNum);
                     this.removeResources(myHand);
                     return;
                 }
@@ -64,11 +71,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     return;
                 }
 
-                boolean[] resourcesHave = new boolean[5];
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
                 ArrayList<GameAction> actions = new ArrayList<GameAction>(30);
 
+                //TODO only update this on new buildings generated
                 for (int i = 0; i < buildings.length; i++) {
                     if (buildings[i].getPlayer() == this.playerNum) {
                         byte[] adjList = CatanGameState.buildingToTileAdjList[i];
@@ -107,8 +114,9 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     game.sendAction(actions.get(RNG.nextInt(actions.size())));
                 }
 
+                boolean placeToBuildSettlement = false;
                 //If they can build roads, add them to the list
-                if (gameState.playerHasRoadRes()) {
+                if (gameState.playerHasRoadRes() && myHand.getLumber() > 1 && myHand.getBrick() > 1) {
                     for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
                         if (gameState.canBuildRoad(i)) {
                             actions.add(new CatanBuildRoadAction(this, i));
@@ -135,7 +143,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         int maxRank = -1;
         int maxIndex = -1;
         for(int i = 0; i < 19; i++) {
-            if(i==gameState.getRobber()) {
+            if(i == gameState.getRobber()) {
                 continue;
             }
             boolean adjToPlayer = false;
@@ -201,15 +209,14 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
                 while(true) //The breaks in the first if statements break this loop
                 {
-                    if(myHand.getOre() - rockToLose > 3)
-                    {
-                        rockToLose++;
+                    if(myHand.getWool() - sheepToLose > 1) {
+                        sheepToLose++;
                         break;
                     }
 
-                    if(myHand.getWool() - sheepToLose > 2)
+                    if(myHand.getOre() - rockToLose > 3)
                     {
-                        sheepToLose++;
+                        rockToLose++;
                         break;
                     }
 
