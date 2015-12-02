@@ -18,6 +18,7 @@ import android.widget.TextView;
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
+import edu.up.cs301.catan.actions.CatanMoveRobberAction;
 import edu.up.cs301.catan.actions.CatanRemoveResAction;
 import edu.up.cs301.catan.actions.CatanRollAction;
 import edu.up.cs301.catan.actions.CatanUpgradeSettlementAction;
@@ -184,7 +185,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         break;
                 }
 
-                //Update the buttons based on whhat can be built
+                //Update the buttons based on what can be built
                 updateButtonStates();
 
                 //Popup to display at the beginning of the players turn to tell them what resources
@@ -335,8 +336,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
             //If the robber was rolled on the players turn they must move the robber
             if(myGameState.isRolled7() && playerNum == myGameState.getPlayersID()){
-                //Todo: Matthew put code here
-
+                mySurfaceView.waitForRobberPlacement(true);
+                updateButtonStates();
             }
         }
     }//receiveInfo
@@ -345,10 +346,23 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     private void updateButtonStates() {
         if (myGameState == null)
             return;
+        else if (myGameState.isRolled7()) {
+            //Show the correct buttons
+            endTurn.setVisibility(View.GONE);
+            done.setVisibility(View.VISIBLE);
 
-        if (buildRoadClicked) {
+            //Set other buttons un-clickable
+            buildRoad.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
+
+        } else if (buildRoadClicked) {
             //Make end turn button text be cancel
             endTurn.setText("Cancel");
+            endTurn.setVisibility(View.VISIBLE);
             //Turn on done button
             done.setVisibility(View.VISIBLE);
 
@@ -361,6 +375,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         } else if (buildSettlementClicked) {
             //Make end turn button text be cancel
             endTurn.setText("Cancel");
+            endTurn.setVisibility(View.VISIBLE);
             //Turn on done button
             done.setVisibility(View.VISIBLE);
 
@@ -373,6 +388,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         } else if (buildCityClicked) {
             //Make end turn button text be cancel
             endTurn.setText("Cancel");
+            endTurn.setVisibility(View.VISIBLE);
             //Turn on done button
             done.setVisibility(View.VISIBLE);
 
@@ -385,6 +401,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         } else {
             //Make end turn button text be cancel
             endTurn.setText("End Turn");
+            endTurn.setVisibility(View.VISIBLE);
             //Make done button invisible
             done.setVisibility(View.GONE);
 
@@ -479,9 +496,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 discardPopupOpened = false;
                 nextTurn = true;
             }
-
         } else if (v.equals(done)) {
-            if (buildRoadClicked) {
+            if(myGameState.isRolled7()) {
+                int spot = mySurfaceView.getTileLastSelected();
+                if(spot != -1) {
+                    mySurfaceView.waitForRobberPlacement(false);
+                    updateButtonStates();
+                    game.sendAction(new CatanMoveRobberAction(this, spot));
+                }
+            } else if (buildRoadClicked) {
                 int spot = mySurfaceView.getRoadLastSelected();
                 if(spot != -1) {
                     if(!builtRoad1) {
@@ -520,8 +543,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     }// onClick
 
     public boolean onTouch(View v, MotionEvent e) {
-        if(v.equals(mySurfaceView)) {
-            if (buildRoadClicked) {
+        if(v.equals(mySurfaceView) && myGameState != null) {
+            if(myGameState.isRolled7()) {
+                mySurfaceView.selectTile(e.getX(), e.getY());
+                return true;
+            } else if (buildRoadClicked) {
                 mySurfaceView.selectRoad(e.getX(), e.getY());
                 return true;
             } else if(buildSettlementClicked || buildCityClicked) {

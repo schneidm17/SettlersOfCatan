@@ -200,9 +200,7 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
 
-        if(waitingForRobberPlacement) {
-            drawRobber(canvas, 0xC0808080, gameState.getRobber());
-        } else {
+        if(!waitingForRobberPlacement) {
             drawRobber(canvas, 0xFF606060, gameState.getRobber());
         }
 
@@ -227,8 +225,14 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
 
-        if(waitingForRobberPlacement && tileLastSelected != -1) {
-            drawRobber(canvas, 0xFFFFFF00, gameState.getRobber());
+        if(waitingForRobberPlacement) {
+            for(int x = 0; x < tiles.length; x++) {
+                if(x == tileLastSelected) {
+                    drawRobber(canvas, 0xFFFFFF00, x);
+                } else if (x != gameState.getRobber()) {
+                    drawRobber(canvas, 0xC0808080, x);
+                }
+            }
         }
 
         if(DEBUG) {
@@ -242,7 +246,7 @@ public class CatanSurfaceView extends SurfaceView {
                 canvas.drawText(hands[i].getWheat()+" Wheat", 80, 130+200*i, temp);
                 canvas.drawText(hands[i].getWool()+" Sheep",  80, 160+200*i, temp);
                 canvas.drawText(hands[i].getLumber()+" Wood", 80, 190+200*i, temp);
-                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220+200*i, temp);
+                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220 + 200 * i, temp);
                 canvas.drawText(hands[i].getOre()+" Ore",     80, 250+200*i, temp);
             }
 
