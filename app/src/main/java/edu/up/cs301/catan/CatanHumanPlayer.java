@@ -67,6 +67,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Boolean buildSettlementClicked = false;
     Boolean buildCityClicked = false;
 
+    //Booleans to control the popups
     public static Boolean popupAlreadyOpen = false;
     public static Boolean statsPopupAlreadyOpen = false;
     public static Boolean discardPopupOpened = false;
@@ -98,34 +99,31 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      */
     @Override
     public void receiveInfo(GameInfo info) {
-        if(info instanceof GameOverInfo) {
-            //Make the buttons un-clickable if the game has finished
-            buildRoad.setClickable(false);
-            buildRoad.setTextColor(Color.GRAY);
-            buildSettlement.setClickable(false);
-            buildSettlement.setTextColor(Color.GRAY);
-            buildCity.setClickable(false);
-            buildCity.setTextColor(Color.GRAY);
-            endTurn.setClickable(false);
-            endTurn.setTextColor(Color.GRAY);
-            endTurn.setText("Game Over");
-            done.setVisibility(View.GONE);
-        } else if (info instanceof CatanGameState) {
+        if (info instanceof CatanGameState) {
+            //Save versions of the gamestate to be used
             final CatanGameState GAME_STATE = (CatanGameState) info;
-
             this.myGameState = (CatanGameState) info;
             mySurfaceView.setGameState(this.myGameState);
 
+            //If the initial round
+            if(myGameState.getHand(playerNum).getSettlementsAvail() > 3 || myGameState.getHand(playerNum).getCitiesAvail() == 4){
+                mySurfaceView.waitForSettlementSelection(true);
+
+            }
+
+            //If the player needs to roll, roll
             if(myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID())
             {
                 game.sendAction(new CatanRollAction(this));
             }
 
+            //Get the dice values
             int die1 = GAME_STATE.getDie1();
             int die2 = GAME_STATE.getDie2();
 
+            //If its the players turn set the dice images to the roll value
             if(GAME_STATE.getPlayersID() == playerNum){
-
+                //Red dice
                 switch (die1){
                     case 1:
                         dice1.setBackgroundResource(R.drawable.dice_1_red);
@@ -146,7 +144,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         dice1.setBackgroundResource(R.drawable.dice_6_red);
                         break;
                 }
-
+                //yellow dice
                 switch (die2){
                     case 1:
                         dice2.setBackgroundResource(R.drawable.dice_1_yellow);
@@ -168,17 +166,22 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         break;
                 }
 
+                //Update the buttons based on whhat can be built
                 updateButtonStates();
 
+                //Popup to display at the beginning of the players turn to tell them what resources
+                //they got during computer players turns
                 if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTurn){
                     statsPopupAlreadyOpen = true;
                     nextTurn = false;
+                    //Calculate number gained
                     int wheatGained = this.myGameState.getHand(playerNum).getWheat() - Integer.parseInt(numWheat.getText().toString());
                     int rockGained = this.myGameState.getHand(playerNum).getOre() - Integer.parseInt(numOre.getText().toString());
                     int woodGained = this.myGameState.getHand(playerNum).getLumber() - Integer.parseInt(numWood.getText().toString());
                     int brickGained = this.myGameState.getHand(playerNum).getBrick() - Integer.parseInt(numBrick.getText().toString());
                     int sheepGained = this.myGameState.getHand(playerNum).getWool() - Integer.parseInt(numSheep.getText().toString());
 
+                    //If there was more than or less than zero display message
                     String message = "Resources Gained or Lost: ";
 
                     if (wheatGained != 0){
@@ -200,6 +203,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         message = "No Resources gained or lost.";
                     }
 
+                    //Popup to diplay
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(myActivity);
                     builder1.setTitle("What has happened since your last turn:");
                     builder1.setMessage(message);
@@ -257,6 +261,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
             }
 
+            //When a seven is rolled and the player has more than seven cards a popup appears for
+            //them to discard
             if(GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen){
                 //Popup will only be created if it is the players turn to make a move
                 if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
@@ -309,10 +315,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 }
             }
 
-            //TODO: have human player move robber
+            //If the robber was rolled on the players turn they must move the robber
+            if(myGameState.isRolled7() && playerNum == myGameState.getPlayersID()){
+                //Todo: Matthew put code here
+
+            }
         }
     }//receiveInfo
 
+    //Method to update the button states based off of what resources the players have
     private void updateButtonStates() {
         if (myGameState == null)
             return;

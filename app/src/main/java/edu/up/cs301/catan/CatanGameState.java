@@ -36,6 +36,8 @@ public class CatanGameState extends GameState {
     private boolean round1Placing;
     private boolean round2Placing;
     public static final int VICTORY_POINTS_TO_WIN = 8;
+    private int turnCount;
+    private int firstPlayer;
 
     //List of all roads adjacent to a given road
     public static final byte[][] roadToRoadAdjList = {{1, 6}, {0, 2, 7}, {1, 3, 7}, {2, 4, 8}, {3,
@@ -120,6 +122,8 @@ public class CatanGameState extends GameState {
     public CatanGameState()
     {
         playersID = rng.nextInt(3);
+        firstPlayer = playersID;
+
         scores = new int[4];
         for(int i = 0; i < 4; i++){
             scores[i] = 0;
@@ -177,26 +181,29 @@ public class CatanGameState extends GameState {
             }
         }
 
+        //set turn count to zero
+        turnCount = 0;
+
         //simulate a game board
-        generateRoad(20,0);
-        generateRoad(42,0);
-        generateRoad(25,1);
-        generateRoad(37,2);
-        generateRoad(52,1);
-        generateRoad(56,2);
-        generateBuilding(21,0,0);
-        generateBuilding(31,0,0);
-        generateBuilding(19,1,0);
-        generateBuilding(44,1,0);
-        generateBuilding(35,2,0);
-        generateBuilding(40,2,0);
+//        generateRoad(20,0);
+//        generateRoad(42,0);
+//        generateRoad(25,1);
+//        generateRoad(37,2);
+//        generateRoad(52,1);
+//        generateRoad(56,2);
+//        generateBuilding(21,0,0);
+//        generateBuilding(31,0,0);
+//        generateBuilding(19,1,0);
+//        generateBuilding(44,1,0);
+//        generateBuilding(35,2,0);
+//        generateBuilding(40,2,0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
                           boolean[] robberWasRolled, boolean rolled7, boolean needToRoll,
-                          boolean round1Placing, boolean round2Placing)
+                          boolean round1Placing, boolean round2Placing, int turnCount)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
@@ -214,7 +221,7 @@ public class CatanGameState extends GameState {
         this.needToRoll = needToRoll;
         this.round1Placing = round1Placing;
         this.round2Placing = round2Placing;
-
+        this.turnCount = turnCount;
     }
 
     //Copy constructor to create an identical version of the given game state
@@ -222,7 +229,7 @@ public class CatanGameState extends GameState {
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
                 soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
                 soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll(),
-                soc.getRound1Placing(), soc.getRound2Placing());
+                soc.getRound1Placing(), soc.getRound2Placing(), soc.getTurnCount());
     }
 
     //Setter for the numPLayers in the game, needed due to how framework is set up
@@ -283,6 +290,8 @@ public class CatanGameState extends GameState {
     {
         return round2Placing;
     }
+
+    public int getTurnCount(){return turnCount;}
 
     //Method to distribute a given resource to the buildings that are passed in
     public void distributeResources(byte[] buildList, int resource){
@@ -762,6 +771,15 @@ public class CatanGameState extends GameState {
     //Moves the turn to the next player in the rotation
     public void endTurn()
     {
+        if(firstPlayer == 0 && playersID == numPlayers - 1){
+            turnCount++;
+        }else if(firstPlayer == 1 && playersID == 0){
+            turnCount++;
+        }else if(firstPlayer == 2 && playersID == 1){
+            turnCount++;
+        }else if(firstPlayer == 3 && playersID == 2){
+            turnCount++;
+        }
         playersID = (playersID + 1) % numPlayers;
         needToRoll = true;
         Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
