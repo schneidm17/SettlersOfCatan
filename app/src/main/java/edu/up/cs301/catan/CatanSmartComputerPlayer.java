@@ -77,9 +77,31 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                 //INITIAL PLACEMENT BLOCK
                 if(initialPlacement) {
+                    int maxScore = -1;
+                    int maxIndex = -1;
+                    Tile[] tiles = gameState.getTiles();
                     if (myHand.getSettlementsAvail() == 5) //Place first settlement
                     {
+                        for(int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i ++)
+                        {
+                            if(gameState.canBuildSettlement(i))
+                            {
+                                int score = 0;
+                                byte[] tileAdjList = gameState.buildingToTileAdjList[i];
 
+                                //Add rank for each roll num and resrouce if do not have
+                                for(int j = 0; j < tileAdjList.length; j++)
+                                {
+                                    //If the player does not have this resource, add to spot score
+                                    if(!resourcesHave[tiles[tileAdjList[j]].getResource()])
+                                    {
+                                        score += 10;
+                                    }
+
+                                    score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                }
+                            }
+                        }
                     }
 
                     if (myHand.getRoadsAvail() == 15) //Place first road

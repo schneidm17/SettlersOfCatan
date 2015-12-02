@@ -575,10 +575,13 @@ public class CatanGameState extends GameState {
             hands[playersID].buildRoad();
             return true;
         }
-        else {
-            //Return false if cannot build
-            return false;
+        else if (this.canBuildRoad(spot) && hands[playersID].getRoadsAvail() > 13) {
+            roads[spot].setPlayer(playersID);
+            roads[spot].setIsEmpty(false);
+            this.endTurn();
+            return true;
         }
+        return false;
     }
 
 
