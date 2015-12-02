@@ -635,22 +635,21 @@ public class CatanGameState extends GameState {
             }
         }
 
-        if(hands[playersID].getSettlementsAvail() > 3 && hands[playersID].getCitiesAvail() == 4) {
+        //Case fopr initial placement
+        if(hands[playersID].getSettlementsAvail() > 3 && hands[playersID].getCitiesAvail() == 4)
+        {
             return true;
         }
 
         //Check to see if a road is next to the spot, if not return false
-        for(int i = 0; i < roadAdjList.length; i++)
-        {
+        for (int i = 0; i < roadAdjList.length; i++) {
             //If a adjacent road belong to the player they can build a settlement
-            if(roads[roadAdjList[i]].getPlayer() == playersID)
-            {
+            if (roads[roadAdjList[i]].getPlayer() == playersID) {
                 //Return true as there is an adjacent road, no building in adjacent spots
                 return true;
             }
         }
         return false; //No adjacent roads
-
     }
 
     //Method to build a settlement in a given spot, returns true if the settlement is built, false
