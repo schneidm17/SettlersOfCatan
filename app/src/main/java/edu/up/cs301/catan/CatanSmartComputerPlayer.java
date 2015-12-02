@@ -24,6 +24,7 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
     private boolean[] resourcesHave;
+    private boolean initialPlacement;
     /**
      * ctor does nothing extra
      *
@@ -36,6 +37,8 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         {
             resourcesHave[i] = false;
         }
+
+        initialPlacement = true;
     }
 
     /**
@@ -70,6 +73,35 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     this.placeRobber(gameState);
                     return;
                 }
+
+
+                //INITIAL PLACEMENT BLOCK
+                if(initialPlacement) {
+                    if (myHand.getSettlementsAvail() == 5) //Place first settlement
+                    {
+
+                    }
+
+                    if (myHand.getRoadsAvail() == 15) //Place first road
+                    {
+
+                    }
+
+                    if(myHand.getSettlementsAvail() == 4) //Place second settlement
+                    {
+
+                    }
+
+                    if(myHand.getRoadsAvail() == 14) //Place second road
+                    {
+
+                    }
+
+                    //All initial placements have finished, sets boolean to skip this block
+                    initialPlacement = false;
+                }
+                //END PLACEMENT BLOCK
+
 
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
@@ -267,7 +299,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                     case 4:
                         if (myHand.getOre() - rockToLose > 0) {
-                            sheepToLose++;
+                            rockToLose++;
                         }
                         break;
                     }

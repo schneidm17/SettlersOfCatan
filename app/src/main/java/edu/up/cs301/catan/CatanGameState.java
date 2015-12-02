@@ -374,6 +374,7 @@ public class CatanGameState extends GameState {
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
+                            Log.d("ROBBER STEALS: ", " Player " + playersID + " steals player " + buildings[adjList[i]].getPlayer() + "'s " + type);
                             return true;
                         }
                     }
@@ -494,8 +495,45 @@ public class CatanGameState extends GameState {
             return false;
         }
 
-        //Make sure that the player has another road or settlement adjacent to the spot they want to build.
+        //Initial placement conditions
+        if(hands[playersID].getRoadsAvail() > 13)
+        {
+            //Check for adjacent settlement
+            if(buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID ||
+                    buildings[roadToBuildingAdjList[spot][1]].getPlayer() == playersID) {
 
+                byte[] adjList = roadToRoadAdjList[spot];
+
+                //Checks for adjacent roads, should not find one with 1 exception
+                for (int i = 0; i < adjList.length; i++) {
+
+                    if (roads[adjList[i]].getPlayer() == playersID) {
+
+                        byte[] buildAdjList;
+
+                        //Checks exception, seeing if the settlement has any adjacent roads already
+                        //If no roads found, then can place the road in this spot
+                        if (buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID) {
+                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][0]];
+                        }
+                        else {
+                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][1]];
+                        }
+
+                        for (int j = 0; j < buildAdjList.length; j++) {
+                            if (roads[j].getPlayer() == playersID) {
+                                //Road adjacent to settlement found, cannot place the road in spot
+                                return false;
+                            }
+                        }
+                    }
+                }
+                //Can place the initial road here
+                return true;
+            }
+        }
+
+        //Make sure that the player has another road or settlement adjacent to the spot they want to build.
         //check nearby roads for a road owned by that player
         for(int i = 0; i < roadToRoadAdjList[spot].length; i++ )
         {
@@ -585,41 +623,17 @@ public class CatanGameState extends GameState {
             }
         }
 
-        //Check to see if a road is next to the spot, if not return false
-        for(int i = 0; i < roadAdjList.length; i++)
-        {
-            //If a adjacent road belong to the player they can build a settlement
-            if(roads[roadAdjList[i]].getPlayer() == playersID)
-            {
-                //Return true as there is an adjacent road, no building in adjacent spots
-                return true;
+        if(hands[playersID].getSettlementsAvail() <= 3 || hands[playersID].getCitiesAvail() < 4) {
+            //Check to see if a road is next to the spot, if not return false
+            for (int i = 0; i < roadAdjList.length; i++) {
+                //If a adjacent road belong to the player they can build a settlement
+                if (roads[roadAdjList[i]].getPlayer() == playersID) {
+                    //Return true as there is an adjacent road, no building in adjacent spots
+                    return true;
+                }
             }
         }
         return false; //No adjacent roads
-    }
-
-    //Method used in the initial placement during first two rounds
-    public boolean buildingSpotAvailable(int spot)
-    {
-        //If building spot is already filled return false
-        if(!buildings[spot].isEmpty())
-        {
-            return false;
-        }
-
-        //Get list of adjacent buildings and roads to the current spot
-        byte[] buildingAdjList = buildingToBuildingAdjList[spot];
-
-        //Check to see if a building is too close, if so return false
-        for(int i = 0; i < buildingAdjList.length; i++)
-        {
-            if(!buildings[buildingAdjList[i]].isEmpty())
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     //Method to build a settlement in a given spot, returns true if the settlement is built, false
@@ -646,8 +660,7 @@ public class CatanGameState extends GameState {
 
             //Return true as can build
             return true;
-        }
-        else if(this.buildingSpotAvailable(spot) && myHand.getSettlementsAvail() > 3 && myHand.getCitiesAvail() == 4)
+        } else if(this.canBuildSettlement(spot) && myHand.getSettlementsAvail() > 3 && myHand.getCitiesAvail() == 4)
             //Conditions indicate that the spot is available and the player has placed less than 2 settlements and no cities
         {
             //TODO INITIAL BUILDING PLACEMENT!!!
@@ -659,6 +672,15 @@ public class CatanGameState extends GameState {
 
             //Add a point to the player who built the settlement
             scores[playersID]++;
+
+            if(scores[playersID] == 2)
+            {
+                byte[] adjList = buildingToTileAdjList[spot];
+                for(int i = 0; i < adjList.length; i++)
+                {
+                    hands[playersID].addResource(tiles[adjList[i]].getResource());
+                }
+            }
 
             //Return true as can build
             return true;
