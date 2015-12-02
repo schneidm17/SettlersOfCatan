@@ -530,7 +530,7 @@ public class CatanGameState extends GameState {
                         }
 
                         for (int j = 0; j < buildAdjList.length; j++) {
-                            if (roads[j].getPlayer() == playersID) {
+                            if (roads[buildAdjList[j]].getPlayer() == playersID) {
                                 //Road adjacent to settlement found, cannot place the road in spot
                                 return false;
                             }
@@ -578,6 +578,7 @@ public class CatanGameState extends GameState {
         else if (this.canBuildRoad(spot) && hands[playersID].getRoadsAvail() > 13) {
             roads[spot].setPlayer(playersID);
             roads[spot].setIsEmpty(false);
+            hands[playersID].buildRoad();
             this.endTurn();
             return true;
         }
