@@ -498,6 +498,12 @@ public class CatanGameState extends GameState {
     //Method to check if building a road is possible, used here and for GUI
     public boolean canBuildRoad(int spot)
     {
+        //If road is filled return false
+        if(!roads[spot].isEmpty())
+        {
+            return false;
+        }
+
         //Initial placement conditions
         if(hands[playersID].getRoadsAvail() > 13)
         {
@@ -534,12 +540,6 @@ public class CatanGameState extends GameState {
                 //Can place the initial road here
                 return true;
             }
-        }
-
-        //If road is filled return false
-        if(!roads[spot].isEmpty())
-        {
-            return false;
         }
 
         //Make sure that the player has another road or settlement adjacent to the spot they want to build.
