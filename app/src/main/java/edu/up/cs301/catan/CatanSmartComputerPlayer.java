@@ -81,7 +81,9 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                         //Add to the resources obtained list
                         byte[] finalTileAdjList = gameState.buildingToTileAdjList[maxIndex];
                         for (int i = 0; i < finalTileAdjList.length; i++) {
-                            resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                            if(tiles[finalTileAdjList[i]].getResource() != 0) {
+                                resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                            }
                         }
 
                         //Send the best build spot
@@ -132,7 +134,9 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                         //Add to the resources obtained list
                         byte[] finalTileAdjList = gameState.buildingToTileAdjList[maxIndex];
                         for (int i = 0; i < finalTileAdjList.length; i++) {
-                            resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                            if(tiles[finalTileAdjList[i]].getResource() != 0) {
+                                resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                            }
                         }
 
                         //Send the best build spot
