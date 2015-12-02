@@ -344,9 +344,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
     //Method to update the button states based off of what resources the players have
     private void updateButtonStates() {
-        if (myGameState == null)
+        if (myGameState == null) {
             return;
-        else if (myGameState.isRolled7()) {
+        } else if (myGameState.isRolled7()) {
             //Show the correct buttons
             endTurn.setVisibility(View.GONE);
             done.setVisibility(View.VISIBLE);
@@ -358,11 +358,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
-
         } else if (buildRoadClicked) {
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-            endTurn.setVisibility(View.VISIBLE);
+            //if initial setup
+            if(myGameState.getHand(playerNum).getRoadsAvail() > 13) {
+                endTurn.setVisibility(View.GONE);
+            } else {
+                //Make end turn button text be cancel
+                endTurn.setText("Cancel");
+                endTurn.setVisibility(View.VISIBLE);
+            }
             //Turn on done button
             done.setVisibility(View.VISIBLE);
 
@@ -373,9 +377,16 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
         } else if (buildSettlementClicked) {
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-            endTurn.setVisibility(View.VISIBLE);
+            //if initial setup
+            if(myGameState.getHand(playerNum).getSettlementsAvail() > 3 &&
+                    myGameState.getHand(playerNum).getCitiesAvail() == 4) {
+                endTurn.setVisibility(View.GONE);
+            } else {
+                //Make end turn button text be cancel
+                endTurn.setText("Cancel");
+                endTurn.setVisibility(View.VISIBLE);
+            }
+
             //Turn on done button
             done.setVisibility(View.VISIBLE);
 

@@ -183,20 +183,6 @@ public class CatanGameState extends GameState {
 
         //set turn count to zero
         turnCount = 0;
-
-        //simulate a game board
-//        generateRoad(20,0);
-//        generateRoad(42,0);
-//        generateRoad(25,1);
-//        generateRoad(37,2);
-//        generateRoad(52,1);
-//        generateRoad(56,2);
-//        generateBuilding(21,0,0);
-//        generateBuilding(31,0,0);
-//        generateBuilding(19,1,0);
-//        generateBuilding(44,1,0);
-//        generateBuilding(35,2,0);
-//        generateBuilding(40,2,0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
@@ -507,43 +493,25 @@ public class CatanGameState extends GameState {
         //Initial placement conditions
         if(hands[playersID].getRoadsAvail() > 13)
         {
-            //Check for adjacent settlement
-            if(buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID ||
-                    buildings[roadToBuildingAdjList[spot][1]].getPlayer() == playersID) {
-
-                byte[] adjList = roadToRoadAdjList[spot];
-
-                //Checks for adjacent roads, should not find one with 1 exception
-                for (int i = 0; i < adjList.length; i++) {
-
-                    if (roads[adjList[i]].getPlayer() == playersID) {
-
-                        byte[] buildAdjList;
-
-                        //Checks exception, seeing if the settlement has any adjacent roads already
-                        //If no roads found, then can place the road in this spot
-                        if (buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID) {
-                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][0]];
-                        }
-                        else {
-                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][1]];
-                        }
-
-                        for (int j = 0; j < buildAdjList.length; j++) {
-                            if (roads[buildAdjList[j]].getPlayer() == playersID) {
-                                //Road adjacent to settlement found, cannot place the road in spot
-                                return false;
-                            }
+            for(int i=0; i<roadToBuildingAdjList[spot].length; i++) {
+                //check if the user has a settlement at the end of this road
+                if (buildings[roadToBuildingAdjList[spot][i]].getPlayer() == playersID) {
+                    //if the user have not placed any roads yet, return true
+                    if (hands[playersID].getRoadsAvail() == 15) {
+                        return true;
+                    }
+                    //otherwise, check if that spot already has a road adjacent to it
+                    int location = roadToBuildingAdjList[spot][i];
+                    for (int j = 0; j < buildingToRoadAdjList[location].length; j++) {
+                        if (roads[buildingToRoadAdjList[location][j]].getPlayer() == playersID) {
+                            return false; //if they do, return false
                         }
                     }
+                    //otherwise, if there is no road next to that settlement, return true;
+                    return true;
                 }
-                //Can place the initial road here
-                return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         //Make sure that the player has another road or settlement adjacent to the spot they want to build.
