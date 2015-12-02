@@ -12,6 +12,8 @@ import edu.up.cs301.game.infoMsg.GameState;
  * Within it holds all the data for the game of Catan, as well as the methods
  * to interact with the data as a player would do so.
  *
+ * All log statements that are commented out are due to the unit tests.
+ *
  * @author Jordan Goldey
  * @author Matthew Schneider
  * @author Jarrett Oney
@@ -324,7 +326,7 @@ public class CatanGameState extends GameState {
         //Set dice to random values
         die1 = rng.nextInt(6) + 1;
         die2 = rng.nextInt(6) + 1;
-        Log.d("NEW ROLL:", ""+die1 + die2);
+        //Log.d("NEW ROLL:", ""+die1 + die2);
 
         if(die1 + die2 != 7) //not possible to give res on 7
         {
@@ -357,7 +359,7 @@ public class CatanGameState extends GameState {
             robber = spot;
             byte[] adjList = tileToBuildingAdjList[spot];
             rolled7 = false; //Resets the boolean for next turn
-            Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
+            //Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
 
             for(byte i = 0; i < adjList.length; i++) {
                 if (buildings[adjList[i]].getPlayer() != Building.EMPTY &&
@@ -369,7 +371,7 @@ public class CatanGameState extends GameState {
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
-                            Log.d("ROBBER STEALS: ", " Player " + playersID + " steals player " + buildings[adjList[i]].getPlayer() + "'s " + type);
+                            //Log.d("ROBBER STEALS: ", " Player " + playersID + " steals player " + buildings[adjList[i]].getPlayer() + "'s " + type);
                             return true;
                         }
                     }
@@ -392,9 +394,9 @@ public class CatanGameState extends GameState {
         hands[playersID].removeOre(rockToLose);
         if(oldTot <= 7 || hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
             robberWasRolled[playersID] = false;
-            Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
+            //Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
         }
-        Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
+        //Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
     }
 
     //Method to return where the robber is located
@@ -654,7 +656,6 @@ public class CatanGameState extends GameState {
         } else if(this.canBuildSettlement(spot) && myHand.getSettlementsAvail() > 3 && myHand.getCitiesAvail() == 4)
             //Conditions indicate that the spot is available and the player has placed less than 2 settlements and no cities
         {
-            //TODO INITIAL BUILDING PLACEMENT!!!
             buildings[spot].setIsEmpty(false);
             buildings[spot].setTypeOfBuilding(Building.SETTLEMENT);
             buildings[spot].setPlayer(playersID);
@@ -747,31 +748,6 @@ public class CatanGameState extends GameState {
         }
     }
 
-
-    //Place an initial house and road
-    public void initialBuilding(int buildSpot, int roadSpot)
-    {
-        if(buildSpot != 0 && roadSpot != 0) {
-            buildings[buildSpot].setIsEmpty(false);
-            buildings[buildSpot].setTypeOfBuilding(Building.SETTLEMENT);
-            buildings[buildSpot].setPlayer(playersID);
-            if(initialSetup[playersID][0])
-            {
-                initialSetup[playersID][1] = true;
-            }
-            else
-            {
-                initialSetup[playersID][0] = true;
-            }
-
-
-            roads[roadSpot].setPlayer(playersID);
-            roads[roadSpot].setIsEmpty(false);
-            hands[playersID].buildRoad();
-        }
-
-    }
-
     //Moves the turn to the next player in the rotation
     public void endTurn()
     {
@@ -786,18 +762,18 @@ public class CatanGameState extends GameState {
         }
         playersID = (playersID + 1) % numPlayers;
         needToRoll = true;
-        Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
+        //Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
     }
 
     //USED FOR TESTING ONLY
     //Allows us to test features dependant on resources
     public void givePlayerResources(int player)
     {
-        hands[player].addBrick(5);
-        hands[player].addOre(5);
-        hands[player].addWool(5);
-        hands[player].addWheat(5);
-        hands[player].addLumber(5);
+        hands[player].addBrick(10);
+        hands[player].addOre(10);
+        hands[player].addWool(10);
+        hands[player].addWheat(10);
+        hands[player].addLumber(10);
     }
 
     //USED FOR TESTING ONLY
@@ -827,6 +803,13 @@ public class CatanGameState extends GameState {
     }
 
     //USED FOR TESTING ONLY
+    //Allows us to choose who hs the first turn, as is usually random
+    public void setPlayersID(int ID)
+    {
+        this.playersID = ID;
+    }
+
+    //USED FOR TESTING ONLY
     //Allows us to set the dice, allows for testing of secodn part of roll method
     public void generateRoll(int die1, int die2)
     {
@@ -847,6 +830,7 @@ public class CatanGameState extends GameState {
         }
         else
         {
+            rolled7 = true;
             for(int i = 0; i < robberWasRolled.length; i++)
             {
                 robberWasRolled[i] = true;
