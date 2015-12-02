@@ -121,11 +121,13 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                 //Add rank for each roll num and resrouce if do not have
                                 for (int j = 0; j < tileAdjList.length; j++) {
                                     //If the player does not have this resource, add to spot score
-                                    if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
-                                        score += 10;
-                                    }
+                                    if(tiles[tileAdjList[j]].getResource() != 0) {
+                                        if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
+                                            score += 10;
+                                        }
 
-                                    score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                    }
                                 }
 
                                 if (score > maxScore) {
