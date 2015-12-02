@@ -60,22 +60,24 @@ public class CatanSurfaceView extends SurfaceView {
     /*
      * These ints represent colors that are used in this class
      */
-    int wood = 0xFF466F37;
-    int wheat = 0xFFE7B23E;
-    int brick = 0xFFB16B32;
-    int stone = 0xFF969696;
-    int wool = 0xFF91C14B;
-    int sand = 0xFFE2C581;
-    int[] playerColor = {0xFFFF0000, 0xFFFFFFFF, 0xFF0000FF, 0xFFFF8000};
+    final int wood = 0xFF466F37;
+    final int wheat = 0xFFE7B23E;
+    final int brick = 0xFFB16B32;
+    final int stone = 0xFF969696;
+    final int wool = 0xFF91C14B;
+    final int sand = 0xFFE2C581;
+    final int[] playerColor = {0xFFFF0000, 0xFFFFFFFF, 0xFF0000FF, 0xFFFF8000};
 
     /*
      * These variables relate to the selection process for sites, roads, and tiles
      */
     private int roadLastSelected = -1;
     private int buildingLastSelected = -1;
+    private int tileLastSelected = -1;
     private boolean waitingForRoadSelection = false;
     private boolean waitingForSettlementSelection = false;
     private boolean waitingForCitySelection = false;
+    private boolean waitingForRobberPlacement = false;
 
     /*
      * These bitmaps represent the numbers on the board
@@ -138,8 +140,8 @@ public class CatanSurfaceView extends SurfaceView {
         super(context, attrs);
         setWillNotDraw(false);
 
-        this.phi = 0;
-        this.theta = 0;
+        this.phi = 40;
+        this.theta = -60;
 
         path = new Path();
         temp = new Paint();
@@ -174,7 +176,7 @@ public class CatanSurfaceView extends SurfaceView {
         updateABC();
 
         //display certain debugging features on the surfaceView
-        boolean DEBUG=true;
+        boolean DEBUG=false;
 
         drawBoard(canvas);
         if(gameState==null) {
@@ -198,6 +200,12 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
 
+        if(waitingForRobberPlacement) {
+            drawRobber(canvas, 0xC0808080, gameState.getRobber());
+        } else {
+            drawRobber(canvas, 0xFF606060, gameState.getRobber());
+        }
+
         if(waitingForSettlementSelection || waitingForCitySelection) {
             for (int x = 0; x < sites.length; x++) {
                 drawSelectedBuilding(canvas, x);
@@ -219,6 +227,10 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
 
+        if(waitingForRobberPlacement && tileLastSelected != -1) {
+            drawRobber(canvas, 0xFFFFFF00, gameState.getRobber());
+        }
+
         if(DEBUG) {
             temp.setColor(Color.BLACK);
             temp.setTextSize(28);
@@ -235,33 +247,6 @@ public class CatanSurfaceView extends SurfaceView {
             }
 
         }
-
-        /*
-        //draw some roads
-        drawRoad(canvas, redPlayer, 13);
-        drawRoad(canvas, redPlayer, 41);
-        drawRoad(canvas, redPlayer, 40);
-        drawRoad(canvas, redPlayer, 42);
-        drawRoad(canvas, whitePlayer, 25);
-        drawRoad(canvas, whitePlayer, 37);
-        drawRoad(canvas, whitePlayer, 24);
-        drawRoad(canvas, bluePlayer, 52);
-        drawRoad(canvas, bluePlayer, 56);
-        drawRoad(canvas, bluePlayer, 45);
-        drawRoad(canvas, orangePlayer, 15);
-        drawRoad(canvas, orangePlayer, 58);
-        drawRoad(canvas, orangePlayer, 14);
-
-        //draw some settlements
-        drawSet(canvas, redPlayer, 10);
-        drawSet(canvas, redPlayer, 29);
-        drawSet(canvas, whitePlayer, 19);
-        drawSet(canvas, whitePlayer, 35);
-        drawSet(canvas, bluePlayer, 40);
-        drawSet(canvas, bluePlayer, 44);
-        drawSet(canvas, orangePlayer, 13);
-        drawSet(canvas, orangePlayer, 42);
-        */
     }
 
     public void drawRoad(Canvas canvas, int color, int location) {
@@ -420,10 +405,30 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawOval(mapX(x, y) - width / 2, mapY(x, y) - height / 2, mapX(x, y) + width / 2, mapY(x, y) + height/2,temp);
+            canvas.drawOval(mapX(x, y) - width / 2, mapY(x, y) - height / 2, mapX(x, y) + width / 2, mapY(x, y) + height / 2, temp);
         } else {
             canvas.drawCircle(mapX(x, y), mapY(x, y), width, temp);
         }
+    }
+
+    public void drawRobber(Canvas canvas, int color, int location) {
+        double x = tiles[location][0];
+        double y = tiles[location][1];
+        float xPos = mapX(x,y);
+        float yPos = mapY(x,y);
+        int size = (int)(2200/distance(x,y,0));
+
+        path.reset();
+        path.moveTo(xPos, yPos - 0.3f * size);
+        path.lineTo(xPos + 0.3f * size, yPos + 0.3f * size);
+        path.lineTo(xPos + 0.3f * size, yPos + 0.5f * size);
+        path.lineTo(xPos - 0.3f * size, yPos + 0.5f * size);
+        path.lineTo(xPos - 0.3f * size, yPos + 0.3f * size);
+        path.close();
+
+        temp.setColor(color);
+        canvas.drawPath(path, temp);
+        canvas.drawCircle(xPos, yPos - 0.3f * size, 0.2f * size, temp);
     }
 
     public void waitForRoadSelection(boolean set) {
@@ -431,6 +436,7 @@ public class CatanSurfaceView extends SurfaceView {
         waitingForRoadSelection = set;
         waitingForSettlementSelection = false;
         waitingForCitySelection = false;
+        waitingForRobberPlacement = false;
         this.postInvalidate();
     }
 
@@ -439,6 +445,7 @@ public class CatanSurfaceView extends SurfaceView {
         waitingForRoadSelection = false;
         waitingForSettlementSelection = set;
         waitingForCitySelection = false;
+        waitingForRobberPlacement = false;
         this.postInvalidate();
     }
 
@@ -447,15 +454,29 @@ public class CatanSurfaceView extends SurfaceView {
         waitingForRoadSelection = false;
         waitingForSettlementSelection = false;
         waitingForCitySelection = set;
+        waitingForRobberPlacement = false;
+        this.postInvalidate();
+    }
+
+    public void waitForRobberPlacement(boolean set) {
+        tileLastSelected = -1;
+        waitingForRoadSelection = false;
+        waitingForSettlementSelection = false;
+        waitingForCitySelection = false;
+        waitingForRobberPlacement = set;
         this.postInvalidate();
     }
 
     public int getRoadLastSelected() {
-        return (roadLastSelected<0) ? -1 : roadLastSelected;
+        return (roadLastSelected<0 || roadLastSelected>71) ? -1 : roadLastSelected;
     }
 
     public int getBuildingLastSelected() {
-        return (buildingLastSelected<0) ? -1 : buildingLastSelected;
+        return (buildingLastSelected<0 || buildingLastSelected>53) ? -1 : buildingLastSelected;
+    }
+
+    public int getTileLastSelected() {
+        return (tileLastSelected<0 || tileLastSelected>18) ? -1 : tileLastSelected;
     }
 
     public void selectRoad(double xPos, double yPos) {
@@ -504,6 +525,29 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
         buildingLastSelected = indexOfClosest;
+        this.postInvalidate();
+    }
+
+    public void selectTile(double xPos, double yPos) {
+        if (gameState == null)
+            return;
+
+        double x = inverseMapX(xPos, yPos); //x coordinate on the board of the last user touch
+        double y = inverseMapY(xPos, yPos); //y coordinate on the board of the last user touch
+        double closest = Integer.MAX_VALUE; //initially set the largest distance to be infinite
+        int indexOfClosest = -1;
+
+        for(int i=0; i<tiles.length; i++) {
+            //if the tile is not the tile the robber is currently on;
+            if(i!=gameState.getRobber()) {
+                double distance = Math.hypot(x-tiles[i][0], y-tiles[i][1]);
+                if(distance < closest) {
+                    closest = distance;
+                    indexOfClosest = i;
+                }
+            }
+        }
+        tileLastSelected = indexOfClosest;
         this.postInvalidate();
     }
 
@@ -595,10 +639,6 @@ public class CatanSurfaceView extends SurfaceView {
             }
             if(bitmap!=null)
                 canvas.drawBitmap(bitmap, mapX(x, y)-numWidth/2, mapY(x, y)-numHeight/2, null);
-            if(gameState!=null && gameState.getRobber() == i) {
-                temp.setColor(0xFF888888);
-                canvas.drawRect(mapX(x, y) - numWidth / 2, mapY(x, y) - numHeight / 2, mapX(x, y) + numWidth / 2, mapY(x, y) + numHeight/2,temp);
-            }
         }
     }
 
