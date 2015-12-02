@@ -23,12 +23,21 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 public class CatanComputerPlayer extends GameComputerPlayer {
 
     protected Random RNG; //Used for choosing what to do
+    protected boolean[] resourcesHave;
+    protected boolean initialPlacement;
     /**
      * ctor does nothing extra
      */
     public CatanComputerPlayer(String name) {
         super(name);
         RNG = new Random();
+        resourcesHave = new boolean[5];
+        for(int i = 0; i < resourcesHave.length; i++)
+        {
+            resourcesHave[i] = false;
+        }
+
+        initialPlacement = true;
     }
 
     /**
@@ -44,11 +53,120 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             CatanGameState gameState = (CatanGameState) info;
 
             if(playerNum == gameState.getPlayersID()) {
+                Hand myHand = gameState.getHand(playerNum);
 
-                if(gameState.getRound1Placing())
-                {
+                //INITIAL PLACEMENT BLOCK
+                if(initialPlacement) {
+                    int maxScore = -1;
+                    int maxIndex = -1;
+                    Tile[] tiles = gameState.getTiles();
+                    if (myHand.getSettlementsAvail() == 5) //Place first settlement
+                    {
+                        for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                            if (gameState.canBuildSettlement(i)) {
+                                int score = 0;
+                                byte[] tileAdjList = gameState.buildingToTileAdjList[i];
 
+                                //Add rank for each roll num and resrouce if do not have
+                                for (int j = 0; j < tileAdjList.length; j++) {
+                                    //If the player does not have this resource, add to spot score
+                                    if(tiles[tileAdjList[j]].getResource() != 0) {
+                                        if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
+                                            score += 10;
+                                        }
+
+                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                    }
+                                }
+
+                                if (score > maxScore) {
+                                    maxScore = score;
+                                    maxIndex = i;
+                                }
+                            }
+                        }
+
+                        //Add to the resources obtained list
+                        byte[] finalTileAdjList = gameState.buildingToTileAdjList[maxIndex];
+                        for (int i = 0; i < finalTileAdjList.length; i++) {
+                            resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                        }
+
+                        //Send the best build spot
+                        game.sendAction(new CatanBuildSettlementAction(this, maxIndex));
+                        return;
+                    }
+
+                    //TODO make this smart
+                    if (myHand.getRoadsAvail() == 15) //Place first road
+                    {
+                        ArrayList<CatanBuildRoadAction> actions = new ArrayList<CatanBuildRoadAction>(3);
+                        for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
+                            if (gameState.canBuildRoad(i)) {
+                                actions.add(new CatanBuildRoadAction(this, i));
+                            }
+                        }
+
+                        game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                        return;
+                    }
+
+                    if (myHand.getSettlementsAvail() == 4) //Place second settlement
+                    {
+                        for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                            if (gameState.canBuildSettlement(i)) {
+                                int score = 0;
+                                byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+
+                                //Add rank for each roll num and resrouce if do not have
+                                for (int j = 0; j < tileAdjList.length; j++) {
+                                    //If the player does not have this resource, add to spot score
+                                    if(tiles[tileAdjList[j]].getResource() != 0) {
+                                        if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
+                                            score += 10;
+                                        }
+
+                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                    }
+                                }
+
+                                if (score > maxScore) {
+                                    maxScore = score;
+                                    maxIndex = i;
+                                }
+                            }
+                        }
+
+                        //Add to the resources obtained list
+                        byte[] finalTileAdjList = gameState.buildingToTileAdjList[maxIndex];
+                        for (int i = 0; i < finalTileAdjList.length; i++) {
+                            resourcesHave[tiles[finalTileAdjList[i]].getResource() - 1] = true;
+                        }
+
+                        //Send the best build spot
+                        game.sendAction(new CatanBuildSettlementAction(this, maxIndex));
+                        return;
+                    }
+
+                    //TODO make this smart
+                    if(myHand.getRoadsAvail() == 14) //Place second road
+                    {
+                        ArrayList<CatanBuildRoadAction> actions = new ArrayList<CatanBuildRoadAction>(3);
+                        for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
+
+                            if (gameState.canBuildRoad(i)) {
+                                actions.add(new CatanBuildRoadAction(this, i));
+                            }
+                        }
+
+                        game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                        return;
+                    }
+
+                    //All initial placements have finished, sets boolean to skip this block
+                    initialPlacement = false;
                 }
+                //END PLACEMENT BLOCK
 
                 if (gameState.getNeedToRoll()) //A roll call is needed at beginnign of turn
                 {
@@ -57,7 +175,6 @@ public class CatanComputerPlayer extends GameComputerPlayer {
 
                 if (gameState.getRobberWasRolledPlayer()) //Player must discard resources if total is over 7
                 {
-                    Hand myHand = gameState.getHand(this.playerNum);
                     this.removeResources(myHand);
                 }
 

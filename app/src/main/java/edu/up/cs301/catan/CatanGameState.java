@@ -36,6 +36,8 @@ public class CatanGameState extends GameState {
     private boolean round1Placing;
     private boolean round2Placing;
     public static final int VICTORY_POINTS_TO_WIN = 8;
+    private int turnCount;
+    private int firstPlayer;
 
     //List of all roads adjacent to a given road
     public static final byte[][] roadToRoadAdjList = {{1, 6}, {0, 2, 7}, {1, 3, 7}, {2, 4, 8}, {3,
@@ -120,6 +122,8 @@ public class CatanGameState extends GameState {
     public CatanGameState()
     {
         playersID = rng.nextInt(3);
+        firstPlayer = playersID;
+
         scores = new int[4];
         for(int i = 0; i < 4; i++){
             scores[i] = 0;
@@ -177,26 +181,29 @@ public class CatanGameState extends GameState {
             }
         }
 
+        //set turn count to zero
+        turnCount = 0;
+
         //simulate a game board
-        generateRoad(20,0);
-        generateRoad(42,0);
-        generateRoad(25,1);
-        generateRoad(37,2);
-        generateRoad(52,1);
-        generateRoad(56,2);
-        generateBuilding(21,0,0);
-        generateBuilding(31,0,0);
-        generateBuilding(19,1,0);
-        generateBuilding(44,1,0);
-        generateBuilding(35,2,0);
-        generateBuilding(40,2,0);
+//        generateRoad(20,0);
+//        generateRoad(42,0);
+//        generateRoad(25,1);
+//        generateRoad(37,2);
+//        generateRoad(52,1);
+//        generateRoad(56,2);
+//        generateBuilding(21,0,0);
+//        generateBuilding(31,0,0);
+//        generateBuilding(19,1,0);
+//        generateBuilding(44,1,0);
+//        generateBuilding(35,2,0);
+//        generateBuilding(40,2,0);
     }
 
     //Constructor to set all instance variables to values passed in as parameters
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
                           boolean[] robberWasRolled, boolean rolled7, boolean needToRoll,
-                          boolean round1Placing, boolean round2Placing)
+                          boolean round1Placing, boolean round2Placing, int turnCount)
     {
         this.playersID = ID;
         this.numPlayers = numPlayers;
@@ -214,7 +221,7 @@ public class CatanGameState extends GameState {
         this.needToRoll = needToRoll;
         this.round1Placing = round1Placing;
         this.round2Placing = round2Placing;
-
+        this.turnCount = turnCount;
     }
 
     //Copy constructor to create an identical version of the given game state
@@ -222,7 +229,7 @@ public class CatanGameState extends GameState {
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
                 soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
                 soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll(),
-                soc.getRound1Placing(), soc.getRound2Placing());
+                soc.getRound1Placing(), soc.getRound2Placing(), soc.getTurnCount());
     }
 
     //Setter for the numPLayers in the game, needed due to how framework is set up
@@ -283,6 +290,8 @@ public class CatanGameState extends GameState {
     {
         return round2Placing;
     }
+
+    public int getTurnCount(){return turnCount;}
 
     //Method to distribute a given resource to the buildings that are passed in
     public void distributeResources(byte[] buildList, int resource){
@@ -374,13 +383,13 @@ public class CatanGameState extends GameState {
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
+                            Log.d("ROBBER STEALS: ", " Player " + playersID + " steals player " + buildings[adjList[i]].getPlayer() + "'s " + type);
                             return true;
                         }
                     }
                 }
             }
         }
-
         return false;
     }
 
@@ -495,8 +504,45 @@ public class CatanGameState extends GameState {
             return false;
         }
 
-        //Make sure that the player has another road or settlement adjacent to the spot they want to build.
+        //Initial placement conditions
+        if(hands[playersID].getRoadsAvail() > 13)
+        {
+            //Check for adjacent settlement
+            if(buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID ||
+                    buildings[roadToBuildingAdjList[spot][1]].getPlayer() == playersID) {
 
+                byte[] adjList = roadToRoadAdjList[spot];
+
+                //Checks for adjacent roads, should not find one with 1 exception
+                for (int i = 0; i < adjList.length; i++) {
+
+                    if (roads[adjList[i]].getPlayer() == playersID) {
+
+                        byte[] buildAdjList;
+
+                        //Checks exception, seeing if the settlement has any adjacent roads already
+                        //If no roads found, then can place the road in this spot
+                        if (buildings[roadToBuildingAdjList[spot][0]].getPlayer() == playersID) {
+                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][0]];
+                        }
+                        else {
+                            buildAdjList = buildingToRoadAdjList[roadToBuildingAdjList[spot][1]];
+                        }
+
+                        for (int j = 0; j < buildAdjList.length; j++) {
+                            if (roads[buildAdjList[j]].getPlayer() == playersID) {
+                                //Road adjacent to settlement found, cannot place the road in spot
+                                return false;
+                            }
+                        }
+                    }
+                }
+                //Can place the initial road here
+                return true;
+            }
+        }
+
+        //Make sure that the player has another road or settlement adjacent to the spot they want to build.
         //check nearby roads for a road owned by that player
         for(int i = 0; i < roadToRoadAdjList[spot].length; i++ )
         {
@@ -529,10 +575,14 @@ public class CatanGameState extends GameState {
             hands[playersID].buildRoad();
             return true;
         }
-        else {
-            //Return false if cannot build
-            return false;
+        else if (this.canBuildRoad(spot) && hands[playersID].getRoadsAvail() > 13) {
+            roads[spot].setPlayer(playersID);
+            roads[spot].setIsEmpty(false);
+            hands[playersID].buildRoad();
+            this.endTurn();
+            return true;
         }
+        return false;
     }
 
 
@@ -586,22 +636,28 @@ public class CatanGameState extends GameState {
             }
         }
 
-        //Check to see if a road is next to the spot, if not return false
-        for(int i = 0; i < roadAdjList.length; i++)
+        //Case fopr initial placement
+        if(hands[playersID].getSettlementsAvail() > 3 && hands[playersID].getCitiesAvail() == 4)
         {
+            return true;
+        }
+
+        //Check to see if a road is next to the spot, if not return false
+        for (int i = 0; i < roadAdjList.length; i++) {
             //If a adjacent road belong to the player they can build a settlement
-            if(roads[roadAdjList[i]].getPlayer() == playersID)
-            {
+            if (roads[roadAdjList[i]].getPlayer() == playersID) {
                 //Return true as there is an adjacent road, no building in adjacent spots
                 return true;
             }
         }
         return false; //No adjacent roads
     }
+
     //Method to build a settlement in a given spot, returns true if the settlement is built, false
     //otherwise
     public boolean buildSettlement(int spot)
     {
+        Hand myHand = hands[playersID];
         if(this.canBuildSettlement(spot) && this.playerHasSettlementRes())
         {
             //If the player can build, build the building and set the road to not empty
@@ -621,6 +677,31 @@ public class CatanGameState extends GameState {
 
             //Return true as can build
             return true;
+        } else if(this.canBuildSettlement(spot) && myHand.getSettlementsAvail() > 3 && myHand.getCitiesAvail() == 4)
+            //Conditions indicate that the spot is available and the player has placed less than 2 settlements and no cities
+        {
+            //TODO INITIAL BUILDING PLACEMENT!!!
+            buildings[spot].setIsEmpty(false);
+            buildings[spot].setTypeOfBuilding(Building.SETTLEMENT);
+            buildings[spot].setPlayer(playersID);
+
+            hands[playersID].buildSettlement();
+
+            //Add a point to the player who built the settlement
+            scores[playersID]++;
+
+            if(scores[playersID] == 2)
+            {
+                byte[] adjList = buildingToTileAdjList[spot];
+                for(int i = 0; i < adjList.length; i++)
+                {
+                    hands[playersID].addResource(tiles[adjList[i]].getResource());
+                }
+            }
+
+            //Return true as can build
+            return true;
+
         }
         else
         {
@@ -720,6 +801,15 @@ public class CatanGameState extends GameState {
     //Moves the turn to the next player in the rotation
     public void endTurn()
     {
+        if(firstPlayer == 0 && playersID == numPlayers - 1){
+            turnCount++;
+        }else if(firstPlayer == 1 && playersID == 0){
+            turnCount++;
+        }else if(firstPlayer == 2 && playersID == 1){
+            turnCount++;
+        }else if(firstPlayer == 3 && playersID == 2){
+            turnCount++;
+        }
         playersID = (playersID + 1) % numPlayers;
         needToRoll = true;
         Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
