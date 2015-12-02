@@ -498,12 +498,6 @@ public class CatanGameState extends GameState {
     //Method to check if building a road is possible, used here and for GUI
     public boolean canBuildRoad(int spot)
     {
-        //If road is filled return false
-        if(!roads[spot].isEmpty())
-        {
-            return false;
-        }
-
         //Initial placement conditions
         if(hands[playersID].getRoadsAvail() > 13)
         {
@@ -542,6 +536,12 @@ public class CatanGameState extends GameState {
             }
         }
 
+        //If road is filled return false
+        if(!roads[spot].isEmpty())
+        {
+            return false;
+        }
+
         //Make sure that the player has another road or settlement adjacent to the spot they want to build.
         //check nearby roads for a road owned by that player
         for(int i = 0; i < roadToRoadAdjList[spot].length; i++ )
@@ -566,20 +566,22 @@ public class CatanGameState extends GameState {
     //Method to build a road in a given spot, returns true if the road is built, false otherwise
     public boolean buildRoad(int spot)
     {
-        if(this.canBuildRoad(spot) && this.playerHasRoadRes()) {
+        //initial case
+        if (this.canBuildRoad(spot) && hands[playersID].getRoadsAvail() > 13) {
+            roads[spot].setPlayer(playersID);
+            roads[spot].setIsEmpty(false);
+            hands[playersID].buildRoad();
+            this.endTurn();
+            return true;
+        }
+        //noninitial case
+        else if(this.canBuildRoad(spot) && this.playerHasRoadRes()) {
             //Checks if the player can build a road at that spot
             roads[spot].setPlayer(playersID);
             roads[spot].setIsEmpty(false);
             hands[playersID].removeBrick(1);
             hands[playersID].removeLumber(1);
             hands[playersID].buildRoad();
-            return true;
-        }
-        else if (this.canBuildRoad(spot) && hands[playersID].getRoadsAvail() > 13) {
-            roads[spot].setPlayer(playersID);
-            roads[spot].setIsEmpty(false);
-            hands[playersID].buildRoad();
-            this.endTurn();
             return true;
         }
         return false;
