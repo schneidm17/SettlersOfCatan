@@ -73,6 +73,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public static Boolean discardPopupOpened = false;
     public static Boolean nextTurn = false;
 
+    private Boolean builtSettlement1 = false;
+    private Boolean builtRoad1 = false;
+    private Boolean builtSettlement2 = false;
+    private Boolean builtRoad2 = false;
+
     // the android activity that we are running
     private GameMainActivity myActivity;
 
@@ -106,9 +111,22 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             mySurfaceView.setGameState(this.myGameState);
 
             //If the initial round
-            if(myGameState.getHand(playerNum).getSettlementsAvail() > 3 || myGameState.getHand(playerNum).getCitiesAvail() == 4){
+            if(!builtSettlement1){
+                buildSettlementClicked = true;
+                updateButtonStates();
                 mySurfaceView.waitForSettlementSelection(true);
-
+            }else if(!builtRoad1){
+                buildRoadClicked = true;
+                updateButtonStates();
+                mySurfaceView.waitForRoadSelection(true);
+            }else if(!builtSettlement2){
+                buildSettlementClicked = true;
+                updateButtonStates();
+                mySurfaceView.waitForSettlementSelection(true);
+            }else if(!builtRoad2){
+                buildRoadClicked = true;
+                updateButtonStates();
+                mySurfaceView.waitForRoadSelection(true);
             }
 
             //If the player needs to roll, roll
@@ -464,27 +482,37 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
         } else if (v.equals(done)) {
             if (buildRoadClicked) {
-                buildRoadClicked=false;
                 int spot = mySurfaceView.getRoadLastSelected();
-                mySurfaceView.waitForRoadSelection(false);
-                updateButtonStates();
                 if(spot != -1) {
+                    if(!builtRoad1) {
+                        builtRoad1 = true;
+                    } else if (!builtRoad2) {
+                        builtRoad2 = true;
+                    }
+                    buildRoadClicked=false;
+                    mySurfaceView.waitForRoadSelection(false);
+                    updateButtonStates();
                     game.sendAction(new CatanBuildRoadAction(this,spot));
                 }
             } else if(buildSettlementClicked) {
-                buildSettlementClicked=false;
                 int spot = mySurfaceView.getBuildingLastSelected();
-                mySurfaceView.waitForSettlementSelection(false);
-                updateButtonStates();
                 if(spot != -1) {
+                    if(!builtSettlement1) {
+                        builtSettlement1 = true;
+                    } else if (!builtSettlement2) {
+                        builtSettlement2 = true;
+                    }
+                    buildSettlementClicked=false;
+                    mySurfaceView.waitForSettlementSelection(false);
+                    updateButtonStates();
                     game.sendAction(new CatanBuildSettlementAction(this,spot));
                 }
             } else if(buildCityClicked) {
-                buildCityClicked=false;
                 int spot = mySurfaceView.getBuildingLastSelected();
-                mySurfaceView.waitForCitySelection(false);
-                updateButtonStates();
                 if(spot != -1) {
+                    buildCityClicked=false;
+                    mySurfaceView.waitForCitySelection(false);
+                    updateButtonStates();
                     game.sendAction(new CatanUpgradeSettlementAction(this,spot));
                 }
             }
