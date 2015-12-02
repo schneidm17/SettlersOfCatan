@@ -540,6 +540,10 @@ public class CatanGameState extends GameState {
                 //Can place the initial road here
                 return true;
             }
+            else
+            {
+                return false;
+            }
         }
 
         //Make sure that the player has another road or settlement adjacent to the spot they want to build.
