@@ -130,8 +130,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 mySurfaceView.waitForRoadSelection(true);
             }
 
-            //If the player needs to roll, roll
-            if(myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID())
+            //If the player needs to roll, roll unless in initial placement
+            Hand playerHand = this.myGameState.getHand(playerNum);
+            if(myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID() && playerHand.getRoadsAvail() < 14)
             {
                 game.sendAction(new CatanRollAction(this));
             }
@@ -239,7 +240,6 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 }
 
                 //display resource cards for user
-                Hand playerHand = this.myGameState.getHand(this.myGameState.getPlayersID());
                 numWheat.setText("" + playerHand.getWheat());
                 numSheep.setText("" + playerHand.getWool());
                 numWood.setText("" + playerHand.getLumber());

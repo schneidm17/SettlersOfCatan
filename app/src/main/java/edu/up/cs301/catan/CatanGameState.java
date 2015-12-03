@@ -326,7 +326,7 @@ public class CatanGameState extends GameState {
         //Set dice to random values
         die1 = rng.nextInt(6) + 1;
         die2 = rng.nextInt(6) + 1;
-        //Log.d("NEW ROLL:", ""+die1 + die2);
+        Log.d("NEW ROLL:", ""+die1 + die2);
 
         if(die1 + die2 != 7) //not possible to give res on 7
         {
