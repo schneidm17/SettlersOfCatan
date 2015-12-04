@@ -1,5 +1,7 @@
 package edu.up.cs301.catan.actions;
 
+import java.io.Serializable;
+
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
 
@@ -10,7 +12,7 @@ import edu.up.cs301.game.actionMsg.GameAction;
  * Purpose:
  * Represents a Roll action sent to the localGame.
  */
-public class CatanRollAction extends GameAction {
+public class CatanRollAction extends GameAction implements Serializable {
     /**
      * Constructor for GameAction
      *

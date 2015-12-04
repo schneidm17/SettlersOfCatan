@@ -2,6 +2,7 @@ package edu.up.cs301.catan;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.Random;
 import edu.up.cs301.game.infoMsg.GameState;
 
@@ -20,7 +21,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  *
  * @version Nov 2015
  * */
-public class CatanGameState extends GameState {
+public class CatanGameState extends GameState implements Serializable{
     private int playersID; //ID of the player whose turn it is
     private int numPlayers; //number of players for this game
     private int[] scores; //The scores of each of the players
@@ -326,7 +327,7 @@ public class CatanGameState extends GameState {
         //Set dice to random values
         die1 = rng.nextInt(6) + 1;
         die2 = rng.nextInt(6) + 1;
-        //Log.d("NEW ROLL:", ""+die1 + die2);
+        Log.d("NEW ROLL:", ""+die1 + die2);
 
         if(die1 + die2 != 7) //not possible to give res on 7
         {

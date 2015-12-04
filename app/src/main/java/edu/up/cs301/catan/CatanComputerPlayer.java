@@ -66,20 +66,36 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+                                int[] resList = new int[tileAdjList.length];
 
                                 //Add rank for each roll num and resrouce if do not have
                                 for (int j = 0; j < tileAdjList.length; j++) {
                                     //If the player does not have this resource, add to spot score
+                                    resList[j] = tiles[tileAdjList[j]].getResource();
                                     if(tiles[tileAdjList[j]].getResource() != 0) {
                                         if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
-                                            score += 10;
+                                            score += 5;
                                         }
 
-                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                            score += 3;
+                                        }
+
+                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+                                    }
+                                }
+                                if(resList.length > 1) {
+                                    if (resList[0] == resList[1]) {
+                                        score -= 5;
+                                    } else if (resList.length > 2) {
+                                        if (resList[0] == resList[2] || resList[1] == resList[2]) {
+                                            score -= 5;
+                                        }
                                     }
                                 }
 
-                                if (score > maxScore) {
+                                if (score > maxScore && RNG.nextBoolean()) {
                                     maxScore = score;
                                     maxIndex = i;
                                 }
@@ -119,20 +135,37 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+                                int[] resList = new int[tileAdjList.length];
 
                                 //Add rank for each roll num and resrouce if do not have
                                 for (int j = 0; j < tileAdjList.length; j++) {
                                     //If the player does not have this resource, add to spot score
+                                    resList[j] = tiles[tileAdjList[j]].getResource();
                                     if(tiles[tileAdjList[j]].getResource() != 0) {
                                         if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
-                                            score += 10;
+                                            score += 15;
                                         }
 
-                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                            score += 3;
+                                        }
+
+                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
                                     }
                                 }
 
-                                if (score > maxScore) {
+                                if(resList.length > 1) {
+                                    if (resList[0] == resList[1]) {
+                                        score -= 5;
+                                    } else if (resList.length > 2) {
+                                        if (resList[0] == resList[2] || resList[1] == resList[2]) {
+                                            score -= 5;
+                                        }
+                                    }
+                                }
+
+                                if (score > maxScore && RNG.nextBoolean()) {
                                     maxScore = score;
                                     maxIndex = i;
                                 }

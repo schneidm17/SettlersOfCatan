@@ -1,5 +1,7 @@
 package edu.up.cs301.catan.actions;
 
+import java.io.Serializable;
+
 import edu.up.cs301.game.Game;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
@@ -11,7 +13,7 @@ import edu.up.cs301.game.actionMsg.GameAction;
  * Purpose:
  * Represents a RemoveResources action sent to the localGame.
  */
-public class CatanRemoveResAction extends GameAction{
+public class CatanRemoveResAction extends GameAction implements Serializable {
 
     //The amounts of resources to discard
     public int woodToLose;
