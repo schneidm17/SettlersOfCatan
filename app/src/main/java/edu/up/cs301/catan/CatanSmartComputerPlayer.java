@@ -58,20 +58,37 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+                                int[] resList = new int[tileAdjList.length];
 
                                 //Add rank for each roll num and resrouce if do not have
                                 for (int j = 0; j < tileAdjList.length; j++) {
                                     //If the player does not have this resource, add to spot score
+                                    resList[j] = tiles[tileAdjList[j]].getResource();
                                     if(tiles[tileAdjList[j]].getResource() != 0) {
                                         if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
-                                            score += 10;
+                                            score += 5;
                                         }
 
-                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                            score += 3;
+                                        }
+
+                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
                                     }
                                 }
 
-                                if (score > maxScore) {
+                                if(resList.length > 1) {
+                                    if (resList[0] == resList[1]) {
+                                        score -= 5;
+                                    } else if (resList.length > 2) {
+                                        if (resList[0] == resList[2] || resList[1] == resList[2]) {
+                                            score -= 5;
+                                        }
+                                    }
+                                }
+
+                                if (score > maxScore && RNG.nextBoolean()) {
                                     maxScore = score;
                                     maxIndex = i;
                                 }
@@ -111,20 +128,37 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+                                int[] resList = new int[tileAdjList.length];
 
                                 //Add rank for each roll num and resrouce if do not have
                                 for (int j = 0; j < tileAdjList.length; j++) {
                                     //If the player does not have this resource, add to spot score
+                                    resList[j] = tiles[tileAdjList[j]].getResource();
                                     if(tiles[tileAdjList[j]].getResource() != 0) {
                                         if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
-                                            score += 10;
+                                            score += 15;
                                         }
 
-                                        score += 6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7);
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                            score += 3;
+                                        }
+
+                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
                                     }
                                 }
 
-                                if (score > maxScore) {
+                                if(resList.length > 1) {
+                                    if (resList[0] == resList[1]) {
+                                        score -= 10;
+                                    } else if (resList.length > 2) {
+                                        if (resList[0] == resList[2] || resList[1] == resList[2]) {
+                                            score -= 10;
+                                        }
+                                    }
+                                }
+
+                                if (score > maxScore && RNG.nextBoolean()) {
                                     maxScore = score;
                                     maxIndex = i;
                                 }
@@ -229,9 +263,85 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     game.sendAction(actions.get(RNG.nextInt(actions.size())));
                 }
 
-                boolean placeToBuildSettlement = false;
-                //If they can build roads, add them to the list
-                if (gameState.playerHasRoadRes() && myHand.getLumber() > 1 && myHand.getBrick() > 1) {
+                int spotChecker = 0;
+                for(int i = 0; i < buildings.length; i++)
+                {
+                    if(gameState.canBuildSettlement(i)) //Player has a spot for settlement, should save resources
+                    {
+                        spotChecker = 1;
+                        break;
+                    }
+                }
+                //If they can build good roads, add them to the list
+                int maxScore = -1;
+                int maxIndex = -1;
+                if (gameState.playerHasRoadRes() && myHand.getLumber() > spotChecker && myHand.getBrick() > spotChecker) {
+                    if(gameState.getTurnCount() % 2 == 0) {
+                        for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
+                            if (gameState.canBuildRoad(i)) {
+                                CatanGameState tempState = new CatanGameState(gameState);
+                                tempState.buildRoad(i);
+                                int score = 0;
+                                byte[] adjList = tempState.roadToBuildingAdjList[i];
+                                for (int k = 0; k < adjList.length; k++) {
+                                    if (tempState.canBuildSettlement(adjList[k])) {
+                                        byte[] tileAdjList = tempState.buildingToTileAdjList[adjList[k]];
+                                        for (int j = 0; j < tileAdjList.length; j++) {
+                                            if (tiles[tileAdjList[j]].getResource() == Tile.DESERT) {
+                                                score -= 5;
+                                            } else {
+                                                score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7)) / 2 + 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (score > maxScore) {
+                                    maxIndex = i;
+                                    maxScore = score;
+                                }
+                            }
+                        }
+
+                        if (maxIndex > -1) {
+                            game.sendAction(new CatanBuildRoadAction(this, maxIndex));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = Road.TOTAL_NUMBER_OF_ROAD_SPOTS - 1; i > -1; i--) {
+                            if (gameState.canBuildRoad(i)) {
+                                CatanGameState tempState = new CatanGameState(gameState);
+                                tempState.buildRoad(i);
+                                int score = 0;
+                                byte[] adjList = tempState.roadToBuildingAdjList[i];
+                                for (int k = 0; k < adjList.length; k++) {
+                                    if (tempState.canBuildSettlement(adjList[k])) {
+                                        byte[] tileAdjList = tempState.buildingToTileAdjList[adjList[k]];
+                                        for (int j = 0; j < tileAdjList.length; j++) {
+                                            if (tiles[tileAdjList[j]].getResource() == Tile.DESERT) {
+                                                score -= 5;
+                                            } else {
+                                                score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7)) / 2 + 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (score > maxScore) {
+                                    maxIndex = i;
+                                    maxScore = score;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(actions.size() > 0)
+                {
+                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                }
+
+                //Randomize the roads if no smart roads can be placed
+                if (gameState.playerHasRoadRes() && myHand.getLumber() > spotChecker && myHand.getBrick() > spotChecker) {
                     for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
                         if (gameState.canBuildRoad(i)) {
                             actions.add(new CatanBuildRoadAction(this, i));

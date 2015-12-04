@@ -176,7 +176,7 @@ public class CatanSurfaceView extends SurfaceView {
         updateABC();
 
         //display certain debugging features on the surfaceView
-        boolean DEBUG=false;
+        boolean DEBUG=true;
 
         drawBoard(canvas);
         if(gameState==null) {

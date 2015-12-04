@@ -2,6 +2,7 @@ package edu.up.cs301.catan;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.Random;
 import edu.up.cs301.game.infoMsg.GameState;
 
@@ -20,7 +21,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  *
  * @version Nov 2015
  * */
-public class CatanGameState extends GameState {
+public class CatanGameState extends GameState implements Serializable{
     private int playersID; //ID of the player whose turn it is
     private int numPlayers; //number of players for this game
     private int[] scores; //The scores of each of the players
