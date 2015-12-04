@@ -12,9 +12,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import edu.up.cs301.catan.actions.CatanAddResAction;
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
@@ -49,6 +52,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button buildSettlement;
     Button buildCity;
     Button endTurn;
+    Button trade;
     Button done;
     ImageView dice1;
     ImageView dice2;
@@ -324,6 +328,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                                 //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
                                 back_dim_layout.setVisibility(View.VISIBLE);
                                 CatanHumanPlayer.popupAlreadyOpen = false;
+                                updateButtonStates();
                             }
                         }
                     });
@@ -358,6 +363,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
+            trade.setClickable(false);
+            trade.setTextColor(Color.GRAY);
         } else if (buildRoadClicked) {
             //if initial setup
             if(myGameState.getHand(playerNum).getRoadsAvail() > 13) {
@@ -376,6 +383,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
+            trade.setClickable(false);
+            trade.setTextColor(Color.GRAY);
         } else if (buildSettlementClicked) {
             //if initial setup
             if(myGameState.getHand(playerNum).getSettlementsAvail() > 3 &&
@@ -396,6 +405,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildRoad.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
+            trade.setClickable(false);
+            trade.setTextColor(Color.GRAY);
         } else if (buildCityClicked) {
             //Make end turn button text be cancel
             endTurn.setText("Cancel");
@@ -409,6 +420,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             buildSettlement.setTextColor(Color.GRAY);
             buildRoad.setClickable(false);
             buildRoad.setTextColor(Color.GRAY);
+            trade.setClickable(false);
+            trade.setTextColor(Color.GRAY);
         } else {
             //Make end turn button text be cancel
             endTurn.setText("End Turn");
@@ -437,6 +450,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             } else {
                 buildSettlement.setClickable(true);
                 buildSettlement.setTextColor(Color.BLACK);
+            }
+            if(Integer.parseInt(numSheep.getText().toString()) >= 4 || Integer.parseInt(numBrick.getText().toString()) >= 4 ||
+                    Integer.parseInt(numOre.getText().toString()) >= 4 || Integer.parseInt(numWheat.getText().toString()) >= 4
+                    || Integer.parseInt(numWood.getText().toString()) >= 4){
+                trade.setClickable(true);
+                trade.setTextColor(Color.BLACK);
+            }else{
+                trade.setClickable(false);
+                trade.setTextColor(Color.GRAY);
             }
         }
     }
@@ -486,6 +508,94 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             updateButtonStates(); //change button colors
             //Figure out what was clicked on surface view
             mySurfaceView.waitForCitySelection(true);
+        } else if (v.equals(trade)){
+            //If all checks passed a game is started and popup appears saying who won.
+            LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
+
+            //Opens up the robber popup
+            final View popupView = layoutInflater.inflate(R.layout.trading_popup, null);
+
+            //Opens up the popup at the center of the screen
+            final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+            final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
+            back_dim_layout.setVisibility(View.GONE);
+
+            //Instance of class used for anonymous onClick class
+            final CatanHumanPlayer player = this;
+
+            final NumberPicker woodToLose = (NumberPicker) popupView.findViewById(R.id.woodNumber);
+            final NumberPicker wheatToLose = (NumberPicker) popupView.findViewById(R.id.wheatNumber);
+            final NumberPicker brickToLose = (NumberPicker) popupView.findViewById(R.id.brickNumber);
+            final NumberPicker sheepToLose = (NumberPicker) popupView.findViewById(R.id.sheepNumber);
+            final NumberPicker rockToLose = (NumberPicker) popupView.findViewById(R.id.rockNumber);
+
+            final NumberPicker woodToGain = (NumberPicker) popupView.findViewById(R.id.woodWant);
+            final NumberPicker wheatToGain = (NumberPicker) popupView.findViewById(R.id.wheatWant);
+            final NumberPicker brickToGain = (NumberPicker) popupView.findViewById(R.id.brickwant);
+            final NumberPicker sheepToGain = (NumberPicker) popupView.findViewById(R.id.sheepWant);
+            final NumberPicker rockToGain = (NumberPicker) popupView.findViewById(R.id.rockWant);
+
+
+            int numberOfWood = Integer.parseInt(numWood.getText().toString());
+            woodToLose.setMaxValue(numberOfWood/4);
+            woodToLose.setMinValue(0);
+
+            int numberOfWheat = Integer.parseInt(numWheat.getText().toString());
+            wheatToLose.setMaxValue(numberOfWheat/4);
+            wheatToLose.setMinValue(0);
+
+            int numberOfBrick = Integer.parseInt(numBrick.getText().toString());
+            rockToLose.setMaxValue(numberOfBrick/4);
+            rockToLose.setMinValue(0);
+
+            int numberOfSheep = Integer.parseInt(numSheep.getText().toString());
+            sheepToLose.setMaxValue(numberOfSheep/4);
+            sheepToLose.setMinValue(0);
+
+            int numberOfRock = Integer.parseInt(numOre.getText().toString());
+            rockToLose.setMaxValue(numberOfRock/4);
+            rockToLose.setMinValue(0);
+
+            final int maxTrade = numberOfBrick/4 + numberOfRock/4 + numberOfSheep/4 + numberOfWheat/4 + numberOfWood/4;
+            woodToGain.setMaxValue(maxTrade);
+            wheatToGain.setMaxValue(maxTrade);
+            rockToGain.setMaxValue(maxTrade);
+            sheepToGain.setMaxValue(maxTrade);
+            brickToGain.setMaxValue(maxTrade);
+
+            woodToGain.setMinValue(0);
+            wheatToGain.setMinValue(0);
+            rockToGain.setMinValue(0);
+            sheepToGain.setMinValue(0);
+            brickToGain.setMinValue(0);
+
+
+
+            //Dismisses the popup when the cancel button is clicked
+            Button btnDismiss = (Button) popupView.findViewById(R.id.bankPopupCancel);
+            btnDismiss.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    if(woodToGain.getValue() + sheepToGain.getValue() + wheatToGain.getValue() + brickToGain.getValue() + rockToGain.getValue() != woodToLose.getValue() + sheepToLose.getValue() + wheatToLose.getValue() + brickToLose.getValue() + rockToLose.getValue()){
+
+                    }else{
+                        game.sendAction(new CatanRemoveResAction(player, woodToLose.getValue() * 4, sheepToLose.getValue() * 4, wheatToLose.getValue() * 4, brickToLose.getValue() * 4, rockToLose.getValue() * 4));
+                        game.sendAction(new CatanAddResAction(player, woodToGain.getValue(), sheepToGain.getValue(),wheatToGain.getValue(), brickToGain.getValue(),rockToGain.getValue()));
+                        popupWindow.dismiss();
+                        back_dim_layout.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
+            Button btnCancel = (Button) popupView.findViewById(R.id.bankPopupLeave);
+            btnCancel.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    back_dim_layout.setVisibility(View.VISIBLE);
+                }
+            });
+
         } else if (v.equals(endTurn)){
             if (buildRoadClicked) {
                 buildRoadClicked = false;
@@ -596,13 +706,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateDownButton.setOnClickListener(this);
         rotateLeftButton.setOnClickListener(this);
 
-        //Initialize the buttons in the side panel
-        //TODO:Change button ids
-        buildRoad = (Button)activity.findViewById(R.id.button);
-        buildSettlement = (Button)activity.findViewById(R.id.button2);
-        buildCity = (Button)activity.findViewById(R.id.button3);
-        endTurn = (Button)activity.findViewById(R.id.button4);
-        done = (Button)activity.findViewById(R.id.button5);
+        //Initialize the buttons and things in the side panel
+        buildRoad = (Button)activity.findViewById(R.id.BuildRoad);
+        buildSettlement = (Button)activity.findViewById(R.id.BuildSettlement);
+        buildCity = (Button)activity.findViewById(R.id.BuildCity);
+        endTurn = (Button)activity.findViewById(R.id.EndTurn);
+        done = (Button)activity.findViewById(R.id.Done);
+        trade = (Button)activity.findViewById(R.id.Trade);
         dice1 = (ImageView)activity.findViewById(R.id.dice1);
         dice2 = (ImageView)activity.findViewById(R.id.dice2);
 
@@ -610,6 +720,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         buildSettlement.setOnClickListener(this);
         buildCity.setOnClickListener(this);
         endTurn.setOnClickListener(this);
+        trade.setOnClickListener(this);
         done.setOnClickListener(this);
 
         numWheat = (TextView) activity.findViewById(R.id.numWheat);

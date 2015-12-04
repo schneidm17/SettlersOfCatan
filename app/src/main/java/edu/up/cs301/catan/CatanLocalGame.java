@@ -1,5 +1,6 @@
 package edu.up.cs301.catan;
 
+import edu.up.cs301.catan.actions.CatanAddResAction;
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
@@ -72,8 +73,13 @@ public class CatanLocalGame extends LocalGame {
                         ((CatanRemoveResAction) action).wheatToLose, ((CatanRemoveResAction) action).brickToLose,
                         ((CatanRemoveResAction) action).rockToLose);
                 return true;
-            }
-            else if(action instanceof CatanRollAction)
+            }else if(action instanceof CatanAddResAction)
+            {
+                gameState.addResources(((CatanAddResAction) action).woodToGain, ((CatanAddResAction) action).sheepToGain,
+                        ((CatanAddResAction) action).wheatToGain, ((CatanAddResAction) action).brickToGain,
+                        ((CatanAddResAction) action).rockToGain);
+                return true;
+            }else if(action instanceof CatanRollAction)
             {
                 gameState.roll();
                 return true;

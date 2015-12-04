@@ -98,19 +98,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Build Road"
-                android:id="@+id/button" />
+                android:id="@+id/BuildRoad" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Build Settlement"
-                android:id="@+id/button2" />
+                android:id="@+id/BuildSettlement" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Build City"
-                android:id="@+id/button3" />
+                android:id="@+id/BuildCity" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trade"
+                android:id="@+id/Trade" />
 
         </LinearLayout>
 
@@ -579,16 +585,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Done"
-                android:id="@+id/button5" />
+                android:id="@+id/Done" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="End Turn"
-                android:id="@+id/button4" />
+                android:id="@+id/EndTurn"
+                android:focusableInTouchMode="false" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout><!-- From: file:/Users/matthewschneider/AndroidStudioProjects/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->
+</LinearLayout><!-- From: file:/C:/Users/goldey17/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->

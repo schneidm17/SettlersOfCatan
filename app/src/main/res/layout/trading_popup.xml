@@ -1,0 +1,234 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:id="@+id/bankPopupLayout"
+    android:background="@color/white">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trade Cards"
+        android:id="@+id/bankPopupTitle"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="What to get rid of(*4):"
+        android:id="@+id/textView3" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Wood"
+            android:id="@+id/woodLabel"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Wheat"
+            android:id="@+id/wheatLabel"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Rock"
+            android:id="@+id/rockLabel"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Sheep"
+            android:id="@+id/sheepLabel"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Brick"
+            android:id="@+id/brickLabel"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/woodNumber"
+            android:layout_gravity="right" />
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/wheatNumber"
+            android:layout_gravity="right" >
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rockNumber"
+            android:layout_gravity="right" />
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sheepNumber" />
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/brickNumber" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="What I want:"
+        android:id="@+id/textView4" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Wood"
+            android:id="@+id/textView5"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Wheat"
+            android:id="@+id/textView6"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Rock"
+            android:id="@+id/textView7"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Sheep"
+            android:id="@+id/textView8"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Brick"
+            android:id="@+id/textView9"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/woodWant"
+            android:layout_gravity="right" >
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/wheatWant"
+            android:layout_gravity="right" >
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/rockWant"
+            android:layout_gravity="right" >
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sheepWant" >
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/brickwant" >
+
+        </NumberPicker>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/bankPopupCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done"
+            android:textSize="30sp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/bankPopupLeave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="30sp"
+            android:layout_gravity="right" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -399,6 +399,17 @@ public class CatanGameState extends GameState {
         //Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
     }
 
+    //Method to add resources to a hand
+    public void addResources(int woodToGain, int sheepToGain, int wheatToGain, int brickToGain,
+                                int rockToGain)
+    {
+        hands[playersID].addLumber(woodToGain);
+        hands[playersID].addWool(sheepToGain);
+        hands[playersID].addWheat(wheatToGain);
+        hands[playersID].addBrick(brickToGain);
+        hands[playersID].addOre(rockToGain);
+    }
+
     //Method to return where the robber is located
     public int getRobber()
     {
