@@ -1,5 +1,7 @@
 package edu.up.cs301.catan.actions;
 
+import java.io.Serializable;
+
 import edu.up.cs301.game.Game;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
@@ -11,7 +13,7 @@ import edu.up.cs301.game.actionMsg.GameAction;
  * Purpose:
  * Represents a MoveRobber action sent to the localGame.
  */
-public class CatanMoveRobberAction extends GameAction{
+public class CatanMoveRobberAction extends GameAction implements Serializable {
 
     public int spot; //where to put the robber
     /**

@@ -242,12 +242,13 @@ public class CatanSurfaceView extends SurfaceView {
 
             Hand[] hands = gameState.getHands();
             for(int i=0; i<hands.length; i++) {
-                canvas.drawText("Player "+i+" res:",          20, 100+200*i, temp);
-                canvas.drawText(hands[i].getWheat()+" Wheat", 80, 130+200*i, temp);
-                canvas.drawText(hands[i].getWool()+" Sheep",  80, 160+200*i, temp);
-                canvas.drawText(hands[i].getLumber()+" Wood", 80, 190+200*i, temp);
-                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220 + 200 * i, temp);
-                canvas.drawText(hands[i].getOre()+" Ore",     80, 250+200*i, temp);
+                canvas.drawText("Player "+i+" res:",          20, 100+250*i, temp);
+                canvas.drawText(hands[i].getWheat()+" Wheat", 80, 130+250*i, temp);
+                canvas.drawText(hands[i].getWool()+" Sheep",  80, 160+250*i, temp);
+                canvas.drawText(hands[i].getLumber()+" Wood", 80, 190+250*i, temp);
+                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220 + 250 * i, temp);
+                canvas.drawText(hands[i].getOre()+" Ore",     80, 250+250*i, temp);
+                canvas.drawText(gameState.getScores()[i]+" Points",80, 280+250*i, temp);
             }
 
         }
