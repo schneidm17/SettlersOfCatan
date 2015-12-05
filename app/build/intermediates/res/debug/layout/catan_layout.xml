@@ -115,7 +115,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Trade"
+                android:text="Trade with Bank"
                 android:id="@+id/Trade" />
 
         </LinearLayout>
@@ -598,4 +598,4 @@
 
     </LinearLayout>
 
-</LinearLayout><!-- From: file:/Users/matthewschneider/AndroidStudioProjects/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->
+</LinearLayout><!-- From: file:/C:/Users/oney18/Desktop/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->

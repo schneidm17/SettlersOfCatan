@@ -323,7 +323,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                             int[] cardsToLose = selectView.getCardsToRemove();
                             boolean pickedResources = ((cardsToLose[0] + cardsToLose[1]+ cardsToLose[2]+ cardsToLose[3]+ cardsToLose[4]) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5));
                             if(pickedResources){
-                                popupWindow.dismiss(); //TODO: figure out why this works half the time, make End Turn unclickable while popup is active
+                                popupWindow.dismiss();
                                 game.sendAction(new CatanRemoveResAction(player, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
                                 //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
                                 back_dim_layout.setVisibility(View.VISIBLE);
