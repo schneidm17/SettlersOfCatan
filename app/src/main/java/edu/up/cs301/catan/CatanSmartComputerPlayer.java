@@ -429,7 +429,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             int wheatToLose = 0;
             int brickToLose = 0;
             int rockToLose = 0;
-            int totalToLose = (int) Math.ceil(myHand.getTotal()*0.5);
+            int totalToLose = (int) Math.floor(myHand.getTotal()*0.5);
 
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
                 while(true) //The breaks in the first if statements break this loop

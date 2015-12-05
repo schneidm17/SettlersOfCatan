@@ -312,7 +312,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             int wheatToLose = 0;
             int brickToLose = 0;
             int rockToLose = 0;
-            int totalToLose = (int) Math.ceil(myHand.getTotal()*0.5);
+            int totalToLose = (int) Math.floor(myHand.getTotal()*0.5);
 
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
             switch(RNG.nextInt(5))

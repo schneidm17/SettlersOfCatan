@@ -308,7 +308,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
                     TextView text = (TextView)popupView.findViewById(R.id.cardSelectPopupText);
                     text.setText("A seven has been rolled and you have "+GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal()+" cards\n" +
-                            "You must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5) + " cards.");
+                            "You must discard " + (int) Math.floor(GAME_STATE.getHand(playerNum).getTotal()*0.5) + " cards.");
 
                     final CardSelectView selectView = (CardSelectView)popupView.findViewById(R.id.cardSelectionView);
                     selectView.setGameState(GAME_STATE);
@@ -321,7 +321,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     btnDismiss.setOnClickListener(new Button.OnClickListener() {
                         public void onClick(View v) {
                             int[] cardsToLose = selectView.getCardsToRemove();
-                            boolean pickedResources = ((cardsToLose[0] + cardsToLose[1]+ cardsToLose[2]+ cardsToLose[3]+ cardsToLose[4]) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()*0.5));
+                            boolean pickedResources = ((cardsToLose[0] + cardsToLose[1]+ cardsToLose[2]+ cardsToLose[3]+ cardsToLose[4]) == Math.floor(GAME_STATE.getHand(playerNum).getTotal()*0.5));
                             if(pickedResources){
                                 popupWindow.dismiss();
                                 game.sendAction(new CatanRemoveResAction(player, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
