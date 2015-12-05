@@ -393,7 +393,7 @@ public class CatanGameState extends GameState implements Serializable{
         hands[playersID].removeWheat(wheatToLose);
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
-        if(oldTot <= 7 || hands[playersID].getTotal() <= Math.ceil(oldTot*0.5)) { //Makes sure correct amount removed
+        if(oldTot <= 7 || hands[playersID].getTotal() <= Math.floor(oldTot*0.5)) { //Makes sure correct amount removed
             robberWasRolled[playersID] = false;
             //Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
         }
