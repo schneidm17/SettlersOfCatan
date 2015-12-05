@@ -190,9 +190,6 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         break;
                 }
 
-                //Update the buttons based on what can be built
-                updateButtonStates();
-
                 //Popup to display at the beginning of the players turn to tell them what resources
                 //they got during computer players turns
                 if(myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTurn){
@@ -344,6 +341,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 mySurfaceView.waitForRobberPlacement(true);
                 updateButtonStates();
             }
+
+            //Update the buttons based on what can be built
+            updateButtonStates();
         }
     }//receiveInfo
 
@@ -547,8 +547,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             wheatToLose.setMinValue(0);
 
             int numberOfBrick = Integer.parseInt(numBrick.getText().toString());
-            rockToLose.setMaxValue(numberOfBrick/4);
-            rockToLose.setMinValue(0);
+            brickToLose.setMaxValue(numberOfBrick/4);
+            brickToLose.setMinValue(0);
 
             int numberOfSheep = Integer.parseInt(numSheep.getText().toString());
             sheepToLose.setMaxValue(numberOfSheep/4);
@@ -783,6 +783,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         oreCards[7] = (ImageView) activity.findViewById(R.id.ore8);
         oreCards[8] = (ImageView) activity.findViewById(R.id.ore9);
         oreCards[9] = (ImageView) activity.findViewById(R.id.ore10);
+
+        updateButtonStates();
     }//setAsGui
 
 }// class CounterHumanPlayer
