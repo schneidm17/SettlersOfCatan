@@ -32,10 +32,11 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.infoMsg.GameOverInfo;
 
 /**
- * A GUI for a human to play Catan. This default version displays the GUI but is incomplete
+ * A GUI for a human to play Catan. Contains all the method to make the GUI, send actions, and receives
+ * the gamestate.
  *
  * @author Oney, Goldey, Schneider
- * @version November 2015
+ * @version December 2015
  */
 public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener, View.OnTouchListener {
 
@@ -78,6 +79,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public static Boolean discardPopupOpened = false;
     public static Boolean nextTurn = false;
 
+    //Booleans to control what buttons have been clicked
     private Boolean builtSettlement1 = false;
     private Boolean builtRoad1 = false;
     private Boolean builtSettlement2 = false;
@@ -103,7 +105,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     }
 
     /**
-     * callback method when we get a message (e.g., from the game)
+     * Method that takes in the gamestate and decides what to do with it
      *
      * @param info the message
      */
@@ -115,7 +117,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             this.myGameState = (CatanGameState) info;
             mySurfaceView.setGameState(this.myGameState);
 
-            //If the initial round
+            //If the initial round do initial setup
             if(!builtSettlement1){
                 buildSettlementClicked = true;
                 updateButtonStates();
@@ -287,8 +289,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 //Popup will only be created if it is the players turn to make a move
                 if(GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()){
                     discardPopupOpened = true;
-
-                    //If all checks passed a game is started and popup appears saying who won.
+                    popupAlreadyOpen = true;
                     LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
 
                     //Opens up the robber popup
@@ -298,11 +299,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
+                    //Dims the background
                     final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
                     back_dim_layout.setVisibility(View.GONE);
 
-                    popupAlreadyOpen = true;
-
+                    //Text for popup
                     TextView text = (TextView)popupView.findViewById(R.id.cardSelectPopupText);
                     text.setText("A seven has been rolled and you have "+GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal()+" cards\n" +
                             "You must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()/2) + " cards.");
@@ -451,6 +452,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 buildSettlement.setClickable(true);
                 buildSettlement.setTextColor(Color.BLACK);
             }
+            //Make trade button visible if more than 4 of a resource
             if(Integer.parseInt(numSheep.getText().toString()) >= 4 || Integer.parseInt(numBrick.getText().toString()) >= 4 ||
                     Integer.parseInt(numOre.getText().toString()) >= 4 || Integer.parseInt(numWheat.getText().toString()) >= 4
                     || Integer.parseInt(numWood.getText().toString()) >= 4){
@@ -464,28 +466,27 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     }
 
     /**
-     * this method gets called when the user clicks the '+' or '-' button. It
-     * creates a new CounterMoveAction to return to the parent activity.
+     * Method to handle when any of the buttons on the GUI are clicked
      *
      * @param v the button that was clicked
      */
     public void onClick(View v) {
-        if (v.equals(rotateUpButton)) {
+        if (v.equals(rotateUpButton)) {//rotates board up
             Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
             mySurfaceView.rotateUp();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
-        } else if (v.equals(rotateRightButton)) {
+        } else if (v.equals(rotateRightButton)) {//rotates board right
             Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
             mySurfaceView.rotateRight();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
-        } else if (v.equals(rotateDownButton)) {
+        } else if (v.equals(rotateDownButton)) {//rotates board down
             Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
             mySurfaceView.rotateDown();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
-        } else if (v.equals(rotateLeftButton)) {
+        } else if (v.equals(rotateLeftButton)) {//rotates board left
             Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
             mySurfaceView.rotateLeft();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
@@ -509,35 +510,37 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             //Figure out what was clicked on surface view
             mySurfaceView.waitForCitySelection(true);
         } else if (v.equals(trade)){
-            //If all checks passed a game is started and popup appears saying who won.
             LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
 
-            //Opens up the robber popup
+            //Opens up the trade popup
             final View popupView = layoutInflater.inflate(R.layout.trading_popup, null);
 
             //Opens up the popup at the center of the screen
             final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
+            //Dims background
             final LinearLayout back_dim_layout = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
             back_dim_layout.setVisibility(View.GONE);
 
             //Instance of class used for anonymous onClick class
             final CatanHumanPlayer player = this;
 
+            //number of resources they can trade
             final NumberPicker woodToLose = (NumberPicker) popupView.findViewById(R.id.woodNumber);
             final NumberPicker wheatToLose = (NumberPicker) popupView.findViewById(R.id.wheatNumber);
             final NumberPicker brickToLose = (NumberPicker) popupView.findViewById(R.id.brickNumber);
             final NumberPicker sheepToLose = (NumberPicker) popupView.findViewById(R.id.sheepNumber);
             final NumberPicker rockToLose = (NumberPicker) popupView.findViewById(R.id.rockNumber);
 
+            //number of resources that they can lose
             final NumberPicker woodToGain = (NumberPicker) popupView.findViewById(R.id.woodWant);
             final NumberPicker wheatToGain = (NumberPicker) popupView.findViewById(R.id.wheatWant);
             final NumberPicker brickToGain = (NumberPicker) popupView.findViewById(R.id.brickwant);
             final NumberPicker sheepToGain = (NumberPicker) popupView.findViewById(R.id.sheepWant);
             final NumberPicker rockToGain = (NumberPicker) popupView.findViewById(R.id.rockWant);
 
-
+            //Set values for the number pickers for what they can lose
             int numberOfWood = Integer.parseInt(numWood.getText().toString());
             woodToLose.setMaxValue(numberOfWood/4);
             woodToLose.setMinValue(0);
@@ -558,6 +561,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             rockToLose.setMaxValue(numberOfRock/4);
             rockToLose.setMinValue(0);
 
+            //Set values for the number pickers for what they can gain
             final int maxTrade = numberOfBrick/4 + numberOfRock/4 + numberOfSheep/4 + numberOfWheat/4 + numberOfWood/4;
             woodToGain.setMaxValue(maxTrade);
             wheatToGain.setMaxValue(maxTrade);
@@ -571,14 +575,12 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             sheepToGain.setMinValue(0);
             brickToGain.setMinValue(0);
 
-
-
-            //Dismisses the popup when the cancel button is clicked
+            //Dismisses the popup when the done button is clicked and send trade actions
             Button btnDismiss = (Button) popupView.findViewById(R.id.bankPopupCancel);
             btnDismiss.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     if(woodToGain.getValue() + sheepToGain.getValue() + wheatToGain.getValue() + brickToGain.getValue() + rockToGain.getValue() != woodToLose.getValue() + sheepToLose.getValue() + wheatToLose.getValue() + brickToLose.getValue() + rockToLose.getValue()){
-
+                        //Do nothing invalid trade
                     }else{
                         game.sendAction(new CatanRemoveResAction(player, woodToLose.getValue() * 4, sheepToLose.getValue() * 4, wheatToLose.getValue() * 4, brickToLose.getValue() * 4, rockToLose.getValue() * 4));
                         game.sendAction(new CatanAddResAction(player, woodToGain.getValue(), sheepToGain.getValue(),wheatToGain.getValue(), brickToGain.getValue(),rockToGain.getValue()));
@@ -588,6 +590,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 }
             });
 
+            //Dismiss the popup when the cancel button is clicked
             Button btnCancel = (Button) popupView.findViewById(R.id.bankPopupLeave);
             btnCancel.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
@@ -618,14 +621,14 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 nextTurn = true;
             }
         } else if (v.equals(done)) {
-            if(myGameState.isRolled7()) {
+            if(myGameState.isRolled7()) { //move the robber
                 int spot = mySurfaceView.getTileLastSelected();
                 if(spot != -1) {
                     mySurfaceView.waitForRobberPlacement(false);
                     updateButtonStates();
                     game.sendAction(new CatanMoveRobberAction(this, spot));
                 }
-            } else if (buildRoadClicked) {
+            } else if (buildRoadClicked) { //Build a road
                 int spot = mySurfaceView.getRoadLastSelected();
                 if(spot != -1) {
                     if(!builtRoad1) {
@@ -638,7 +641,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     updateButtonStates();
                     game.sendAction(new CatanBuildRoadAction(this,spot));
                 }
-            } else if(buildSettlementClicked) {
+            } else if(buildSettlementClicked) { //build a settlement
                 int spot = mySurfaceView.getBuildingLastSelected();
                 if(spot != -1) {
                     if(!builtSettlement1) {
@@ -651,7 +654,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     updateButtonStates();
                     game.sendAction(new CatanBuildSettlementAction(this,spot));
                 }
-            } else if(buildCityClicked) {
+            } else if(buildCityClicked) { //build a city
                 int spot = mySurfaceView.getBuildingLastSelected();
                 if(spot != -1) {
                     buildCityClicked=false;
@@ -663,6 +666,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         }
     }// onClick
 
+    //Method to handle when the surface view is touched
     public boolean onTouch(View v, MotionEvent e) {
         if(v.equals(mySurfaceView) && myGameState != null) {
             if(myGameState.isRolled7()) {

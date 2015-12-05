@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/jgoldey/Desktop/SettlersOfCatan/app/src/main/res/values/color.xml -->
+    <!-- From: file:/C:/Users/goldey17/Desktop/SettlersOfCatan/app/src/main/res/values/color.xml -->
     <eat-comment/>
     <color name="black">#000</color>
     <color name="green">#0F0</color>
     <color name="red">#ff0000</color>
     <color name="white">#ffffff</color>
-    <!-- From: file:/C:/Users/jgoldey/Desktop/SettlersOfCatan/app/src/main/res/values/dimen.xml -->
+    <!-- From: file:/C:/Users/goldey17/Desktop/SettlersOfCatan/app/src/main/res/values/dimen.xml -->
     <eat-comment/>
     <dimen name="config_horiz_margin">20dp</dimen>
     <dimen name="del_player_button_size">35dp</dimen>
@@ -14,7 +14,7 @@
     <dimen name="table_heading_font_size">14sp</dimen>
     <dimen name="table_row_horiz_pad">50dp</dimen>
     <dimen name="table_row_vert_pad">10dp</dimen>
-    <!-- From: file:/C:/Users/jgoldey/Desktop/SettlersOfCatan/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/goldey17/Desktop/SettlersOfCatan/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="add_player">Add Player</string>
     <string name="app_name">Settlers of Catan</string>
@@ -38,7 +38,7 @@
     <string name="server_ip_code">Server\'s IP Code:</string>
     <string name="start_the_game">Start Game!</string>
     <string name="title_activity_game_main">Shall We Play A Game?</string>
-    <!-- From: file:/C:/Users/jgoldey/Desktop/SettlersOfCatan/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/goldey17/Desktop/SettlersOfCatan/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme.Light"/>
 </resources>

@@ -19,7 +19,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  * @author Matthew Schneider
  * @author Jarrett Oney
  *
- * @version Nov 2015
+ * @version December 2015
  * */
 public class CatanGameState extends GameState implements Serializable{
     private int playersID; //ID of the player whose turn it is
@@ -38,7 +38,7 @@ public class CatanGameState extends GameState implements Serializable{
     private boolean [][] initialSetup;
     private boolean round1Placing;
     private boolean round2Placing;
-    public static final int VICTORY_POINTS_TO_WIN = 8;
+    public static final int VICTORY_POINTS_TO_WIN = 10;
     private int turnCount;
     private int firstPlayer;
 
