@@ -19,7 +19,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  * @author Matthew Schneider
  * @author Jarrett Oney
  *
- * @version Nov 2015
+ * @version December 2015
  * */
 public class CatanGameState extends GameState implements Serializable{
     private int playersID; //ID of the player whose turn it is
