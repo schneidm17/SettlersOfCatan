@@ -136,6 +136,12 @@ public class CatanSurfaceView extends SurfaceView {
             {-1.2, 5.2 * r3}, {-2.1, 4.3 * r3}, {-2.4, 4.6 * r3}, {-2.7, 4.5 * r3}, {-2.4, 4.2 * r3},
             {-3.8, 4.2 * r3}, {-3.5, 4.5 * r3}, {-3.8, 4.6 * r3}, {-5.2, 3.2 * r3}};
 
+    public final boolean[] shiftCity = {true, false, true, false, true, false, true, true, false, true,
+            false, true, false, true, false, true, true, false, true, false, true, false, true, false,
+            true, false, true, false, true, false, true, false, true, false, true, false, true, false,
+            false, true, false, true, false, true, false, true, false, false, true, false, true,
+            false, true, false};
+
     public CatanSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
@@ -187,8 +193,8 @@ public class CatanSurfaceView extends SurfaceView {
             message.setTextSize(90);
             message.setTextAlign(Paint.Align.CENTER);
             message.setTypeface(Typeface.SERIF);
-            canvas.drawText("Waiting for other players", cx, cy-50, message);
-            canvas.drawText("to join the game...", cx, cy+50, message);
+            canvas.drawText("Waiting for other players", cx, cy, message);
+            canvas.drawText("to join the game...", cx, cy+100, message);
             return;
         }
 
@@ -239,18 +245,22 @@ public class CatanSurfaceView extends SurfaceView {
         if(DEBUG) {
             temp.setColor(Color.BLACK);
             temp.setTextSize(28);
-            canvas.drawText("Current player: "+gameState.getPlayersID(), 20, 50, temp);
+            canvas.drawText("Current player: " + gameState.getPlayersID(), 20, 50, temp);
             canvas.drawText("Turn number: "+gameState.getTurnCount(), 20, 80, temp);
 
+            canvas.drawText("board phi: "+phi+"°", 20, 130, temp);
+            canvas.drawText("board theta: "+theta+"°", 20, 160, temp);
+
+
             Hand[] hands = gameState.getHands();
-            for(int i=0; i<hands.length; i++) {
-                canvas.drawText("Player "+i+" res:",               20, 130+240*i, temp);
-                canvas.drawText(hands[i].getWheat()+" Wheat",      80, 160+240*i, temp);
-                canvas.drawText(hands[i].getWool()+" Sheep",       80, 190+240*i, temp);
-                canvas.drawText(hands[i].getLumber()+" Wood",      80, 220+240*i, temp);
-                canvas.drawText(hands[i].getBrick()+" Brick",      80, 250+240*i, temp);
-                canvas.drawText(hands[i].getOre()+" Ore",          80, 280+240*i, temp);
-                canvas.drawText(gameState.getScores()[i]+" Points",80, 310+240*i, temp);
+            for(int i=0; i<gameState.getNumPlayers(); i++) {
+                canvas.drawText("Player "+i+" res:",               20, 210+240*i, temp);
+                canvas.drawText(hands[i].getWheat()+" Wheat",      80, 240+240*i, temp);
+                canvas.drawText(hands[i].getWool()+" Sheep",       80, 270+240*i, temp);
+                canvas.drawText(hands[i].getLumber()+" Wood",      80, 300+240*i, temp);
+                canvas.drawText(hands[i].getBrick()+" Brick",      80, 330+240*i, temp);
+                canvas.drawText(hands[i].getOre()+" Ore",          80, 360+240*i, temp);
+                canvas.drawText(gameState.getScores()[i]+" Points",80, 390+240*i, temp);
             }
 
         }
@@ -318,35 +328,68 @@ public class CatanSurfaceView extends SurfaceView {
         double x = sites[location][0];
         double y = sites[location][1];
 
-        double pts[][] = {
-                {x - 0.25, y - 0.25, 0},
-                {x + 0.75, y - 0.25, 0},
-                {x + 0.75, y + 0.25, 0},
-                {x - 0.25, y + 0.25, 0},
-                {x + 0.25, y - 0.25, 0.25},
-                {x + 0.75, y - 0.25, 0.25},
-                {x + 0.75, y + 0.25, 0.25},
-                {x + 0.25, y + 0.25, 0.25},
-                {x - 0.25, y - 0.25, 0.5},
-                {x,        y - 0.25, 0.75},
-                {x + 0.25, y - 0.25, 0.5},
-                {x + 0.25, y + 0.25, 0.5},
-                {x,        y + 0.25, 0.75},
-                {x - 0.25, y + 0.25, 0.5}};
+        if(shiftCity[location]) {
+            double pts[][] = {
+                    {x - 0.75, y - 0.25, 0},
+                    {x + 0.25, y - 0.25, 0},
+                    {x + 0.25, y + 0.25, 0},
+                    {x - 0.75, y + 0.25, 0},
+                    {x - 0.25, y - 0.25, 0.25},
+                    {x + 0.25, y - 0.25, 0.25},
+                    {x + 0.25, y + 0.25, 0.25},
+                    {x - 0.25, y + 0.25, 0.25},
+                    {x - 0.75, y - 0.25, 0.5},
+                    {x - 0.5,  y - 0.25, 0.75},
+                    {x - 0.25, y - 0.25, 0.5},
+                    {x - 0.25, y + 0.25, 0.5},
+                    {x - 0.5,  y + 0.25, 0.75},
+                    {x - 0.75, y + 0.25, 0.5}};
 
-        double faces[][][] = {
-                {pts[4], pts[7], pts[6], pts[5]},
-                {pts[1], pts[5], pts[6], pts[2]},
-                {pts[4], pts[10], pts[11], pts[7]},
-                {pts[0], pts[3], pts[13], pts[8]},
-                {pts[2], pts[6], pts[7], pts[11], pts[12], pts[13], pts[3]},
-                {pts[0], pts[8], pts[9], pts[10], pts[4], pts[5], pts[1]},
-                {pts[12], pts[11], pts[10], pts[9]},
-                {pts[8], pts[13], pts[12], pts[9]}
-        };
+            double faces[][][] = {
+                    {pts[4], pts[7], pts[6], pts[5]},
+                    {pts[1], pts[5], pts[6], pts[2]},
+                    {pts[4], pts[10], pts[11], pts[7]},
+                    {pts[0], pts[3], pts[13], pts[8]},
+                    {pts[2], pts[6], pts[7], pts[11], pts[12], pts[13], pts[3]},
+                    {pts[0], pts[8], pts[9], pts[10], pts[4], pts[5], pts[1]},
+                    {pts[12], pts[11], pts[10], pts[9]},
+                    {pts[8], pts[13], pts[12], pts[9]}
+            };
 
-        for (double[][] face : faces) {
-            drawFace(canvas, color, face);
+            for (double[][] face : faces) {
+                drawFace(canvas, color, face);
+            }
+        } else {
+            double pts[][] = {
+                    {x - 0.25, y - 0.25, 0},
+                    {x + 0.75, y - 0.25, 0},
+                    {x + 0.75, y + 0.25, 0},
+                    {x - 0.25, y + 0.25, 0},
+                    {x + 0.25, y - 0.25, 0.25},
+                    {x + 0.75, y - 0.25, 0.25},
+                    {x + 0.75, y + 0.25, 0.25},
+                    {x + 0.25, y + 0.25, 0.25},
+                    {x - 0.25, y - 0.25, 0.5},
+                    {x, y - 0.25, 0.75},
+                    {x + 0.25, y - 0.25, 0.5},
+                    {x + 0.25, y + 0.25, 0.5},
+                    {x, y + 0.25, 0.75},
+                    {x - 0.25, y + 0.25, 0.5}};
+
+            double faces[][][] = {
+                    {pts[4], pts[7], pts[6], pts[5]},
+                    {pts[1], pts[5], pts[6], pts[2]},
+                    {pts[4], pts[10], pts[11], pts[7]},
+                    {pts[0], pts[3], pts[13], pts[8]},
+                    {pts[2], pts[6], pts[7], pts[11], pts[12], pts[13], pts[3]},
+                    {pts[0], pts[8], pts[9], pts[10], pts[4], pts[5], pts[1]},
+                    {pts[12], pts[11], pts[10], pts[9]},
+                    {pts[8], pts[13], pts[12], pts[9]}
+            };
+
+            for (double[][] face : faces) {
+                drawFace(canvas, color, face);
+            }
         }
     }
 
@@ -584,68 +627,72 @@ public class CatanSurfaceView extends SurfaceView {
             path.lineTo(mapX(x + 1, y - r3), mapY(x + 1, y - r3));
             path.close();
 
-            switch (CatanGameState.tileTypes[i]) {
-                case Tile.BRICK:
-                    temp.setColor(brick);
-                    break;
-                case Tile.WHEAT:
-                    temp.setColor(wheat);
-                    break;
-                case Tile.WOOL:
-                    temp.setColor(wool);
-                    break;
-                case Tile.LUMBER:
-                    temp.setColor(wood);
-                    break;
-                case Tile.ORE:
-                    temp.setColor(stone);
-                    break;
-                default:
-                    temp.setColor(sand);
-                    break;
-            }
-            canvas.drawPath(path, temp);
-            canvas.drawPath(path, outline);
-            int numWidth=(int)(2000/distance(x,y,0));
-            int numHeight=(int)(2000*Math.cos(phi*deg)/distance(x,y, 0));
+            if(gameState != null) {
+                switch (gameState.getTiles()[i].getResource()) {
+                    case Tile.BRICK:
+                        temp.setColor(brick);
+                        break;
+                    case Tile.WHEAT:
+                        temp.setColor(wheat);
+                        break;
+                    case Tile.WOOL:
+                        temp.setColor(wool);
+                        break;
+                    case Tile.LUMBER:
+                        temp.setColor(wood);
+                        break;
+                    case Tile.ORE:
+                        temp.setColor(stone);
+                        break;
+                    default:
+                        temp.setColor(sand);
+                        break;
+                }
+                canvas.drawPath(path, temp);
+                canvas.drawPath(path, outline);
+                int numWidth = (int) (2000 / distance(x, y, 0));
+                int numHeight = (int) (2000 * Math.cos(phi * deg) / distance(x, y, 0));
 
-            switch (CatanGameState.rollNums[i]) {
-                case 2:
-                    bitmap = Bitmap.createScaledBitmap(num2, numWidth, numHeight, true);
-                    break;
-                case 3:
-                    bitmap = Bitmap.createScaledBitmap(num3, numWidth, numHeight, true);
-                    break;
-                case 4:
-                    bitmap = Bitmap.createScaledBitmap(num4, numWidth, numHeight, true);
-                    break;
-                case 5:
-                    bitmap = Bitmap.createScaledBitmap(num5, numWidth, numHeight, true);
-                    break;
-                case 6:
-                    bitmap = Bitmap.createScaledBitmap(num6, numWidth, numHeight, true);
-                    break;
-                case 8:
-                    bitmap = Bitmap.createScaledBitmap(num8, numWidth, numHeight, true);
-                    break;
-                case 9:
-                    bitmap = Bitmap.createScaledBitmap(num9, numWidth, numHeight, true);
-                    break;
-                case 10:
-                    bitmap = Bitmap.createScaledBitmap(num10, numWidth, numHeight, true);
-                    break;
-                case 11:
-                    bitmap = Bitmap.createScaledBitmap(num11, numWidth, numHeight, true);
-                    break;
-                case 12:
-                    bitmap = Bitmap.createScaledBitmap(num12, numWidth, numHeight, true);
-                    break;
-                default:
-                    bitmap = null;
-                    break;
+                switch (gameState.getTiles()[i].getRollNumber()) {
+                    case 2:
+                        bitmap = Bitmap.createScaledBitmap(num2, numWidth, numHeight, true);
+                        break;
+                    case 3:
+                        bitmap = Bitmap.createScaledBitmap(num3, numWidth, numHeight, true);
+                        break;
+                    case 4:
+                        bitmap = Bitmap.createScaledBitmap(num4, numWidth, numHeight, true);
+                        break;
+                    case 5:
+                        bitmap = Bitmap.createScaledBitmap(num5, numWidth, numHeight, true);
+                        break;
+                    case 6:
+                        bitmap = Bitmap.createScaledBitmap(num6, numWidth, numHeight, true);
+                        break;
+                    case 8:
+                        bitmap = Bitmap.createScaledBitmap(num8, numWidth, numHeight, true);
+                        break;
+                    case 9:
+                        bitmap = Bitmap.createScaledBitmap(num9, numWidth, numHeight, true);
+                        break;
+                    case 10:
+                        bitmap = Bitmap.createScaledBitmap(num10, numWidth, numHeight, true);
+                        break;
+                    case 11:
+                        bitmap = Bitmap.createScaledBitmap(num11, numWidth, numHeight, true);
+                        break;
+                    case 12:
+                        bitmap = Bitmap.createScaledBitmap(num12, numWidth, numHeight, true);
+                        break;
+                    default:
+                        bitmap = null;
+                        break;
+                }
+                if (bitmap != null)
+                    canvas.drawBitmap(bitmap, mapX(x, y) - numWidth / 2, mapY(x, y) - numHeight / 2, null);
+            } else {
+                canvas.drawPath(path, outline);
             }
-            if(bitmap!=null)
-                canvas.drawBitmap(bitmap, mapX(x, y)-numWidth/2, mapY(x, y)-numHeight/2, null);
         }
     }
 

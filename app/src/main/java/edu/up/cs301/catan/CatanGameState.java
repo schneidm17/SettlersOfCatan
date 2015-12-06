@@ -20,7 +20,7 @@ import edu.up.cs301.game.infoMsg.GameState;
  * @author Jarrett Oney
  *
  * @version December 2015
- * */
+ */
 public class CatanGameState extends GameState implements Serializable{
     private int playersID; //ID of the player whose turn it is
     private int numPlayers; //number of players for this game
@@ -109,21 +109,51 @@ public class CatanGameState extends GameState implements Serializable{
             45, 46}, {39, 40, 41, 47, 48, 49}, {41, 42, 43, 49, 50, 51}, {43, 44, 45, 51, 52, 53}};
 
     //List of the resource that each tile is
-    public static final int[] tileTypes = {Tile.LUMBER, Tile.WOOL, Tile.WHEAT, Tile.BRICK, Tile.ORE,
+    private int[] tileTypes = {Tile.LUMBER, Tile.WOOL, Tile.WHEAT, Tile.BRICK, Tile.ORE,
             Tile.BRICK, Tile.WOOL, Tile.DESERT, Tile.LUMBER, Tile.WHEAT, Tile.LUMBER, Tile.WHEAT,
             Tile.BRICK, Tile.WOOL, Tile.WOOL, Tile.ORE, Tile.ORE, Tile.WHEAT, Tile.LUMBER};
 
     //List of the number tile on each tile
-    public static final byte[] rollNums = {11, 12, 9, 4, 6, 5, 10, 0, 3, 11, 4, 8, 8, 10, 9, 3, 5, 2, 6};
+    private byte[] rollNums = new byte[19];
+
+    //used to randomize the board
+    private static final byte[] numOrder =  {16, 17, 18, 15, 11, 6, 2, 1, 0, 3, 7, 12, 13,
+            14, 10, 5, 4, 8, 9}; //order the numbers are placed
+    private static final byte[] numValues = {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4,
+            5, 6, 3, 11}; //values of the numbers on the tiles (A-R)
 
     //Random variable for generating random numbers
-    private Random rng = new Random();
+    private Random rng;
 
     //Default constructor for the game state that, sets first player to player0, initializes all
     //players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
     //the roads, tiles, buildings, and players hands.
     public CatanGameState()
     {
+        //initialize the random number generator
+        rng = new Random();
+        rng.setSeed(System.currentTimeMillis());
+
+        //randomize the game board
+        for(int i=18; i>0; i--) {
+            int index = rng.nextInt(i + 1);
+            // Simple swap
+            int temp = tileTypes[index];
+            tileTypes[index] = tileTypes[i];
+            tileTypes[i] = temp;
+        }
+        //put the numbers in the right spot
+        int hasGottenToDesertYet = 0;
+        for(int i=0; i<19; i++) {
+            if(tileTypes[numOrder[i]]==Tile.DESERT) {
+                hasGottenToDesertYet=1;
+                robber = numOrder[i];
+                rollNums[numOrder[i]] = 0;
+                continue;
+            }
+            rollNums[numOrder[i]]=numValues[i-hasGottenToDesertYet];
+        }
+
         playersID = rng.nextInt(3);
         firstPlayer = playersID;
 
@@ -133,7 +163,7 @@ public class CatanGameState extends GameState implements Serializable{
         }
         die1 = 1;
         die2 = 1;
-        robber = 7;
+        //robber = 7;
         rolled7 = false;
         needToRoll = false;
         round1Placing = true;

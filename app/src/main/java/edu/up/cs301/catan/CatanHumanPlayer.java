@@ -29,7 +29,6 @@ import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
-import edu.up.cs301.game.infoMsg.GameOverInfo;
 
 /**
  * A GUI for a human to play Catan. Contains all the method to make the GUI, send actions, and receives
@@ -306,7 +305,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     //Text for popup
                     TextView text = (TextView)popupView.findViewById(R.id.cardSelectPopupText);
                     text.setText("A seven has been rolled and you have "+GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal()+" cards\n" +
-                            "You must discard " + (int) Math.ceil(GAME_STATE.getHand(playerNum).getTotal()/2) + " cards.");
+                            "You must discard " + (GAME_STATE.getHand(playerNum).getTotal()/2) + " cards.");
 
                     final CardSelectView selectView = (CardSelectView)popupView.findViewById(R.id.cardSelectionView);
                     selectView.setGameState(GAME_STATE);
@@ -319,8 +318,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     btnDismiss.setOnClickListener(new Button.OnClickListener() {
                         public void onClick(View v) {
                             int[] cardsToLose = selectView.getCardsToRemove();
-                            boolean pickedResources = ((cardsToLose[0] + cardsToLose[1]+ cardsToLose[2]+ cardsToLose[3]+ cardsToLose[4]) == Math.ceil(GAME_STATE.getHand(playerNum).getTotal()/2));
-                            if(pickedResources){
+                            if(selectView.enoughCardsSelected()){
                                 popupWindow.dismiss();
                                 game.sendAction(new CatanRemoveResAction(player, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
                                 //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());

@@ -158,6 +158,10 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
         return false;
     }
 
+    public boolean enoughCardsSelected() {
+        return cardsToLose == cardsLost;
+    }
+
     public int[] getCardsToRemove() {
         //woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
         int[] cardsToRemove = {cards[7],cards[6],cards[5],cards[8], cards[9]};
