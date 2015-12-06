@@ -408,7 +408,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 if (hand.getWool() > 4) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 4, 0, -1, 0));
                     return true;
-                } else if (hand.getOre() > 4) {
+                } else if (hand.getOre() >= 4) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, -1, 4));
                     return true;
                 } else if (hand.getLumber() > 4) {
@@ -424,7 +424,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 if (hand.getWool() > 4) {
                     game.sendAction(new CatanRemoveResAction(this, -1, 4, 0, 0, 0));
                     return true;
-                } else if (hand.getOre() > 4) {
+                } else if (hand.getOre() >= 4) {
                     game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 0, 4));
                     return true;
                 } else if (hand.getWheat() > 4) {
@@ -440,7 +440,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 if (hand.getWool() > 4) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 4, -1, 0, 0));
                     return true;
-                } else if (hand.getOre() > 4) {
+                } else if (hand.getOre() >= 4) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 0, 4));
                     return true;
                 } else if (hand.getLumber() > 4) {
