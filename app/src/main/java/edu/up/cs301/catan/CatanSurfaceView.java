@@ -238,7 +238,7 @@ public class CatanSurfaceView extends SurfaceView {
         if(DEBUG) {
             temp.setColor(Color.BLACK);
             temp.setTextSize(28);
-            canvas.drawText("Current player: "+gameState.getPlayersID(), 20, 50, temp);
+            canvas.drawText("Current player: "+gameState.getPlayersID()+"   Turn Num: "+gameState.getTurnCount(), 20, 50, temp);
 
             Hand[] hands = gameState.getHands();
             for(int i=0; i<hands.length; i++) {

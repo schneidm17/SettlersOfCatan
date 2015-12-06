@@ -69,12 +69,12 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                             score += 5;
                                         }
 
-                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
-                                        {
-                                            score += 3;
-                                        }
-
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+
+                                        if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
+                                        {
+                                            score += 1;
+                                        }
                                     }
                                 }
 
@@ -88,8 +88,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                     }
                                 }
 
-                                if (score > maxScore && RNG.nextBoolean()) {
+                                if (score > maxScore) {
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
                                     maxIndex = i;
                                 }
                             }
@@ -124,7 +127,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                     if (myHand.getSettlementsAvail() == 4) //Place second settlement
                     {
-                        for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        for (int i = Building.TOTAL_NUMBER_OF_BUILDING_SPOTS - 1; i > -1; i--) {
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
@@ -139,12 +142,12 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                             score += 15;
                                         }
 
-                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
-                                        {
-                                            score += 3;
-                                        }
+                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2;
 
-                                        score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+                                        if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
+                                        {
+                                            score += 1;
+                                        }
                                     }
                                 }
 
@@ -158,8 +161,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                     }
                                 }
 
-                                if (score > maxScore && RNG.nextBoolean()) {
+                                if (score > maxScore) {
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
                                     maxIndex = i;
                                 }
                             }
@@ -217,50 +223,77 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     return;
                 }
 
+                if(checkResources(myHand))
+                {
+                    return;
+                }
+
 
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
                 ArrayList<GameAction> actions = new ArrayList<GameAction>(30);
 
-                //TODO only update this on new buildings generated
-                /*
-                for (int i = 0; i < buildings.length; i++) {
-                    if (buildings[i].getPlayer() == this.playerNum) {
-                        byte[] adjList = CatanGameState.buildingToTileAdjList[i];
-                        for (int j = 0; j < adjList.length; j++) {
-                            resourcesHave[tiles[j].getResource() - 1] = true;
-                        }
-                    }
-                }
-                */
+                //Used for ranking moves
+                int maxScore = -1;
+                int maxIndex = -1;
 
-                //If they can upgrade a settlement, add them to the list
+                //If they can upgrade a settlement, find the best to upgrade
                 if (gameState.playerHasCityRes()) {
                     for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
                         if (gameState.canUpgradeSettlement(i)) {
-                            actions.add(new CatanUpgradeSettlementAction(this, i));
+                            int score = 0;
+                            byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+
+                            for(int j = 0; j < tileAdjList.length; j++)
+                            {
+                                score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+                            }
+
+                            if (score > maxScore) {
+                                maxScore = score;
+                                maxIndex = i;
+                            }
+                            else if (score == maxScore && RNG.nextBoolean()) {
+                                maxIndex = i;
+                            }
                         }
                     }
                 }
 
-                if(actions.size() > 0)
+                if(maxIndex > -1)
                 {
-                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                    game.sendAction(new CatanUpgradeSettlementAction(this, maxIndex));
+                    return;
                 }
 
 
-                //If they can build settlements, add them to the list
+                //If they can build settlements, find the best spot to build
                 if (gameState.playerHasSettlementRes()) {
                     for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
                         if (gameState.canBuildSettlement(i)) {
-                            actions.add(new CatanBuildSettlementAction(this, i));
+                            int score = 0;
+                            byte[] tileAdjList = gameState.buildingToTileAdjList[i];
+
+                            for(int j = 0; j < tileAdjList.length; j++)
+                            {
+                                score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+                            }
+
+                            if (score > maxScore) {
+                                maxScore = score;
+                                maxIndex = i;
+                            }
+                            else if (score == maxScore && RNG.nextBoolean()) {
+                                maxIndex = i;
+                            }
                         }
                     }
                 }
 
-                if(actions.size() > 0)
+                if(maxIndex > -1)
                 {
-                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                    game.sendAction(new CatanBuildSettlementAction(this, maxIndex));
+                    return;
                 }
 
                 int spotChecker = 0;
@@ -272,9 +305,8 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                         break;
                     }
                 }
+
                 //If they can build good roads, add them to the list
-                int maxScore = -1;
-                int maxIndex = -1;
                 if (gameState.playerHasRoadRes() && myHand.getLumber() > spotChecker && myHand.getBrick() > spotChecker) {
                     if(gameState.getTurnCount() % 2 == 0) {
                         for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
@@ -296,14 +328,18 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                     }
                                 }
                                 if (score > maxScore) {
-                                    maxIndex = i;
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
+                                    maxIndex = i;
                                 }
                             }
                         }
 
                         if (maxIndex > -1) {
                             game.sendAction(new CatanBuildRoadAction(this, maxIndex));
+                            return;
                         }
                     }
                     else
@@ -327,17 +363,20 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                     }
                                 }
                                 if (score > maxScore) {
-                                    maxIndex = i;
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
+                                    maxIndex = i;
                                 }
                             }
                         }
-                    }
-                }
 
-                if(actions.size() > 0)
-                {
-                    game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                        if (maxIndex > -1) {
+                            game.sendAction(new CatanBuildRoadAction(this, maxIndex));
+                            return;
+                        }
+                    }
                 }
 
                 //Randomize the roads if no smart roads can be placed
@@ -352,6 +391,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 if(actions.size() > 0)
                 {
                     game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                    return;
                 }
 
                 game.sendAction(new CatanEndTurnAction(this));
@@ -359,6 +399,217 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
         }
     }//receiveInfo
+
+    protected boolean checkResources(Hand hand)
+    {
+        //wood sheep wheat brick rock
+        if(hand.getSettlementsAvail() > 1) {
+            if (hand.getBrick() == 0) {
+                if (hand.getWool() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 4, 0, -1, 0));
+                    return true;
+                } else if (hand.getOre() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, -1, 4));
+                    return true;
+                } else if (hand.getLumber() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 4, 0, 0, -1, 0));
+                    return true;
+                } else if (hand.getWheat() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 4, -1, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getLumber() == 0) {
+                if (hand.getWool() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 4, 0, 0, 0));
+                    return true;
+                } else if (hand.getOre() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 0, 4));
+                    return true;
+                } else if (hand.getWheat() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 4, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 4, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getWheat() == 0) {
+                if (hand.getWool() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 4, -1, 0, 0));
+                    return true;
+                } else if (hand.getOre() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 0, 4));
+                    return true;
+                } else if (hand.getLumber() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 4, 0, -1, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 4, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getWool() == 0) {
+                if (hand.getOre() >= 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 0, 4));
+                    return true;
+                } else if (hand.getWheat() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 4, 0, 0));
+                    return true;
+                } else if (hand.getLumber() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 4, -1, 0, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 4, 0));
+                    return true;
+                }
+            }
+        }
+        else if(hand.getCitiesAvail() > 0)
+        {
+            if (hand.getOre() < 3) {
+                if (hand.getWool() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 4, 0, 0, -1));
+                    return true;
+                } else if (hand.getWheat() > 5) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 4, 0, -1));
+                    return true;
+                } else if (hand.getLumber() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 4, 0, 0, 0, -1));
+                    return true;
+                } else if (hand.getBrick() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 4, -1));
+                    return true;
+                }
+            }
+
+            if (hand.getWheat() < 2) {
+                if (hand.getWool() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 4, -1, 0, 0));
+                    return true;
+                } else if (hand.getLumber() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 4, 0, -1, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 4, 0));
+                    return true;
+                }
+            }
+        }
+
+        if(hand.getTotal() > 7)
+        {
+            if(hand.getWool() > 4)
+            {
+                switch(RNG.nextInt(4))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 4, 0, 0, 0));
+                        return true;
+
+                    case 1: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 4, -1, 0, 0));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 4, 0, -1, 0));
+                        return true;
+
+                    case 3:
+                        game.sendAction(new CatanRemoveResAction(this, 0, 4, 0, 0, -1));
+                        return true;
+                }
+            }
+            else if(hand.getOre() >= 4)
+            {
+                switch(RNG.nextInt(4))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 0, 4));
+                        return true;
+
+                    case 1: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 0, 4));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, -1, 4));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 0, 4));
+                        return true;
+                }
+            }
+            else if(hand.getWheat() > 4)
+            {
+                switch(RNG.nextInt(4))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 4, 0, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 4, 0, -1));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 4, -1, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 4, 0, 0));
+                        return true;
+                }
+            }
+            else if(hand.getLumber() > 4)
+            {
+                switch(RNG.nextInt(4))
+                {
+                    case 0: //Add a wheat to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, 4, 0, -1, 0, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 4, 0, 0, 0, -1));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 4, 0, 0, -1, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 4, -1, 0, 0, 0));
+                        return true;
+                }
+            }
+            else if(hand.getBrick() > 4)
+            {
+                switch(RNG.nextInt(4))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 4, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 4, -1));
+                        return true;
+
+                    case 2: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 4, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 4, 0));
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 
     protected void placeRobber(CatanGameState gameState)
     {

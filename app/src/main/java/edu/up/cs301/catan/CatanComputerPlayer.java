@@ -83,6 +83,11 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                         }
 
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+
+                                        if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
+                                        {
+                                            score += 1;
+                                        }
                                     }
                                 }
                                 if(resList.length > 1) {
@@ -131,7 +136,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
 
                     if (myHand.getSettlementsAvail() == 4) //Place second settlement
                     {
-                        for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
+                        for (int i = Building.TOTAL_NUMBER_OF_BUILDING_SPOTS - 1; i > -1; i--) {
                             if (gameState.canBuildSettlement(i)) {
                                 int score = 0;
                                 byte[] tileAdjList = gameState.buildingToTileAdjList[i];
@@ -152,6 +157,11 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                         }
 
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
+
+                                        if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
+                                        {
+                                            score += 1;
+                                        }
                                     }
                                 }
 

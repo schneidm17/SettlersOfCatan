@@ -38,7 +38,7 @@ public class CatanGameState extends GameState implements Serializable{
     private boolean [][] initialSetup;
     private boolean round1Placing;
     private boolean round2Placing;
-    public static final int VICTORY_POINTS_TO_WIN = 8;
+    public static final int VICTORY_POINTS_TO_WIN = 10;
     private int turnCount;
     private int firstPlayer;
 
@@ -393,7 +393,9 @@ public class CatanGameState extends GameState implements Serializable{
         hands[playersID].removeWheat(wheatToLose);
         hands[playersID].removeBrick(brickToLose);
         hands[playersID].removeOre(rockToLose);
-        if(oldTot <= 7 || hands[playersID].getTotal() <= Math.floor(oldTot*0.5)) { //Makes sure correct amount removed
+
+        //Make sure enough resources are removed
+        if(oldTot <= 7 || hands[playersID].getTotal() <= oldTot - Math.floor(oldTot*0.5)) {
             robberWasRolled[playersID] = false;
             //Log.d("ROBBER ROLLED :", "Made FALSE for player " + playersID);
         }
