@@ -22,6 +22,8 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
     private Bitmap[] cardImages = new Bitmap[5];
     private double[] colEdges = new double [6];
     private int numCardTypes;
+    private int cardsToLose;
+    private int cardsLost;
 
     int fullWidth;
     int cardHeight;
@@ -29,16 +31,6 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
     public CardSelectView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
-        //wheatCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_wheat);
-        //croppedWheatCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_wheat_crop);
-        //seepCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_sheep);
-        //croppedSheepCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_sheep_crop);
-        //woodCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_lumber);
-        //croppedWoodCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_lumber_crop);
-        //brickCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_brick);
-        //croppedBrickCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_brick_crop);
-        //oreCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_rock);
-        //croppedOreCard = BitmapFactory.decodeResource(getResources(), R.drawable.card_rock_crop);
 
         cardImages[0] = BitmapFactory.decodeResource(getResources(), R.drawable.card_wheat);
         cardImages[1] = BitmapFactory.decodeResource(getResources(), R.drawable.card_sheep);
@@ -66,6 +58,8 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
             cards[7] = 0;
             cards[8] = 0;
             cards[9] = 0;
+            cardsToLose = hand.getTotal() / 2;
+            cardsLost = 0;
 
             if(cards[0]>0) {
                 numCardTypes =1;
@@ -90,20 +84,6 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
         if (gameState == null) {
             return;
         }
-
-
-        /*
-        Paint temp = new Paint();
-        temp.setColor(Color.BLACK);
-        temp.setStyle(Paint.Style.STROKE);
-        canvas.drawText("numCardTypes = " + numCardTypes, 0, 320, temp);
-        canvas.drawText("totalCards = "+gameState.getHand(gameState.getPlayersID()).getTotal(), 0,340,temp);
-        canvas.drawText("wheat = "+gameState.getHand(gameState.getPlayersID()).getWheat(), 0,400,temp);
-        canvas.drawText("sheep = "+gameState.getHand(gameState.getPlayersID()).getWool(), 0,420,temp);
-        canvas.drawText("wood = "+gameState.getHand(gameState.getPlayersID()).getLumber(), 0,440,temp);
-        canvas.drawText("brick = "+gameState.getHand(gameState.getPlayersID()).getBrick(), 0,460, temp);
-        canvas.drawText("ore = "+gameState.getHand(gameState.getPlayersID()).getOre(), 0,480,temp);
-        */
 
         int col = 0;
         colEdges[5] = canvas.getWidth()-20;
@@ -159,14 +139,16 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
             for(int i=0; i<5; i++) {
                 //if the user pressed this column
                 if(colEdges[i]<=x && x<=colEdges[i+1]) {
-                    if(y<v.getHeight()*0.4 && cards[i+5]>0) {
+                    if(y<v.getHeight()*0.4  && cards[i+5]>0) {
                         cards[i+5]--;
                         cards[i]++;
+                        cardsLost--;
                         this.postInvalidate();
                         return true;
-                    } else if (y>v.getHeight()*0.6 && cards[i]>0) {
+                    } else if (y>v.getHeight()*0.6 && cardsToLose>cardsLost && cards[i]>0) {
                         cards[i]--;
                         cards[i+5]++;
+                        cardsLost++;
                         this.postInvalidate();
                         return true;
                     }
@@ -180,6 +162,5 @@ public class CardSelectView extends SurfaceView implements View.OnTouchListener 
         //woodToLose, sheepToLose, wheatToLose, brickToLose, rockToLose));
         int[] cardsToRemove = {cards[7],cards[6],cards[5],cards[8], cards[9]};
         return cardsToRemove;
-
     }
 }

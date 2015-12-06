@@ -180,14 +180,15 @@ public class CatanSurfaceView extends SurfaceView {
 
         drawBoard(canvas);
         if(gameState==null) {
-            temp.setColor(0xB0FFFFFF);
+            temp.setColor(0xC0FFFFFF);
             canvas.drawPaint(temp);
             Paint message = new Paint();
             message.setColor(Color.BLACK);
-            message.setTextSize(100);
+            message.setTextSize(90);
             message.setTextAlign(Paint.Align.CENTER);
             message.setTypeface(Typeface.SERIF);
-            canvas.drawText("No GameState loaded", cx, cy, message);
+            canvas.drawText("Waiting for other players", cx, cy-50, message);
+            canvas.drawText("to join the game...", cx, cy+50, message);
             return;
         }
 
@@ -238,17 +239,18 @@ public class CatanSurfaceView extends SurfaceView {
         if(DEBUG) {
             temp.setColor(Color.BLACK);
             temp.setTextSize(28);
-            canvas.drawText("Current player: "+gameState.getPlayersID()+"   Turn Num: "+gameState.getTurnCount(), 20, 50, temp);
+            canvas.drawText("Current player: "+gameState.getPlayersID(), 20, 50, temp);
+            canvas.drawText("Turn number: "+gameState.getTurnCount(), 20, 80, temp);
 
             Hand[] hands = gameState.getHands();
             for(int i=0; i<hands.length; i++) {
-                canvas.drawText("Player "+i+" res:",          20, 100+250*i, temp);
-                canvas.drawText(hands[i].getWheat()+" Wheat", 80, 130+250*i, temp);
-                canvas.drawText(hands[i].getWool()+" Sheep",  80, 160+250*i, temp);
-                canvas.drawText(hands[i].getLumber()+" Wood", 80, 190+250*i, temp);
-                canvas.drawText(hands[i].getBrick()+" Brick", 80, 220 + 250 * i, temp);
-                canvas.drawText(hands[i].getOre()+" Ore",     80, 250+250*i, temp);
-                canvas.drawText(gameState.getScores()[i]+" Points",80, 280+250*i, temp);
+                canvas.drawText("Player "+i+" res:",               20, 130+240*i, temp);
+                canvas.drawText(hands[i].getWheat()+" Wheat",      80, 160+240*i, temp);
+                canvas.drawText(hands[i].getWool()+" Sheep",       80, 190+240*i, temp);
+                canvas.drawText(hands[i].getLumber()+" Wood",      80, 220+240*i, temp);
+                canvas.drawText(hands[i].getBrick()+" Brick",      80, 250+240*i, temp);
+                canvas.drawText(hands[i].getOre()+" Ore",          80, 280+240*i, temp);
+                canvas.drawText(gameState.getScores()[i]+" Points",80, 310+240*i, temp);
             }
 
         }
