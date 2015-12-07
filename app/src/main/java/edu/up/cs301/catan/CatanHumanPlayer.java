@@ -16,7 +16,6 @@ import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import edu.up.cs301.catan.actions.CatanAddResAction;
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanEndTurnAction;
@@ -346,7 +345,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         }
     }//receiveInfo
 
-    //Method to update the button states based off of what resources the players have
+    /**
+     * Method to update the button states based off of what resources the players have
+     */
     private void updateButtonStates() {
         if (myGameState == null) {
             return;
@@ -664,7 +665,12 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         }
     }// onClick
 
-    //Method to handle when the surface view is touched
+    /**
+     * Method to handle when the surface view is touched
+     * @param v the view
+     * @param e the motion event
+     * @return true if touch was something we car about, false otherwise
+     */
     public boolean onTouch(View v, MotionEvent e) {
         if(v.equals(mySurfaceView) && myGameState != null) {
             if(myGameState.isRolled7()) {

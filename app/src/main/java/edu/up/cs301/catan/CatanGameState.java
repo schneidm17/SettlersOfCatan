@@ -1,7 +1,6 @@
 package edu.up.cs301.catan;
 
 import android.util.Log;
-
 import java.io.Serializable;
 import java.util.Random;
 import edu.up.cs301.game.infoMsg.GameState;
@@ -125,9 +124,11 @@ public class CatanGameState extends GameState implements Serializable{
     //Random variable for generating random numbers
     private Random rng;
 
-    //Default constructor for the game state that, sets first player to player0, initializes all
-    //players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
-    //the roads, tiles, buildings, and players hands.
+    /**
+     * Default constructor for the game state that, sets first player to player0, initializes all
+     * players scores to 0, sets both dice values to 1, puts the robber in the desert, and creates all
+     * the roads, tiles, buildings, and players hands.
+     */
     public CatanGameState()
     {
         //initialize the random number generator
@@ -218,7 +219,25 @@ public class CatanGameState extends GameState implements Serializable{
         turnCount = 0;
     }
 
-    //Constructor to set all instance variables to values passed in as parameters
+    /**
+     * Constructor to set all instance variables to values passed in as parameters
+     * @param ID
+     * @param numPlayers
+     * @param scores
+     * @param die1
+     * @param die2
+     * @param robber
+     * @param roads
+     * @param tiles
+     * @param buildings
+     * @param hands
+     * @param robberWasRolled
+     * @param rolled7
+     * @param needToRoll
+     * @param round1Placing
+     * @param round2Placing
+     * @param turnCount
+     */
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
                           boolean[] robberWasRolled, boolean rolled7, boolean needToRoll,
@@ -243,7 +262,10 @@ public class CatanGameState extends GameState implements Serializable{
         this.turnCount = turnCount;
     }
 
-    //Copy constructor to create an identical version of the given game state
+    /**
+     * Copy constructor to create an identical version of the given game state
+     * @param soc gamestate to copy
+     */
     public CatanGameState(CatanGameState soc){
         this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
                 soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
@@ -251,68 +273,107 @@ public class CatanGameState extends GameState implements Serializable{
                 soc.getRound1Placing(), soc.getRound2Placing(), soc.getTurnCount());
     }
 
-    //Setter for the numPLayers in the game, needed due to how framework is set up
+    /**
+     * Setter for the numPLayers in the game, needed due to how framework is set up
+     * @param numPlayers new number of players
+     */
     public void setNumPlayers(int numPlayers)
     {
         this.numPlayers = numPlayers;
     }
-    //Method to return the player who's turn it currently is
+
+    /**
+     * Method to return the player who's turn it currently is
+     * @return playersID
+     */
     public int getPlayersID()
     {
         return playersID;
     }
 
-    //Method to return the number of players in the game
+    /**
+     * Method to return the number of players in the game
+     * @return NumPlayers
+     */
     public int getNumPlayers()
     {
         return  numPlayers;
     }
 
-    //Method to return the score of player 0
+    /**
+     * Method to return the score of player 0
+     * @return Scores
+     */
     public int[] getScores()
     {
         return scores;
     }
 
-    //Method to return the value of the first die
+    /**
+     * Method to return the value of the first die
+     * @return die1
+     */
     public int getDie1()
     {
         return die1;
     }
 
-    //Method to return the value of the second die
+    /**
+     * Method to return the value of the second die
+     * @return die2
+     */
     public int getDie2()
     {
         return die2;
     }
 
-    //Method to set the value of the first die
+    /**
+     * Method to set the value of the first die
+     * @param newValue new die1 value
+     */
     public void setDie1(int newValue)
     {
         die1 = newValue;
     }
 
-    //Method to set the value of the second die
+    /**
+     * Method to set the value of the second die
+     * @param newValue new dice 2 value
+     */
     public void setDie2(int newValue)
     {
         die2 = newValue;
     }
 
-    //Method to return if the game is in round 1 placing
+    /**
+     * Method to return if the game is in round 1 placing
+     * @return
+     */
     public boolean getRound1Placing()
     {
         return round1Placing;
     }
 
-    //Method to return if the game is in round 1 placing
+    /**
+     * Method to return if the game is in round 1 placing
+     * @return round2placing
+     */
     public boolean getRound2Placing()
     {
         return round2Placing;
     }
 
+    /**
+     * Method to return the turn count
+     * @return turn count
+     */
     public int getTurnCount(){return turnCount;}
 
-    //Method to distribute a given resource to the buildings that are passed in
+    /**
+     * Method to distribute a given resource to the buildings that are passed in
+     * @param buildList list of buildings
+     * @param resource resource to distribute
+     */
     public void distributeResources(byte[] buildList, int resource){
         for (byte j = 0; j < buildList.length; j++) {
             switch (buildings[buildList[j]].getTypeOfBuilding()) {
@@ -328,7 +389,12 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to put a given number of a given resource to a given players hand
+    /**
+     * Method to put a given number of a given resource to a given players hand
+     * @param playersHand player to give resources to
+     * @param resource resource to give
+     * @param amount amount to give
+     */
     public void givePlayersCards(Hand playersHand, int resource, int amount){
         switch (resource){
             case Tile.BRICK:
@@ -351,7 +417,9 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to handle rolling the dice and distributing resources
+    /**
+     * Method to handle rolling the dice and distributing resources
+     */
     public void roll()
     {
         //Set dice to random values
@@ -382,7 +450,11 @@ public class CatanGameState extends GameState implements Serializable{
         needToRoll = false;
     }
 
-    //Method to move robber
+    /**
+     * Method to move robber to given spot
+     * @param spot
+     * @return return true if moved
+     */
     public boolean moveRobber(int spot)
     {
         if(rolled7)
@@ -412,7 +484,14 @@ public class CatanGameState extends GameState implements Serializable{
         return false;
     }
 
-    //Method to remove resources from a hand and to set robber rolled to false
+    /**
+     * Method to remove resources from a hand and to set robber rolled to false
+     * @param woodToLose
+     * @param sheepToLose
+     * @param wheatToLose
+     * @param brickToLose
+     * @param rockToLose
+     */
     public void removeResources(int woodToLose, int sheepToLose, int wheatToLose, int brickToLose,
                                 int rockToLose)
     {
@@ -432,7 +511,14 @@ public class CatanGameState extends GameState implements Serializable{
         //Log.d("REMOVE RESOURCES: ", "Player " + playersID + " removed " + woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose);
     }
 
-    //Method to add resources to a hand
+    /**
+     * Method to add resources to a hand
+     * @param woodToGain
+     * @param sheepToGain
+     * @param wheatToGain
+     * @param brickToGain
+     * @param rockToGain
+     */
     public void addResources(int woodToGain, int sheepToGain, int wheatToGain, int brickToGain,
                                 int rockToGain)
     {
@@ -443,66 +529,100 @@ public class CatanGameState extends GameState implements Serializable{
         hands[playersID].addOre(rockToGain);
     }
 
-    //Method to return where the robber is located
+    /**
+     * Method to return where the robber is located
+     * @return
+     */
     public int getRobber()
     {
         return robber;
     }
 
-    //Method to return if a robber was rolled
+    /**
+     * Method to return if a robber was rolled
+     * @return
+     */
     public boolean[] getRobberWasRolled()
     {
         return robberWasRolled;
     }
 
-    //Method to return if a robber was rolled for individual player
+    /**
+     * Method to return if a robber was rolled for individual player
+     * @return
+     */
     public boolean getRobberWasRolledPlayer()
     {
         return robberWasRolled[playersID];
     }
 
-    //Method to see if player needs to roll
+    /**
+     * Method to see if player needs to roll
+     * @return
+     */
     public boolean getNeedToRoll()
     {
         return needToRoll;
     }
 
-    //Method to get the current player's hand
+    /**
+     * Method to get the current player's hand
+     * @param playerNum
+     * @return
+     */
     public Hand getHand(int playerNum)
     {
         return hands[playerNum];
     }
 
-    //Method to return if a 7 was rolled
+    /**
+     * Method to return if a 7 was rolled
+     * @return
+     */
     public boolean isRolled7() {
         return rolled7;
     }
 
-    //Method to return the list of roads
+    /**
+     * Method to return roads
+     * @return
+     */
     public Road[] getRoads()
     {
         return roads;
     }
 
-    //Method to return the list of tiles
+    /**
+     * Method to return the list of tiles
+     * @return
+     */
     public Tile[] getTiles()
     {
         return tiles;
     }
 
-    //Method to return the list of buildings
+    /**
+     * Method to return the list of buildings
+     * @return
+     */
     public Building[] getBuildings()
     {
         return buildings;
     }
 
-    //Method to return the list of all the players hands
+    /**
+     * Method to return the list of all the players hands
+     * @return
+     */
     public Hand[] getHands()
     {
         return hands;
     }
 
-    //Method to check if player has the resources to build a road, used here and in GUI
+    /**
+     * Method to check if player has the resources to build a road, used here and in GUI
+     * @return
+     */
     public boolean playerHasRoadRes()
     {
         //check if the player has a place to build
@@ -527,7 +647,11 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to check if building a road is possible, used here and for GUI
+    /**
+     * Method to check if building a road is possible at given spot, used here and for GUI
+     * @param spot
+     * @return
+     */
     public boolean canBuildRoad(int spot)
     {
         //If road is filled return false
@@ -581,7 +705,11 @@ public class CatanGameState extends GameState implements Serializable{
         return false; //spot is empty, but no adjacent roads
     }
 
-    //Method to build a road in a given spot, returns true if the road is built, false otherwise
+    /**
+     * Method to build a road in a given spot, returns true if the road is built, false otherwise
+     * @param spot
+     * @return
+     */
     public boolean buildRoad(int spot)
     {
         //initial case
@@ -605,8 +733,10 @@ public class CatanGameState extends GameState implements Serializable{
         return false;
     }
 
-
-    //Method to see if the player has the resources to build a settlement
+    /**
+     * Method to see if the player has the resources to build a settlement
+     * @return
+     */
     public boolean playerHasSettlementRes()
     {
         //check if the player has a place to build
@@ -634,7 +764,11 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to see if a player can build a settlement in a spot
+    /**
+     * Method to see if a player can build a settlement in a spot
+     * @param spot
+     * @return
+     */
     public boolean canBuildSettlement(int spot)
     {
         //If building spot is already filled return false
@@ -673,8 +807,12 @@ public class CatanGameState extends GameState implements Serializable{
         return false; //No adjacent roads
     }
 
-    //Method to build a settlement in a given spot, returns true if the settlement is built, false
-    //otherwise
+    /**
+     * Method to build a settlement in a given spot, returns true if the settlement is built, false
+     * otherwise
+     * @param spot
+     * @return
+     */
     public boolean buildSettlement(int spot)
     {
         Hand myHand = hands[playersID];
@@ -728,7 +866,11 @@ public class CatanGameState extends GameState implements Serializable{
         }
 
     }
-    //Method to see if the player has the resources needed to upgrade a settlement
+
+    /**
+     * Method to see if the player has the resources needed to upgrade a settlement
+     * @return
+     */
     public boolean playerHasCityRes()
     {
         //check if the player has a place to build
@@ -755,7 +897,11 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to see if a spot can be upgraded into a city
+    /**
+     * Method to see if a spot can be upgraded into a city
+     * @param spot
+     * @return
+     */
     public boolean canUpgradeSettlement(int spot)
     {
         //Make sure the player owns the spot they want to upgrade and can be upgraded, if not return
@@ -770,7 +916,11 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Method to upgrade from a settlement to a city
+    /**
+     * Method to upgrade from a settlement to a city on a given spot
+     * @param spot
+     * @return true if built
+     */
     public boolean upgradeSettlement(int spot)
     {
         if(this.playerHasCityRes() && this.canUpgradeSettlement(spot)) {
@@ -792,7 +942,9 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //Moves the turn to the next player in the rotation
+    /**
+     * Moves the turn to the next player in the rotation and increases turn count
+     */
     public void endTurn()
     {
         if(firstPlayer == 0 && playersID == numPlayers - 1){
@@ -809,8 +961,11 @@ public class CatanGameState extends GameState implements Serializable{
         //Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
     }
 
-    //USED FOR TESTING ONLY
-    //Allows us to test features dependant on resources
+    /**
+     * USED FOR TESTING ONLY
+     * Allows us to test features dependant on resources
+     * @param player
+     */
     public void givePlayerResources(int player)
     {
         hands[player].addBrick(10);
@@ -820,8 +975,12 @@ public class CatanGameState extends GameState implements Serializable{
         hands[player].addLumber(10);
     }
 
-    //USED FOR TESTING ONLY
-    //Allows us to set up roads to test methods dependant on roads
+    /**
+     * USED FOR TESTING ONLY
+     * Allows us to set up roads to test methods dependant on roads
+     * @param spot
+     * @param player
+     */
     public void generateRoad(int spot, int player)
     {
         roads[spot].setIsEmpty(false);
@@ -829,8 +988,13 @@ public class CatanGameState extends GameState implements Serializable{
         hands[player].buildRoad();
     }
 
-    //USED FOR TESTING ONLY
-    //Allows us to set up buildings to test methods dependant on building placement
+    /**
+     * USED FOR TESTING ONLY
+     * Allows us to set up buildings to test methods dependant on building placement
+     * @param spot
+     * @param player
+     * @param type
+     */
     public void generateBuilding(int spot, int player, int type)
     {
         buildings[spot].setIsEmpty(false);
@@ -846,15 +1010,22 @@ public class CatanGameState extends GameState implements Serializable{
         }
     }
 
-    //USED FOR TESTING ONLY
-    //Allows us to choose who hs the first turn, as is usually random
+    /**
+     * USED FOR TESTING ONLY
+     * Allows us to choose who hs the first turn, as is usually random
+     * @param ID
+     */
     public void setPlayersID(int ID)
     {
         this.playersID = ID;
     }
 
-    //USED FOR TESTING ONLY
-    //Allows us to set the dice, allows for testing of secodn part of roll method
+    /**
+     * USED FOR TESTING ONLY
+     * Allows us to set the dice, allows for testing of secodn part of roll method
+     * @param die1
+     * @param die2
+     */
     public void generateRoll(int die1, int die2)
     {
 
