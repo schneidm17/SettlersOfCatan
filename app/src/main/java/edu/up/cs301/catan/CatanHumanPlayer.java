@@ -534,7 +534,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             //number of resources that they can lose
             final NumberPicker woodToGain = (NumberPicker) popupView.findViewById(R.id.woodWant);
             final NumberPicker wheatToGain = (NumberPicker) popupView.findViewById(R.id.wheatWant);
-            final NumberPicker brickToGain = (NumberPicker) popupView.findViewById(R.id.brickwant);
+            final NumberPicker brickToGain = (NumberPicker) popupView.findViewById(R.id.brickWant);
             final NumberPicker sheepToGain = (NumberPicker) popupView.findViewById(R.id.sheepWant);
             final NumberPicker rockToGain = (NumberPicker) popupView.findViewById(R.id.rockWant);
 
