@@ -1,5 +1,7 @@
 package edu.up.cs301.catan;
 
+import java.util.Random;
+
 import edu.up.cs301.catan.actions.CatanAddResAction;
 import edu.up.cs301.catan.actions.CatanBuildRoadAction;
 import edu.up.cs301.catan.actions.CatanBuildSettlementAction;
@@ -123,7 +125,10 @@ public class CatanLocalGame extends LocalGame {
     @Override
     public void start(GamePlayer[] players)
     {
+        Random RNG = new Random();
+        RNG.setSeed(System.currentTimeMillis());
         gameState.setNumPlayers(players.length);
+        gameState.setPlayersID(RNG.nextInt(players.length));
         super.start(players);
     }
 

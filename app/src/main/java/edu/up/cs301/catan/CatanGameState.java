@@ -153,8 +153,7 @@ public class CatanGameState extends GameState implements Serializable{
             }
             rollNums[numOrder[i]]=numValues[i-hasGottenToDesertYet];
         }
-
-        playersID = rng.nextInt(3);
+        
         firstPlayer = playersID;
 
         scores = new int[4];
