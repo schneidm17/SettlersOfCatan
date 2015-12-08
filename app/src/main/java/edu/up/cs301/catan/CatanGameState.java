@@ -154,8 +154,6 @@ public class CatanGameState extends GameState implements Serializable{
             }
             rollNums[numOrder[i]]=numValues[i-hasGottenToDesertYet];
         }
-        
-        firstPlayer = playersID;
 
         scores = new int[4];
         for(int i = 0; i < 4; i++){
@@ -424,7 +422,7 @@ public class CatanGameState extends GameState implements Serializable{
         //Set dice to random values
         die1 = rng.nextInt(6) + 1;
         die2 = rng.nextInt(6) + 1;
-        Log.d("NEW ROLL:", ""+die1 + die2);
+        //Log.d("NEW ROLL:", ""+die1 + die2);
 
         if(die1 + die2 != 7) //not possible to give res on 7
         {
@@ -716,7 +714,7 @@ public class CatanGameState extends GameState implements Serializable{
             roads[spot].setPlayer(playersID);
             roads[spot].setIsEmpty(false);
             hands[playersID].buildRoad();
-            this.endTurn();
+            this.playersID = (playersID + 1) % numPlayers;
             return true;
         }
         //noninitial case
@@ -955,7 +953,7 @@ public class CatanGameState extends GameState implements Serializable{
         }else if(firstPlayer == 3 && playersID == 2){
             turnCount++;
         }
-        playersID = (playersID + 1) % numPlayers;
+        this.playersID = (playersID + 1) % numPlayers;
         needToRoll = true;
         //Log.d("CATAN END TURN: ", "is now " + playersID + " turn, previous roll was " + die1 +" " +die2);
     }
@@ -1016,7 +1014,9 @@ public class CatanGameState extends GameState implements Serializable{
      */
     public void setPlayersID(int ID)
     {
+
         this.playersID = ID;
+        this.firstPlayer = ID;
     }
 
     /**

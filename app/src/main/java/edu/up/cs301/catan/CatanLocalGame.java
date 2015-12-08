@@ -125,10 +125,10 @@ public class CatanLocalGame extends LocalGame {
     @Override
     public void start(GamePlayer[] players)
     {
-        Random RNG = new Random();
-        RNG.setSeed(System.currentTimeMillis());
         gameState.setNumPlayers(players.length);
-        gameState.setPlayersID(RNG.nextInt(players.length));
+        Random rng = new Random();
+        rng.setSeed(System.currentTimeMillis());
+        gameState.setPlayersID(rng.nextInt(players.length));
         super.start(players);
     }
 
