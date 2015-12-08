@@ -220,22 +220,6 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Constructor to set all instance variables to values passed in as parameters
-     * @param ID
-     * @param numPlayers
-     * @param scores
-     * @param die1
-     * @param die2
-     * @param robber
-     * @param roads
-     * @param tiles
-     * @param buildings
-     * @param hands
-     * @param robberWasRolled
-     * @param rolled7
-     * @param needToRoll
-     * @param round1Placing
-     * @param round2Placing
-     * @param turnCount
      */
     public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
                           int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
@@ -346,7 +330,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return if the game is in round 1 placing
-     * @return
+     * @return true if round one placing, false otherwise
      */
     public boolean getRound1Placing()
     {
@@ -355,7 +339,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return if the game is in round 1 placing
-     * @return round2placing
+     * @return true if round 2 placing, false otherwise
      */
     public boolean getRound2Placing()
     {
@@ -451,7 +435,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to move robber to given spot
-     * @param spot
+     * @param spot spot to move to
      * @return return true if moved
      */
     public boolean moveRobber(int spot)
@@ -530,7 +514,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return where the robber is located
-     * @return
+     * @return spot where robber is
      */
     public int getRobber()
     {
@@ -539,7 +523,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return if a robber was rolled
-     * @return
+     * @return true if robber was rolled, false otherwise
      */
     public boolean[] getRobberWasRolled()
     {
@@ -548,7 +532,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return if a robber was rolled for individual player
-     * @return
+     * @return  true if robber was rolled, false otherwise
      */
     public boolean getRobberWasRolledPlayer()
     {
@@ -557,7 +541,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to see if player needs to roll
-     * @return
+     * @return return true if player needs to roll, false otherwise
      */
     public boolean getNeedToRoll()
     {
@@ -567,7 +551,7 @@ public class CatanGameState extends GameState implements Serializable{
     /**
      * Method to get the current player's hand
      * @param playerNum
-     * @return
+     * @return the players hand
      */
     public Hand getHand(int playerNum)
     {
@@ -576,7 +560,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return if a 7 was rolled
-     * @return
+     * @return true if a seven was rolled, false otherwise
      */
     public boolean isRolled7() {
         return rolled7;
@@ -584,7 +568,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return roads
-     * @return
+     * @return an array of roads
      */
     public Road[] getRoads()
     {
@@ -593,7 +577,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return the list of tiles
-     * @return
+     * @return an array of tiles
      */
     public Tile[] getTiles()
     {
@@ -602,7 +586,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return the list of buildings
-     * @return
+     * @return an array of buildings
      */
     public Building[] getBuildings()
     {
@@ -611,7 +595,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to return the list of all the players hands
-     * @return
+     * @return array of hands
      */
     public Hand[] getHands()
     {
@@ -620,7 +604,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to check if player has the resources to build a road, used here and in GUI
-     * @return
+     * @return true id the player has resources to build road, false otherwise
      */
     public boolean playerHasRoadRes()
     {
@@ -648,8 +632,8 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to check if building a road is possible at given spot, used here and for GUI
-     * @param spot
-     * @return
+     * @param spot spot to build
+     * @return true if the spot can be built on false otherwise
      */
     public boolean canBuildRoad(int spot)
     {
@@ -706,8 +690,8 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to build a road in a given spot, returns true if the road is built, false otherwise
-     * @param spot
-     * @return
+     * @param spot spot to build on
+     * @return true if a road can be built on that spot false otherwise
      */
     public boolean buildRoad(int spot)
     {
@@ -734,7 +718,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to see if the player has the resources to build a settlement
-     * @return
+     * @return true if the player has resources to build settlement false otherwise
      */
     public boolean playerHasSettlementRes()
     {
@@ -765,8 +749,8 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to see if a player can build a settlement in a spot
-     * @param spot
-     * @return
+     * @param spot spot to build on
+     * @return true if a settlement can be built on given spot, false otherwise
      */
     public boolean canBuildSettlement(int spot)
     {
@@ -809,8 +793,8 @@ public class CatanGameState extends GameState implements Serializable{
     /**
      * Method to build a settlement in a given spot, returns true if the settlement is built, false
      * otherwise
-     * @param spot
-     * @return
+     * @param spot spot to build on
+     * @return  true if a settlement can be built on the given spot, false otherwise
      */
     public boolean buildSettlement(int spot)
     {
@@ -868,7 +852,7 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to see if the player has the resources needed to upgrade a settlement
-     * @return
+     * @return true if the player has the resources to build a city, false otherwise
      */
     public boolean playerHasCityRes()
     {
@@ -898,8 +882,8 @@ public class CatanGameState extends GameState implements Serializable{
 
     /**
      * Method to see if a spot can be upgraded into a city
-     * @param spot
-     * @return
+     * @param spot the spot
+     * @return true if the player can upgrade a given spot to a city false otherwise
      */
     public boolean canUpgradeSettlement(int spot)
     {
@@ -918,7 +902,7 @@ public class CatanGameState extends GameState implements Serializable{
     /**
      * Method to upgrade from a settlement to a city on a given spot
      * @param spot
-     * @return true if built
+     * @return true if settlement was built
      */
     public boolean upgradeSettlement(int spot)
     {
