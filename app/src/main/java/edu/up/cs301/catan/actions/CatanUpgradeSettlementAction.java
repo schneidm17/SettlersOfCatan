@@ -18,8 +18,8 @@ public class CatanUpgradeSettlementAction extends GameAction implements Serializ
     /**
      * Constructor for GameAction
      *
-     * @param player The player who instanciated the action
-     * @param spot The spot which ot upgrade
+     * @param player The player who instantiated the action
+     * @param spot The spot which to upgrade
      */
     public CatanUpgradeSettlementAction(GamePlayer player, int spot)
     {

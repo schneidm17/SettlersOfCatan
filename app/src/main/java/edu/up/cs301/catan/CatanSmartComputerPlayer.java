@@ -72,6 +72,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                             score += 5;
                                         }
 
+                                        //Adds score for rollnum
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
 
                                         //Add score if it 'red' number
@@ -98,6 +99,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                     maxScore = score;
                                     maxIndex = i;
                                 }
+                                //If a second spot with the same score is found, 50/50 chance of usurping
                                 else if (score == maxScore && RNG.nextBoolean()) {
                                     maxIndex = i;
                                 }

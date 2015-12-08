@@ -47,45 +47,56 @@ public class CatanLocalGame extends LocalGame {
     @Override
     public boolean makeMove(GameAction action) {
 
+        //Check to make sure the player can make a move
         if(this.canMove(this.getPlayerIdx(action.getPlayer())))
         {
+            //Player wants to build road
             if(action instanceof CatanBuildRoadAction)
             {
                 gameState.buildRoad(((CatanBuildRoadAction) action).spot);
                 return true;
             }
+            //Player wants to build settlement
             else if(action instanceof CatanBuildSettlementAction)
             {
                 gameState.buildSettlement(((CatanBuildSettlementAction) action).spot);
                 return true;
             }
+            //Player wants to end turn
             else if(action instanceof CatanEndTurnAction)
             {
                 gameState.endTurn();
                 return true;
             }
+            //Player wants to move robber
             else if(action instanceof CatanMoveRobberAction)
             {
                 gameState.moveRobber(((CatanMoveRobberAction) action).spot);
                 return true;
             }
+            //Player wants to remove resources
             else if(action instanceof CatanRemoveResAction)
             {
                 gameState.removeResources(((CatanRemoveResAction) action).woodToLose,((CatanRemoveResAction) action).sheepToLose,
                         ((CatanRemoveResAction) action).wheatToLose, ((CatanRemoveResAction) action).brickToLose,
                         ((CatanRemoveResAction) action).rockToLose);
                 return true;
-            }else if(action instanceof CatanAddResAction)
+            }
+            //Player wants to add resources
+            else if(action instanceof CatanAddResAction)
             {
                 gameState.addResources(((CatanAddResAction) action).woodToGain, ((CatanAddResAction) action).sheepToGain,
                         ((CatanAddResAction) action).wheatToGain, ((CatanAddResAction) action).brickToGain,
                         ((CatanAddResAction) action).rockToGain);
                 return true;
-            }else if(action instanceof CatanRollAction)
+            }
+            //Player wants to roll
+            else if(action instanceof CatanRollAction)
             {
                 gameState.roll();
                 return true;
             }
+            //Player wants to upgrade settlements
             else if(action instanceof CatanUpgradeSettlementAction)
             {
                 gameState.upgradeSettlement(((CatanUpgradeSettlementAction) action).spot);
@@ -125,10 +136,12 @@ public class CatanLocalGame extends LocalGame {
     @Override
     public void start(GamePlayer[] players)
     {
+        //Sets gameState's numPlayer and play order
         gameState.setNumPlayers(players.length);
         Random rng = new Random();
         rng.setSeed(System.currentTimeMillis());
         gameState.setPlayersID(rng.nextInt(players.length));
+
         super.start(players);
     }
 

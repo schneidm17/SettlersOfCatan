@@ -19,7 +19,7 @@ public class CatanMoveRobberAction extends GameAction implements Serializable {
     /**
      * Constructor for GameAction
      *
-     * @param player The player who instanciated the action
+     * @param player The player who instantiated the action
      * @param spot Where to move the robber
      */
     public CatanMoveRobberAction(GamePlayer player, int spot)
