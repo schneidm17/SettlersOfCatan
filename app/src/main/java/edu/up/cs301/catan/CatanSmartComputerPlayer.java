@@ -590,6 +590,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
     protected void placeRobber(CatanGameState gameState)
     {
         Building[] buildings = gameState.getBuildings();
+        Tile[] tiles = gameState.getTiles();
         int[] scores = gameState.getScores();
 
         int maxRank = -1;
@@ -598,10 +599,24 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             if(i == gameState.getRobber()) {
                 continue;
             }
+            else if(tiles[i].getResource() == Tile.DESERT)
+            {
+                continue;
+            }
+
             boolean adjToPlayer = false;
             boolean adjToOthers = false;
             byte[] adjList = CatanGameState.tileToBuildingAdjList[i];
             int ranking = 0;
+
+            //Add ranking for rollnums
+            ranking += (6 - Math.abs(tiles[i].getRollNumber() - 7)) / 2 + 1;
+
+            if(tiles[i].getRollNumber() == 6 || tiles[i].getRollNumber() == 8)
+            {
+                ranking += 1;
+            }
+
 
             for(int j = 0; j < adjList.length; j++)
             {
@@ -631,6 +646,10 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
             if(!adjToPlayer && adjToOthers && ranking > maxRank) //Tile i is not adjacent to player, can place there
             {
                 maxRank = ranking;
+                maxIndex = i;
+            }
+            else if(!adjToPlayer && adjToOthers && ranking == maxRank && RNG.nextBoolean())
+            {
                 maxIndex = i;
             }
         }
