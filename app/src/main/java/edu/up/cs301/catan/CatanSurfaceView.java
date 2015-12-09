@@ -15,9 +15,11 @@ import android.view.SurfaceView;
 import edu.up.cs301.game.R;
 
 /**
- * Created by schneidm17 on 11/3/2015.
+ * This is a surface view class that draws the game board view on the screen
+ * If you aren't Matthew Schneider, please don't touch anything in this class!
  *
- * The gameboard view for Catan.
+ * @author Matthew Schneider
+ * @version 8 December 2015
  */
 public class CatanSurfaceView extends SurfaceView {
 
@@ -56,6 +58,7 @@ public class CatanSurfaceView extends SurfaceView {
     Bitmap bitmap; //temporary bitmap (frequently reused);
     Paint temp; //style Paint.Style.FILL (frequently reused);
     Paint outline; //style Paint.Style.STROKE
+    Paint message; //message that appears if waiting for players
 
     /*
      * These ints represent colors that are used in this class
@@ -79,22 +82,16 @@ public class CatanSurfaceView extends SurfaceView {
     private boolean waitingForCitySelection = false;
     private boolean waitingForRobberPlacement = false;
 
-    /*
-     * These bitmaps represent the numbers on the board
-     */
+    //These bitmaps represent the numbers on the board
     Bitmap num2, num3, num4, num5, num6, num8, num9, num10, num11, num12;
 
-    /*
-     * These are the physical locations on the board of every piece that we might draw
-     * We have a numbering system in place so that we know that a settlement at site
-     * ten is adjacent to tiles 1, 4 and 5 and roads 12, 13 amd 20;
-     */
-
+    //the {x,y} location of the center of every tile
     public final double tiles[][] = {{-6, 2 * r3}, {-6, 0}, {-6, -2 * r3},
             {-3, 3 * r3}, {-3, r3}, {-3, -r3}, {-3, -3 * r3}, {0, 4 * r3}, {0, 2 * r3},
             {0, 0}, {0, -2 * r3}, {0, -4 * r3}, {3, 3 * r3}, {3, r3}, {3, -r3}, {3, -3 * r3},
             {6, 2 * r3}, {6, 0}, {6, -2 * r3}};
 
+    //the {x,y} location of every intersection on the board
     public final double sites[][] = {{-7, 3 * r3}, {-8, 2 * r3}, {-7, 1 * r3},
             {-8, 0}, {-7, -1 * r3}, {-8, -2 * r3}, {-7, -3 * r3}, {-4, 4 * r3}, {-5, 3 * r3},
             {-4, 2 * r3}, {-5, 1 * r3}, {-4, 0}, {-5, -1 * r3}, {-4, -2 * r3}, {-5, -3 * r3},
@@ -105,6 +102,7 @@ public class CatanSurfaceView extends SurfaceView {
             {4, 2 * r3}, {5, 1 * r3}, {4, 0}, {5, -1 * r3}, {4, -2 * r3}, {5, -3 * r3}, {4, -4 * r3},
             {7, 3 * r3}, {8, 2 * r3}, {7, 1 * r3}, {8, 0}, {7, -1 * r3}, {8, -2 * r3}, {7, -3 * r3}};
 
+    //the start and end location of every road on the board
     public final byte roads[][] = {{0, 1}, {2, 1}, {2, 3}, {4, 3}, {4, 5}, {6, 5},
             {8, 0}, {10, 2}, {12, 4}, {14, 6}, {7, 8}, {9, 8}, {9, 10}, {11, 10}, {11, 12},
             {13, 12}, {13, 14}, {15, 14}, {17, 7}, {19, 9}, {21, 11}, {23, 13}, {25, 15},
@@ -116,9 +114,11 @@ public class CatanSurfaceView extends SurfaceView {
             {49, 41}, {51, 43}, {53, 45}, {48, 47}, {48, 49}, {50, 49}, {50, 51}, {52, 51},
             {52, 53}};
 
+    //the {x,y} location of every port on the board
     public final double ports[][] = {{-9, 3 * r3}, {-9, -r3}, {-6, -4 * r3}, {-3, 5 * r3},
             {0, -6 * r3}, {3, 5 * r3}, {6, -4 * r3}, {9, -r3}, {9, 3 * r3}};
 
+    //the {x,y} coordinates of the path that draws the coastline
     public final double coastline[][] = {{-8, 3.2 * r3}, {-8, 3 * r3}, {-7.4, 3 * r3},
             {-8.2, 2.2 * r3}, {-8.5, 2.5 * r3}, {-8.8, 2.4 * r3}, {-7.4, 1 * r3}, {-8.8, -0.4 * r3},
             {-8.5, -0.5 * r3}, {-8.2, -0.2 * r3}, {-7.5, -0.9 * r3}, {-8.1, -0.9 * r3},
@@ -136,19 +136,28 @@ public class CatanSurfaceView extends SurfaceView {
             {-1.2, 5.2 * r3}, {-2.1, 4.3 * r3}, {-2.4, 4.6 * r3}, {-2.7, 4.5 * r3}, {-2.4, 4.2 * r3},
             {-3.8, 4.2 * r3}, {-3.5, 4.5 * r3}, {-3.8, 4.6 * r3}, {-5.2, 3.2 * r3}};
 
+    //The true if this city needs to be shifted to avoid overlapping with a road
     public final boolean[] shiftCity = {true, false, true, false, true, false, true, true, false, true,
             false, true, false, true, false, true, true, false, true, false, true, false, true, false,
             true, false, true, false, true, false, true, false, true, false, true, false, true, false,
             false, true, false, true, false, true, false, true, false, false, true, false, true,
             false, true, false};
 
+    /**
+     *  Constructor for CatanSurfaceView
+     *
+     * @param context variables passed to parent class
+     * @param attrs   variables passed to parent class
+     */
     public CatanSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
 
+        //initialize the game board rotation
         this.phi = 40;
         this.theta = -60;
 
+        //initialize Paints to save time in onDraw
         path = new Path();
         temp = new Paint();
         temp.setStyle(Paint.Style.FILL);
@@ -156,7 +165,13 @@ public class CatanSurfaceView extends SurfaceView {
         outline.setColor(Color.BLACK);
         outline.setStyle(Paint.Style.STROKE);
         outline.setStrokeWidth(1);
+        message = new Paint();
+        message.setColor(Color.BLACK);
+        message.setTextSize(90);
+        message.setTextAlign(Paint.Align.CENTER);
+        message.setTypeface(Typeface.SERIF);
 
+        //initialize bitmaps
         num2 = BitmapFactory.decodeResource(getResources(), R.drawable.num_2);
         num3 = BitmapFactory.decodeResource(getResources(), R.drawable.num_3);
         num4 = BitmapFactory.decodeResource(getResources(), R.drawable.num_4);
@@ -169,6 +184,11 @@ public class CatanSurfaceView extends SurfaceView {
         num12 = BitmapFactory.decodeResource(getResources(), R.drawable.num_12);
     }
 
+    /**
+     * setGameState is how the player who has the GUI sends the GameState to this SurfaceView
+     *
+     * @param catanGameState the new game state passed to this class
+     */
     public void setGameState(CatanGameState catanGameState) {
         if(catanGameState!=null) {
             this.gameState = catanGameState;
@@ -176,47 +196,52 @@ public class CatanSurfaceView extends SurfaceView {
         }
     }
 
+    /**
+     * onDraw is called when the screen is updated or this.postInvalidate is
+     *
+     * @param canvas the canvas where the game board is drawn
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         updateABC();
 
-        //display certain debugging features on the surfaceView
-        boolean DEBUG=true;
-
+        //draw the basic game board (the coast, tiles and numbers)
         drawBoard(canvas);
+
+        //if there is no copy of the game state, display a wait message
         if(gameState==null) {
             temp.setColor(0xC0FFFFFF);
-            canvas.drawPaint(temp);
-            Paint message = new Paint();
-            message.setColor(Color.BLACK);
-            message.setTextSize(90);
-            message.setTextAlign(Paint.Align.CENTER);
-            message.setTypeface(Typeface.SERIF);
+            canvas.drawPaint(temp); //make the screen looked washed out
             canvas.drawText("Waiting for other players", cx, cy, message);
             canvas.drawText("to join the game...", cx, cy+100, message);
-            return;
+            return; //do not draw anything else
         }
 
+        //set these temporary variables so we don't have to call these methods repeatedly
         Road[] myRoads = gameState.getRoads();
         Building[] myBuildings = gameState.getBuildings();
 
+        //draw all the roads on the board
         for(Road road : myRoads) {
             if(!road.isEmpty()) {
                 drawRoad(canvas, playerColor[road.getPlayer()], road.getNumber());
             }
         }
 
+        //if during normal game play, draw the robber
         if(!waitingForRobberPlacement) {
             drawRobber(canvas, 0xFF606060, gameState.getRobber());
         }
 
+        //if waiting to build a settlement or city, draw circles at all the places the user can build
         if(waitingForSettlementSelection || waitingForCitySelection) {
             for (int x = 0; x < sites.length; x++) {
                 drawSelectedBuilding(canvas, x);
             }
         }
 
+        //draw all the existing settlements and cities on the board
         for(Building building : myBuildings) {
             if(!building.isEmpty()) {
                 if (building.getTypeOfBuilding() == Building.SETTLEMENT)
@@ -226,12 +251,14 @@ public class CatanSurfaceView extends SurfaceView {
             }
         }
 
+        //if waiting to build a road, draw rectangles at all the places the user can build
         if(waitingForRoadSelection) {
             for (int x = 0; x < roads.length; x++) {
                 drawSelectedRoad(canvas, x);
             }
         }
 
+        //if waiting to move the robber, draw an outline everywhere the robber can be placed
         if(waitingForRobberPlacement) {
             for(int x = 0; x < tiles.length; x++) {
                 if(x == tileLastSelected) {
@@ -241,37 +268,22 @@ public class CatanSurfaceView extends SurfaceView {
                 }
             }
         }
-
-        if(DEBUG) {
-            temp.setColor(Color.BLACK);
-            temp.setTextSize(28);
-            canvas.drawText("Current player: " + gameState.getPlayersID(), 20, 50, temp);
-            canvas.drawText("Turn number: "+gameState.getTurnCount(), 20, 80, temp);
-
-            canvas.drawText("board phi: "+phi+"°", 20, 130, temp);
-            canvas.drawText("board theta: "+theta+"°", 20, 160, temp);
-
-
-            Hand[] hands = gameState.getHands();
-            for(int i=0; i<gameState.getNumPlayers(); i++) {
-                canvas.drawText("Player "+i+" res:",               20, 210+240*i, temp);
-                canvas.drawText(hands[i].getWheat()+" Wheat",      80, 240+240*i, temp);
-                canvas.drawText(hands[i].getWool()+" Sheep",       80, 270+240*i, temp);
-                canvas.drawText(hands[i].getLumber()+" Wood",      80, 300+240*i, temp);
-                canvas.drawText(hands[i].getBrick()+" Brick",      80, 330+240*i, temp);
-                canvas.drawText(hands[i].getOre()+" Ore",          80, 360+240*i, temp);
-                canvas.drawText(gameState.getScores()[i]+" Points",80, 390+240*i, temp);
-            }
-
-        }
     }
 
+    /**
+     * drawRoad is called by onDraw to draw a road at a particular location
+     *
+     * @param canvas   the canvas where the road is drawn
+     * @param color    the color of the user that owns this road
+     * @param location the number of this road according to our numbering system
+     */
     public void drawRoad(Canvas canvas, int color, int location) {
         double x = sites[roads[location][0]][0];
         double y = sites[roads[location][0]][1];
         double i = sites[roads[location][1]][0] - x;
         double j = sites[roads[location][1]][1] - y;
 
+        //these {x,y,z} points define the shape of the road in 3D
         double pts[][] = {
                 {x + 0.25 * i - 0.05 * j, y + 0.25 * j + 0.05 * i, 0},
                 {x + 0.25 * i + 0.05 * j, y + 0.25 * j - 0.05 * i, 0},
@@ -281,23 +293,31 @@ public class CatanSurfaceView extends SurfaceView {
                 {x + 0.25 * i + 0.05 * j, y + 0.25 * j - 0.05 * i, 0.2},
                 {x + 0.75 * i + 0.05 * j, y + 0.75 * j - 0.05 * i, 0.2},
                 {x + 0.75 * i - 0.05 * j, y + 0.75 * j + 0.05 * i, 0.2}};
-
+        //this array defines the {x,y,z} points on each face of the road
         double faces[][][] = {
                 {pts[1], pts[5], pts[6], pts[2]},
                 {pts[2], pts[6], pts[7], pts[3]},
                 {pts[0], pts[3], pts[7], pts[4]},
                 {pts[0], pts[4], pts[5], pts[1]},
                 {pts[7], pts[6], pts[5], pts[4]}};
-
+        //draw each face of this road
         for (double[][] face : faces) {
             drawFace(canvas, color, face);
         }
     }
 
+    /**
+     * drawSet is called by onDraw to draw a settlement at a particular location
+     *
+     * @param canvas   the canvas where the settlement is drawn
+     * @param color    the color of the user that owns this settlement
+     * @param location the number of this settlement according to our numbering system
+     */
     public void drawSet(Canvas canvas, int color, int location) {
         double x = sites[location][0];
         double y = sites[location][1];
 
+        //these {x,y,z} points define the shape of the settlement in 3D
         double pts[][] = {
                 {x - 0.25, y - 0.25, 0},
                 {x + 0.25, y - 0.25, 0},
@@ -309,26 +329,34 @@ public class CatanSurfaceView extends SurfaceView {
                 {x + 0.25, y + 0.25, 0.25},
                 {x, y + 0.25, 0.45},
                 {x - 0.25, y + 0.25, 0.25}};
-
+        //this array defines the {x,y,z} points on each face of the settlement
         double faces[][][] = {
-                //{pts[0], pts[1], pts[2], pts[3]},//base of the settlement
                 {pts[1], pts[6], pts[7], pts[2]},
                 {pts[2], pts[7], pts[8], pts[9], pts[3]},
                 {pts[0], pts[3], pts[9], pts[4]},
                 {pts[0], pts[4], pts[5], pts[6], pts[1]},
                 {pts[8], pts[7], pts[6], pts[5]},
                 {pts[4], pts[9], pts[8], pts[5]}};
-
+        //draw each face of this settlement
         for (double[][] face : faces) {
             drawFace(canvas, color, face);
         }
     }
 
+    /**
+     * drawCity is called by onDraw to draw a city at a particular location
+     *
+     * @param canvas   the canvas where the city is drawn
+     * @param color    the color of the user that owns this city
+     * @param location the number of this city according to our numbering system
+     */
     public void drawCity(Canvas canvas, int color, int location) {
         double x = sites[location][0];
         double y = sites[location][1];
 
+        //if the city should be shifted 0.5 to the right to avaid overlaping a road
         if(shiftCity[location]) {
+            //these {x,y,z} points define the shape of the city in 3D
             double pts[][] = {
                     {x - 0.75, y - 0.25, 0},
                     {x + 0.25, y - 0.25, 0},
@@ -344,7 +372,7 @@ public class CatanSurfaceView extends SurfaceView {
                     {x - 0.25, y + 0.25, 0.5},
                     {x - 0.5,  y + 0.25, 0.75},
                     {x - 0.75, y + 0.25, 0.5}};
-
+            //this array defines the {x,y,z} points on each face of the city
             double faces[][][] = {
                     {pts[4], pts[7], pts[6], pts[5]},
                     {pts[1], pts[5], pts[6], pts[2]},
@@ -355,11 +383,12 @@ public class CatanSurfaceView extends SurfaceView {
                     {pts[12], pts[11], pts[10], pts[9]},
                     {pts[8], pts[13], pts[12], pts[9]}
             };
-
+            //draw each face of this city
             for (double[][] face : faces) {
                 drawFace(canvas, color, face);
             }
         } else {
+            //these {x,y,z} points define the shape of the city in 3D
             double pts[][] = {
                     {x - 0.25, y - 0.25, 0},
                     {x + 0.75, y - 0.25, 0},
@@ -375,7 +404,7 @@ public class CatanSurfaceView extends SurfaceView {
                     {x + 0.25, y + 0.25, 0.5},
                     {x, y + 0.25, 0.75},
                     {x - 0.25, y + 0.25, 0.5}};
-
+            //this array defines the {x,y,z} points on each face of the city
             double faces[][][] = {
                     {pts[4], pts[7], pts[6], pts[5]},
                     {pts[1], pts[5], pts[6], pts[2]},
@@ -386,13 +415,19 @@ public class CatanSurfaceView extends SurfaceView {
                     {pts[12], pts[11], pts[10], pts[9]},
                     {pts[8], pts[13], pts[12], pts[9]}
             };
-
+            //draw each face of this city
             for (double[][] face : faces) {
                 drawFace(canvas, color, face);
             }
         }
     }
 
+    /**
+     * drawSelectedRoad draws the a rectangle where the user can build a road
+     *
+     * @param canvas   the canvas where the road is drawn
+     * @param location the number of this road according to our numbering system
+     */
     public void drawSelectedRoad(Canvas canvas, int location) {
         //if the user cannot build at a particular spot, don't draw it
         if(!gameState.canBuildRoad(location)) {
@@ -426,6 +461,12 @@ public class CatanSurfaceView extends SurfaceView {
         canvas.drawPath(path, temp);
     }
 
+    /**
+     * drawSelectedRoad draws the a circle where the user can build a settlement or city
+     *
+     * @param canvas   the canvas where the building is drawn
+     * @param location the number of this building according to our numbering system
+     */
     public void drawSelectedBuilding(Canvas canvas, int location) {
         //if the user cannot build at a particular spot, don't draw it
         if(waitingForSettlementSelection && !gameState.canBuildSettlement(location) ||
@@ -461,11 +502,18 @@ public class CatanSurfaceView extends SurfaceView {
         }
     }
 
+    /**
+     * drawRobber is called by onDraw to draw the robber
+     *
+     * @param canvas   the canvas where the robber is drawn
+     * @param color    the color of the robber
+     * @param location the number of the tile where the robber is drawn
+     */
     public void drawRobber(Canvas canvas, int color, int location) {
         double x = tiles[location][0];
         double y = tiles[location][1];
-        float xPos = mapX(x,y);
-        float yPos = mapY(x,y);
+        float xPos = mapX(x, y);
+        float yPos = mapY(x, y);
         int size = (int)(2200/distance(x,y,0));
 
         path.reset();
@@ -481,6 +529,12 @@ public class CatanSurfaceView extends SurfaceView {
         canvas.drawCircle(xPos, yPos - 0.3f * size, 0.2f * size, temp);
     }
 
+    /**
+     * waitForRoadSelection is called when the GUI player wants
+     * to see what spaces are available to build a road
+     *
+     * @param set true to display the locations, false to hide them
+     */
     public void waitForRoadSelection(boolean set) {
         roadLastSelected = -1;
         waitingForRoadSelection = set;
@@ -490,6 +544,12 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * waitForSettlementSelection is called when the GUI player wants
+     * to see what spaces are available to build a settlement
+     *
+     * @param set true to display the locations, false to hide them
+     */
     public void waitForSettlementSelection(boolean set) {
         buildingLastSelected = -1;
         waitingForRoadSelection = false;
@@ -499,6 +559,12 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * waitForCitySelection is called when the GUI player wants
+     * to see what spaces are available to build a city
+     *
+     * @param set true to display the locations, false to hide them
+     */
     public void waitForCitySelection(boolean set) {
         buildingLastSelected = -1;
         waitingForRoadSelection = false;
@@ -508,6 +574,12 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * waitForRobberPlacement is called when the GUI player wants
+     * to see what spaces are available to move the robber
+     *
+     * @param set true to display the locations, false to hide them
+     */
     public void waitForRobberPlacement(boolean set) {
         tileLastSelected = -1;
         waitingForRoadSelection = false;
@@ -517,18 +589,40 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * getRoadLastSelected is called by the GUI player to see what road the user selected
+     *
+     * @return the location the user last selected, or -1 if the user did not select anywhere
+     */
     public int getRoadLastSelected() {
         return (roadLastSelected<0 || roadLastSelected>71) ? -1 : roadLastSelected;
     }
 
+    /**
+     * getRoadLastSelected is called by the GUI player to see what building the user selected
+     *
+     * @return the location the user last selected, or -1 if the user did not select anywhere
+     */
     public int getBuildingLastSelected() {
         return (buildingLastSelected<0 || buildingLastSelected>53) ? -1 : buildingLastSelected;
     }
 
+    /**
+     * getRoadLastSelected is called by the GUI player to see what tile the user selected
+     *
+     * @return the location the user last selected, or -1 if the user did not select anywhere
+     */
     public int getTileLastSelected() {
         return (tileLastSelected<0 || tileLastSelected>18) ? -1 : tileLastSelected;
     }
 
+    /**
+     * selectRoad is called by the GUI player whenever the user
+     * presses the screen if they are trying to build a road
+     *
+     * @param xPos the screen X coordinate where the user touched
+     * @param yPos the screen Y coordinate where the user touched
+     */
     public void selectRoad(double xPos, double yPos) {
         if(gameState==null)
             return;
@@ -554,6 +648,13 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * selectBuilding is called by the GUI player whenever the user
+     * presses the screen if they are trying to build a city or settlement
+     *
+     * @param xPos the screen X coordinate where the user touched
+     * @param yPos the screen Y coordinate where the user touched
+     */
     public void selectBuilding(double xPos, double yPos) {
         if (gameState == null)
             return;
@@ -578,6 +679,13 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * selectTile is called by the GUI player whenever the user
+     * presses the screen if they are trying to move the robber
+     *
+     * @param xPos the screen X coordinate where the user touched
+     * @param yPos the screen Y coordinate where the user touched
+     */
     public void selectTile(double xPos, double yPos) {
         if (gameState == null)
             return;
@@ -601,8 +709,14 @@ public class CatanSurfaceView extends SurfaceView {
         this.postInvalidate();
     }
 
+    /**
+     * drawBoard is called from onDraw; it draws the coast, tiles and
+     * numbers to create a very basic Settlers of Catan game board
+     *
+     * @param canvas the canvas where the game board is drawn
+     */
     private void drawBoard(Canvas canvas) {
-        //draw coastline:
+        //draw the coastline
         path.reset();
         path.moveTo(mapX(coastline[0][0], coastline[0][1]),
                 mapY(coastline[0][0], coastline[0][1]));
@@ -618,6 +732,7 @@ public class CatanSurfaceView extends SurfaceView {
             double x = tiles[i][0];
             double y = tiles[i][1];
 
+            //draw the path of the tile
             path.reset();
             path.moveTo(mapX(x + 2, y), mapY(x + 2, y));
             path.lineTo(mapX(x + 1, y + r3), mapY(x + 1, y + r3));
@@ -627,6 +742,7 @@ public class CatanSurfaceView extends SurfaceView {
             path.lineTo(mapX(x + 1, y - r3), mapY(x + 1, y - r3));
             path.close();
 
+            //select the color of the tile
             if(gameState != null) {
                 switch (gameState.getTiles()[i].getResource()) {
                     case Tile.BRICK:
@@ -653,6 +769,7 @@ public class CatanSurfaceView extends SurfaceView {
                 int numWidth = (int) (2000 / distance(x, y, 0));
                 int numHeight = (int) (2000 * Math.cos(phi * deg) / distance(x, y, 0));
 
+                //draw the numbers on the board
                 switch (gameState.getTiles()[i].getRollNumber()) {
                     case 2:
                         bitmap = Bitmap.createScaledBitmap(num2, numWidth, numHeight, true);
@@ -808,7 +925,15 @@ public class CatanSurfaceView extends SurfaceView {
         return Math.sqrt((d*a - x) * (d*a - x) + (d*b - y) * (d*b - y) + (d*c - z) * (d*c - z));
     }
 
-
+    /**
+     * drawFace draws a face on the screen and shades the color based on the light vector
+     *
+     * @param canvas the canvas where the face is drawn
+     * @param color  int representing the color of the face to be shaded
+     * @param pts    an array of the {x,y,z} coordinates of the points that define this polygon
+     *            Note: in order for this method to display only the faces that face the viewer,
+     *            these points MUST be passed to this method CLOCKWISE as viewed from the outside
+     */
     public void drawFace(Canvas canvas, int color, double[][] pts) {
         double[] v1 = {pts[0][0] - pts[1][0], pts[0][1] - pts[1][1], pts[0][2] - pts[1][2]};
         double[] v2 = {pts[0][0] - pts[2][0], pts[0][1] - pts[2][1], pts[0][2] - pts[2][2]};
@@ -824,6 +949,7 @@ public class CatanSurfaceView extends SurfaceView {
         //dot the normal vector with the camera vector
         double dot = cam[0]*v3[0] + cam[1]*v3[1] + cam[2]*v3[2];
 
+        //if the dot product is positive, the face is facing the user
         if(dot>0) {
             path.reset();
             path.moveTo(
@@ -845,7 +971,6 @@ public class CatanSurfaceView extends SurfaceView {
             canvas.drawPath(path, temp);
         }
     }
-
 
     /**
      * rotate the game board 10 degrees to the right
@@ -873,24 +998,6 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void rotateDown() {
         phi = 5 * Math.round(phi / 5) + 5;
-    }
-
-    /**
-     * get the value of phi
-     *
-     * @return this.phi
-     */
-    public double getPhi() {
-        return phi;
-    }
-
-    /**
-     * get the value of theta
-     *
-     * @return this.theta
-     */
-    public double getTheta() {
-        return theta;
     }
 
     /**
