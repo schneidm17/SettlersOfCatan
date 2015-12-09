@@ -55,10 +55,7 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <LinearLayout
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -600,6 +597,5 @@
         </LinearLayout>
 
     </LinearLayout>
-    </ScrollView>
 
 </LinearLayout><!-- From: file:/C:/Users/goldey17/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->
