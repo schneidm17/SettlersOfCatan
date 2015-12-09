@@ -17,7 +17,7 @@ public class CatanEndTurnAction extends GameAction implements Serializable {
     /**
      * Constructor for GameAction
      *
-     * @param player The player who instanciated the action
+     * @param player The player who instantiated the action
      */
     public CatanEndTurnAction(GamePlayer player)
     {

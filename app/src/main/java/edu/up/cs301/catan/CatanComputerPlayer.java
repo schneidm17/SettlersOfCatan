@@ -25,8 +25,12 @@ public class CatanComputerPlayer extends GameComputerPlayer {
     protected Random RNG; //Used for choosing what to do
     protected boolean[] resourcesHave;
     protected boolean initialPlacement;
+
     /**
-     * ctor does nothing extra
+     * Constructor for computer player
+     *
+     * Creates random used for placement, initializes resourcesHave
+     * @param name
      */
     public CatanComputerPlayer(String name) {
         super(name);
@@ -41,7 +45,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
     }
 
     /**
-     * callback method--game's state has changed
+     * callback method--game's state has changed, the player reacts
      *
      * @param info
      * 		the information (presumably containing the game's state)
@@ -52,7 +56,9 @@ public class CatanComputerPlayer extends GameComputerPlayer {
         {
             CatanGameState gameState = (CatanGameState) info;
 
-            if(playerNum == gameState.getPlayersID()) {
+            if(playerNum == gameState.getPlayersID()) { //Player's turn to play
+
+                //Get the hand
                 Hand myHand = gameState.getHand(playerNum);
 
                 //INITIAL PLACEMENT BLOCK
@@ -60,6 +66,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                     int maxScore = -1;
                     int maxIndex = -1;
                     Tile[] tiles = gameState.getTiles();
+
                     if (myHand.getSettlementsAvail() == 5) //Place first settlement
                     {
                         for (int i = 0; i < Building.TOTAL_NUMBER_OF_BUILDING_SPOTS; i++) {
@@ -73,23 +80,24 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                     //If the player does not have this resource, add to spot score
                                     resList[j] = tiles[tileAdjList[j]].getResource();
                                     if(tiles[tileAdjList[j]].getResource() != 0) {
+
+                                        //If the resource does not have an adjacent settlement, adds score
                                         if (!resourcesHave[tiles[tileAdjList[j]].getResource() - 1]) {
                                             score += 5;
                                         }
 
-                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
-                                        {
-                                            score += 3;
-                                        }
-
+                                        //Add score dependent on the roll num
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
 
+                                        //Add score to 'red' numbers
                                         if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
                                         {
                                             score += 1;
                                         }
                                     }
                                 }
+
+                                //Reduces score if adjacent resources are the same
                                 if(resList.length > 1) {
                                     if (resList[0] == resList[1]) {
                                         score -= 5;
@@ -100,8 +108,12 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                     }
                                 }
 
-                                if (score > maxScore && RNG.nextBoolean()) {
+                                //Reassign maxScore/Index if current spot is better
+                                if (score > maxScore) {
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
                                     maxIndex = i;
                                 }
                             }
@@ -120,8 +132,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                         return;
                     }
 
-                    //TODO make this smart
-                    if (myHand.getRoadsAvail() == 15) //Place first road
+                    if (myHand.getRoadsAvail() == 15) //Place first road randomly
                     {
                         ArrayList<CatanBuildRoadAction> actions = new ArrayList<CatanBuildRoadAction>(3);
                         for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
@@ -134,6 +145,8 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                         return;
                     }
 
+                    //Place the second settlement with same process as above,
+                    // with more weight for resources
                     if (myHand.getSettlementsAvail() == 4) //Place second settlement
                     {
                         for (int i = Building.TOTAL_NUMBER_OF_BUILDING_SPOTS - 1; i > -1; i--) {
@@ -151,11 +164,6 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                             score += 15;
                                         }
 
-                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
-                                        {
-                                            score += 3;
-                                        }
-
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
 
                                         if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
@@ -175,8 +183,11 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                     }
                                 }
 
-                                if (score > maxScore && RNG.nextBoolean()) {
+                                if (score > maxScore) {
                                     maxScore = score;
+                                    maxIndex = i;
+                                }
+                                else if (score == maxScore && RNG.nextBoolean()) {
                                     maxIndex = i;
                                 }
                             }
@@ -195,8 +206,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                         return;
                     }
 
-                    //TODO make this smart
-                    if(myHand.getRoadsAvail() == 14) //Place second road
+                    if(myHand.getRoadsAvail() == 14) //Place second road randomly
                     {
                         ArrayList<CatanBuildRoadAction> actions = new ArrayList<CatanBuildRoadAction>(3);
                         for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
@@ -230,6 +240,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                     this.randomizeRobber(gameState);
                 }
 
+                //List of actions to do
                 ArrayList<GameAction> actions = new ArrayList<GameAction>();
 
                 //Ending the turn is always an option
@@ -244,7 +255,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                     }
                 }
 
-                if(actions.size() > 1)
+                if(actions.size() > 1) //Build the city
                 {
                     game.sendAction(actions.get(RNG.nextInt(actions.size())));
                 }
@@ -259,7 +270,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                     }
                 }
 
-                if(actions.size() > 1)
+                if(actions.size() > 1) //Build the settlements
                 {
                     game.sendAction(actions.get(RNG.nextInt(actions.size())));
                 }
@@ -279,12 +290,22 @@ public class CatanComputerPlayer extends GameComputerPlayer {
         }
     }//receiveInfo
 
+    /**
+     * randomizeRobber
+     *
+     * Randomly chooses a spot not adjacent to the player and puts
+     * the robber there
+     *
+     * @param gameState a copy of the gamestate sent to player
+     */
     protected void randomizeRobber(CatanGameState gameState)
     {
         Building[] buildings = gameState.getBuildings();
         ArrayList<CatanMoveRobberAction> actions = new ArrayList<CatanMoveRobberAction>(19);
 
         for(int i = 0; i < Tile.TOTAL_NUMBER_OF_TILE_SPOTS; i++) {
+
+            //Robber currently at this spot
             if(i == gameState.getRobber()) {
                 continue;
             }
@@ -294,6 +315,7 @@ public class CatanComputerPlayer extends GameComputerPlayer {
 
             for(int j = 0; j < adjList.length; j++)
             {
+                //Checks if the player is adjacent to the spot
                 if(buildings[adjList[j]].getPlayer() == this.playerNum)
                 {
                     adjToPlayer = true;
@@ -306,12 +328,20 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             }
         }
 
+        //Choose a spot to place robber
         game.sendAction(actions.get(RNG.nextInt(actions.size())));
-    }
+    }//randomizeRobber
 
+    /**
+     * removeResources
+     *
+     * This method decides which cards to remove if a 7 was rolled
+     *
+     * @param myHand The players hand
+     */
     protected void removeResources(Hand myHand)
     {
-        if(myHand.getTotal() <= 7)
+        if(myHand.getTotal() <= 7) //No need to discard anything
         {
             game.sendAction(new CatanRemoveResAction(this, 0 , 0, 0, 0, 0));
         }
@@ -322,8 +352,9 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             int wheatToLose = 0;
             int brickToLose = 0;
             int rockToLose = 0;
-            int totalToLose = (int) Math.floor(myHand.getTotal()*0.5);
+            int totalToLose = (int) Math.floor(myHand.getTotal()*0.5); //Needs to discard half, rounded down
 
+            //Randomly add cards to discard until correct amount attained
             while(woodToLose + sheepToLose + wheatToLose + brickToLose + rockToLose < totalToLose)
             switch(RNG.nextInt(5))
             {
@@ -361,6 +392,6 @@ public class CatanComputerPlayer extends GameComputerPlayer {
             game.sendAction(new CatanRemoveResAction(this, woodToLose, sheepToLose, wheatToLose,
                                                         brickToLose, rockToLose));
         }
-    }
+    }//removeResources
 
-}
+}//CatanComputerPlayer

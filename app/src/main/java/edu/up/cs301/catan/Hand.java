@@ -17,7 +17,11 @@ public class Hand implements Serializable{
     private int settlementsAvail;
     private int citiesAvail;
 
-    //Initializes the hand with no resources in it
+    /**
+     * Hand
+     *
+     * Constructor for the Hand class, sets default start of game values
+     */
     public Hand()
     {
         wheat = 0;
@@ -30,105 +34,206 @@ public class Hand implements Serializable{
         citiesAvail = 4;
     }
 
-    //used for 7 roll GUI
-    //Returns the total amount of resources
+    /**
+     * getTotal
+     *
+     * Returns total amount of resources
+     *
+     * @return the total number of resources
+     */
     public int getTotal()
     {
         return wheat + wool + lumber + brick + ore;
     }
 
-    //Returns the amount of wheat
+    /**
+     * getWheat
+     *
+     * Returns total amount of wheat
+     *
+     * @return amount of wheat
+     */
     public int getWheat()
     {
         return wheat;
     }
 
-    //Returns the amount of wool
+    /**
+     * getWool
+     *
+     * Returns total amount of Wool
+     *
+     * @return amount of Wool
+     */
     public int getWool()
     {
         return wool;
     }
 
-    //Returns the amount of lumber
+    /**
+     * getLumber
+     *
+     * Returns total amount of Lumber
+     *
+     * @return amount of Lumber
+     */
     public int getLumber()
     {
         return lumber;
     }
 
-    //Returns the amount of brick
+    /**
+     * getBrick
+     *
+     * Returns total amount of Brick
+     *
+     * @return amount of Brick
+     */
     public int getBrick()
     {
         return brick;
     }
 
-    //Returns the amount of ore
+    /**
+     * getOre
+     *
+     * Returns total amount of Ore
+     *
+     * @return amount of Ore
+     */
     public int getOre()
     {
         return ore;
     }
 
-    //Adds wheat to the hand
+    /**
+     * addWheat
+     *
+     * Adds wheat to the hand
+     *
+     * @param count amount to increase by
+     */
     public void addWheat(int count)
     {
         this.wheat += count;
     }
 
-    //Adds wool to the hand
+    /**
+     * addWool
+     *
+     * Adds Wool to the hand
+     *
+     * @param count amount to increase by
+     */
     public void addWool(int count)
     {
         this.wool += count;
     }
 
-    //Adds lumber to the hand
+    /**
+     * addLumber
+     *
+     * Adds Lumber to the hand
+     *
+     * @param count amount to increase by
+     */
     public void addLumber(int count)
     {
         this.lumber += count;
     }
 
-    //Adds brick to the hand
+    /**
+     * addLumber
+     *
+     * Adds Lumber to the hand
+     *
+     * @param count amount to increase by
+     */
     public void addBrick(int count)
     {
         this.brick += count;
     }
 
-    //Adds ore to the hand
+    /**
+     * addOre
+     *
+     * Adds Ore to the hand
+     *
+     * @param count amount to increase by
+     */
     public void addOre(int count)
     {
         this.ore += count;
     }
 
-    //Removes wheat from the hand
+    /**
+     * removeWheat
+     *
+     * Removes wheat from the hand
+     *
+     * @param count amount to remove
+     */
     public void removeWheat(int count)
     {
         this.wheat -= count;
     }
 
-    //Removes wool from the hand
+    /**
+     * removeWool
+     *
+     * Removes Wool from the hand
+     *
+     * @param count amount to remove
+     */
     public void removeWool(int count)
     {
         this.wool -= count;
     }
 
-    //Removes lumber from the hand
+    /**
+     * removeLumber
+     *
+     * Removes Lumber from the hand
+     *
+     * @param count amount to remove
+     */
     public void removeLumber(int count)
     {
         this.lumber -= count;
     }
 
-    //Removes brick from the hand
+    /**
+     * removeBrick
+     *
+     * Removes Brick from the hand
+     *
+     * @param count amount to remove
+     */
     public void removeBrick(int count)
     {
         this.brick -= count;
     }
 
-    //Removes ore from the hand
+    /**
+     * removeOre
+     *
+     * Removes Ore from the hand
+     *
+     * @param count amount to remove
+     */
     public void removeOre(int count)
     {
         this.ore -= count;
     }
 
-    //used when a 7 is rolled
-    //Checks to see if the hand has any of the inputted resource
+    /**
+     * checkIfEmpty
+     *
+     * Checks to see if the player has any of a given resource
+     *
+     * @param type the resource type
+     * @return if the type amount is <= 0
+     */
     public boolean checkIfEmpty(int type)
     {
         switch(type)
@@ -153,8 +258,14 @@ public class Hand implements Serializable{
         }
     }
 
-    //used when a 7 is rolled
-    //Removes one of the inputted resource
+    /**
+     * stealResource
+     *
+     * Removes one of the given type of resource
+     *
+     * @param type the type of resource to steal
+     * @return returns true if able to steal
+     */
     public boolean stealResource(int type)
     {
         switch(type)
@@ -184,8 +295,14 @@ public class Hand implements Serializable{
         }
     }
 
-    //used when a 7 is rolled
-    //Adds one of the inputted resource
+    /**
+     * addResource
+     *
+     * Adds one resource of type to the hand
+     *
+     * @param type the resource type
+     * @return returns true if successful
+     */
     public boolean addResource(int type)
     {
         switch(type)
@@ -215,38 +332,62 @@ public class Hand implements Serializable{
         }
     }
 
-    //Method to decrement how many roads the player can build
+    /**
+     * buildRoad
+     *
+     * decrements how many roads are available by 1
+     */
     public void buildRoad()
     {
         roadsAvail--;
     }
 
-    //Method to decrement how many settlements the player can build
+    /**
+     * buildSettlement
+     *
+     * decrements how many settlements are available by 1
+     */
     public void buildSettlement()
     {
         settlementsAvail--;
     }
 
-    //Method to decrement how many cities a player can build
+    /**
+     * upgradeSettlement
+     *
+     * decrements how many cities are available by 1
+     */
     public void upgradeSettlement()
     {
         settlementsAvail++;
         citiesAvail--;
     }
 
-    //Method to return how many roads the player can build
+    /**
+     * getRoadsAvail
+     *
+     * @return amount of roads available
+     */
     public int getRoadsAvail()
     {
         return roadsAvail;
     }
 
-    //Method to return how many settlements the player can build
+    /**
+     * getSettlementsAvail
+     *
+     * @return amount of settlements available
+     */
     public int getSettlementsAvail()
     {
         return settlementsAvail;
     }
 
-    //Method to return how many settlements the player can build
+    /**
+     * getCitiesAvail
+     *
+     * @return amount of cities available
+     */
     public int getCitiesAvail()
     {
         return citiesAvail;

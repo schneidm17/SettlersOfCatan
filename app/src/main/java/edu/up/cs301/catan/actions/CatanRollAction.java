@@ -16,7 +16,7 @@ public class CatanRollAction extends GameAction implements Serializable {
     /**
      * Constructor for GameAction
      *
-     * @param player the player who made the action
+     * @param player The player who instantiated the action
      */
     public CatanRollAction(GamePlayer player)
     {

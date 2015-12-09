@@ -25,7 +25,7 @@ public class CatanRemoveResAction extends GameAction implements Serializable {
     /**
      * Constructor for the GameAction
      *
-     * @param player The player who made this action
+     * @param player The player who instantiated the action
      * @param woodToLose Amount of lumber to discard
      * @param sheepToLose Amount of wool to discard
      * @param wheatToLose Amount of wheat to discard

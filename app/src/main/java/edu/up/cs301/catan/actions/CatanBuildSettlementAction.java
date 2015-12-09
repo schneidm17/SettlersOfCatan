@@ -18,7 +18,7 @@ public class CatanBuildSettlementAction extends GameAction implements Serializab
     /**
      * Constructor for GameAction
      *
-     * @param player The player who instanciated the action
+     * @param player The player who instantiated the action
      * @param spot The spot to build the settlement on
      */
     public CatanBuildSettlementAction(GamePlayer player, int spot)
