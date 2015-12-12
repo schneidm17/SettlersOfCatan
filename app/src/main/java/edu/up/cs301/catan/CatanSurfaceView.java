@@ -45,8 +45,8 @@ public class CatanSurfaceView extends SurfaceView {
     public final double d = 24; //distance of the camera from the origin (constant)
     public final double p = 18; //distance of the view plane from the origin (constant)
     public final double s = 250; //scale factor on the view plane
-    public final double deg = 0.017453292519943295; //conversion factor for deg to rad
-    public final double r3 = Math.sqrt(3); //square root of 3
+    public static final double deg = 0.017453292519943295; //conversion factor for deg to rad
+    public static final double r3 = Math.sqrt(3); //square root of 3
 
     private CatanGameState gameState; //a copy of the game state used to draw this surface view
 
@@ -86,13 +86,13 @@ public class CatanSurfaceView extends SurfaceView {
     Bitmap num2, num3, num4, num5, num6, num8, num9, num10, num11, num12;
 
     //the {x,y} location of the center of every tile
-    public final double tiles[][] = {{-6, 2 * r3}, {-6, 0}, {-6, -2 * r3},
+    public static final double tiles[][] = {{-6, 2 * r3}, {-6, 0}, {-6, -2 * r3},
             {-3, 3 * r3}, {-3, r3}, {-3, -r3}, {-3, -3 * r3}, {0, 4 * r3}, {0, 2 * r3},
             {0, 0}, {0, -2 * r3}, {0, -4 * r3}, {3, 3 * r3}, {3, r3}, {3, -r3}, {3, -3 * r3},
             {6, 2 * r3}, {6, 0}, {6, -2 * r3}};
 
     //the {x,y} location of every intersection on the board
-    public final double sites[][] = {{-7, 3 * r3}, {-8, 2 * r3}, {-7, 1 * r3},
+    public static final double sites[][] = {{-7, 3 * r3}, {-8, 2 * r3}, {-7, 1 * r3},
             {-8, 0}, {-7, -1 * r3}, {-8, -2 * r3}, {-7, -3 * r3}, {-4, 4 * r3}, {-5, 3 * r3},
             {-4, 2 * r3}, {-5, 1 * r3}, {-4, 0}, {-5, -1 * r3}, {-4, -2 * r3}, {-5, -3 * r3},
             {-4, -4 * r3}, {-1, 5 * r3}, {-2, 4 * r3}, {-1, 3 * r3}, {-2, 2 * r3}, {-1, 1 * r3},
@@ -103,7 +103,7 @@ public class CatanSurfaceView extends SurfaceView {
             {7, 3 * r3}, {8, 2 * r3}, {7, 1 * r3}, {8, 0}, {7, -1 * r3}, {8, -2 * r3}, {7, -3 * r3}};
 
     //the start and end location of every road on the board
-    public final byte roads[][] = {{0, 1}, {2, 1}, {2, 3}, {4, 3}, {4, 5}, {6, 5},
+    public static final byte roads[][] = {{0, 1}, {2, 1}, {2, 3}, {4, 3}, {4, 5}, {6, 5},
             {8, 0}, {10, 2}, {12, 4}, {14, 6}, {7, 8}, {9, 8}, {9, 10}, {11, 10}, {11, 12},
             {13, 12}, {13, 14}, {15, 14}, {17, 7}, {19, 9}, {21, 11}, {23, 13}, {25, 15},
             {16, 17}, {18, 17}, {18, 19}, {20, 19}, {20, 21}, {22, 21}, {22, 23}, {24, 23},
@@ -115,11 +115,11 @@ public class CatanSurfaceView extends SurfaceView {
             {52, 53}};
 
     //the {x,y} location of every port on the board
-    public final double ports[][] = {{-9, 3 * r3}, {-9, -r3}, {-6, -4 * r3}, {-3, 5 * r3},
+    public static final double ports[][] = {{-9, 3 * r3}, {-9, -r3}, {-6, -4 * r3}, {-3, 5 * r3},
             {0, -6 * r3}, {3, 5 * r3}, {6, -4 * r3}, {9, -r3}, {9, 3 * r3}};
 
     //the {x,y} coordinates of the path that draws the coastline
-    public final double coastline[][] = {{-8, 3.2 * r3}, {-8, 3 * r3}, {-7.4, 3 * r3},
+    public static final double coastline[][] = {{-8, 3.2 * r3}, {-8, 3 * r3}, {-7.4, 3 * r3},
             {-8.2, 2.2 * r3}, {-8.5, 2.5 * r3}, {-8.8, 2.4 * r3}, {-7.4, 1 * r3}, {-8.8, -0.4 * r3},
             {-8.5, -0.5 * r3}, {-8.2, -0.2 * r3}, {-7.5, -0.9 * r3}, {-8.1, -0.9 * r3},
             {-8.1, -1.1 * r3}, {-7.5, -1.1 * r3}, {-8.4, -2 * r3}, {-7.2, -3.2 * r3},
@@ -137,14 +137,14 @@ public class CatanSurfaceView extends SurfaceView {
             {-3.8, 4.2 * r3}, {-3.5, 4.5 * r3}, {-3.8, 4.6 * r3}, {-5.2, 3.2 * r3}};
 
     //The true if this city needs to be shifted to avoid overlapping with a road
-    public final boolean[] shiftCity = {true, false, true, false, true, false, true, true, false, true,
+    public static final boolean[] shiftCity = {true, false, true, false, true, false, true, true, false, true,
             false, true, false, true, false, true, true, false, true, false, true, false, true, false,
             true, false, true, false, true, false, true, false, true, false, true, false, true, false,
             false, true, false, true, false, true, false, true, false, false, true, false, true,
             false, true, false};
 
     /**
-     *  Constructor for CatanSurfaceView
+     * Constructor for CatanSurfaceView
      *
      * @param context variables passed to parent class
      * @param attrs   variables passed to parent class
@@ -190,7 +190,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @param catanGameState the new game state passed to this class
      */
     public void setGameState(CatanGameState catanGameState) {
-        if(catanGameState!=null) {
+        if (catanGameState != null) {
             this.gameState = catanGameState;
             this.postInvalidate();
         }
@@ -210,11 +210,11 @@ public class CatanSurfaceView extends SurfaceView {
         drawBoard(canvas);
 
         //if there is no copy of the game state, display a wait message
-        if(gameState==null) {
+        if (gameState == null) {
             temp.setColor(0xC0FFFFFF);
             canvas.drawPaint(temp); //make the screen looked washed out
             canvas.drawText("Waiting for other players", cx, cy, message);
-            canvas.drawText("to join the game...", cx, cy+100, message);
+            canvas.drawText("to join the game...", cx, cy + 100, message);
             return; //do not draw anything else
         }
 
@@ -223,27 +223,27 @@ public class CatanSurfaceView extends SurfaceView {
         Building[] myBuildings = gameState.getBuildings();
 
         //draw all the roads on the board
-        for(Road road : myRoads) {
-            if(!road.isEmpty()) {
+        for (Road road : myRoads) {
+            if (!road.isEmpty()) {
                 drawRoad(canvas, playerColor[road.getPlayer()], road.getNumber());
             }
         }
 
         //if during normal game play, draw the robber
-        if(!waitingForRobberPlacement) {
+        if (!waitingForRobberPlacement) {
             drawRobber(canvas, 0xFF606060, gameState.getRobber());
         }
 
         //if waiting to build a settlement or city, draw circles at all the places the user can build
-        if(waitingForSettlementSelection || waitingForCitySelection) {
+        if (waitingForSettlementSelection || waitingForCitySelection) {
             for (int x = 0; x < sites.length; x++) {
                 drawSelectedBuilding(canvas, x);
             }
         }
 
         //draw all the existing settlements and cities on the board
-        for(Building building : myBuildings) {
-            if(!building.isEmpty()) {
+        for (Building building : myBuildings) {
+            if (!building.isEmpty()) {
                 if (building.getTypeOfBuilding() == Building.SETTLEMENT)
                     drawSet(canvas, playerColor[building.getPlayer()], building.getNumber());
                 else if (building.getTypeOfBuilding() == Building.CITY)
@@ -252,16 +252,16 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         //if waiting to build a road, draw rectangles at all the places the user can build
-        if(waitingForRoadSelection) {
+        if (waitingForRoadSelection) {
             for (int x = 0; x < roads.length; x++) {
                 drawSelectedRoad(canvas, x);
             }
         }
 
         //if waiting to move the robber, draw an outline everywhere the robber can be placed
-        if(waitingForRobberPlacement) {
-            for(int x = 0; x < tiles.length; x++) {
-                if(x == tileLastSelected) {
+        if (waitingForRobberPlacement) {
+            for (int x = 0; x < tiles.length; x++) {
+                if (x == tileLastSelected) {
                     drawRobber(canvas, 0xFFFFFF00, x);
                 } else if (x != gameState.getRobber()) {
                     drawRobber(canvas, 0xC0808080, x);
@@ -354,8 +354,8 @@ public class CatanSurfaceView extends SurfaceView {
         double x = sites[location][0];
         double y = sites[location][1];
 
-        //if the city should be shifted 0.5 to the right to avaid overlaping a road
-        if(shiftCity[location]) {
+        //if the city should be shifted 0.5 to the right to avoid overlapping a road
+        if (shiftCity[location]) {
             //these {x,y,z} points define the shape of the city in 3D
             double pts[][] = {
                     {x - 0.75, y - 0.25, 0},
@@ -367,10 +367,10 @@ public class CatanSurfaceView extends SurfaceView {
                     {x + 0.25, y + 0.25, 0.25},
                     {x - 0.25, y + 0.25, 0.25},
                     {x - 0.75, y - 0.25, 0.5},
-                    {x - 0.5,  y - 0.25, 0.75},
+                    {x - 0.5, y - 0.25, 0.75},
                     {x - 0.25, y - 0.25, 0.5},
                     {x - 0.25, y + 0.25, 0.5},
-                    {x - 0.5,  y + 0.25, 0.75},
+                    {x - 0.5, y + 0.25, 0.75},
                     {x - 0.75, y + 0.25, 0.5}};
             //this array defines the {x,y,z} points on each face of the city
             double faces[][][] = {
@@ -430,15 +430,15 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void drawSelectedRoad(Canvas canvas, int location) {
         //if the user cannot build at a particular spot, don't draw it
-        if(!gameState.canBuildRoad(location)) {
+        if (!gameState.canBuildRoad(location)) {
             return;
         }
 
         //otherwise, draw the spot
-        float x = (float)sites[roads[location][0]][0];
-        float y = (float)sites[roads[location][0]][1];
-        float i = (float)sites[roads[location][1]][0] - x;
-        float j = (float)sites[roads[location][1]][1] - y;
+        float x = (float) sites[roads[location][0]][0];
+        float y = (float) sites[roads[location][0]][1];
+        float i = (float) sites[roads[location][1]][0] - x;
+        float j = (float) sites[roads[location][1]][1] - y;
 
         double pts[][] = {
                 {x + 0.2f * i - 0.1f * j, y + 0.2f * j + 0.1f * i},
@@ -453,7 +453,7 @@ public class CatanSurfaceView extends SurfaceView {
         path.lineTo(mapX(pts[3][0], pts[3][1]), mapY(pts[3][0], pts[3][1]));
 
         //select the color for the spot
-        if(location==roadLastSelected) {
+        if (location == roadLastSelected) {
             temp.setColor(0xFFFFFF00);
         } else {
             temp.setColor(0xC0808080);
@@ -469,27 +469,27 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void drawSelectedBuilding(Canvas canvas, int location) {
         //if the user cannot build at a particular spot, don't draw it
-        if(waitingForSettlementSelection && !gameState.canBuildSettlement(location) ||
+        if (waitingForSettlementSelection && !gameState.canBuildSettlement(location) ||
                 waitingForCitySelection && !gameState.canUpgradeSettlement(location)) {
             return;
         }
 
-        float x = (float)sites[location][0];
-        float y = (float)sites[location][1];
+        float x = (float) sites[location][0];
+        float y = (float) sites[location][1];
 
         int width;
         int height;
 
-        if(waitingForSettlementSelection) {
-            width=(int)(1500/distance(x,y,0));
-            height=(int)(1500*Math.cos(phi*deg)/distance(x,y, 0));
+        if (waitingForSettlementSelection) {
+            width = (int) (1500 / distance(x, y, 0));
+            height = (int) (1500 * Math.cos(phi * deg) / distance(x, y, 0));
         } else {
-            width=(int)(2000/distance(x,y,0));
-            height=(int)(2000*Math.cos(phi*deg)/distance(x,y, 0));
+            width = (int) (2000 / distance(x, y, 0));
+            height = (int) (2000 * Math.cos(phi * deg) / distance(x, y, 0));
         }
 
         //select the color for the spot
-        if(location==buildingLastSelected) {
+        if (location == buildingLastSelected) {
             temp.setColor(0xFFFFFF00);
         } else {
             temp.setColor(0xC0808080);
@@ -514,7 +514,7 @@ public class CatanSurfaceView extends SurfaceView {
         double y = tiles[location][1];
         float xPos = mapX(x, y);
         float yPos = mapY(x, y);
-        int size = (int)(2200/distance(x,y,0));
+        int size = (int) (2200 / distance(x, y, 0));
 
         path.reset();
         path.moveTo(xPos, yPos - 0.3f * size);
@@ -595,7 +595,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the location the user last selected, or -1 if the user did not select anywhere
      */
     public int getRoadLastSelected() {
-        return (roadLastSelected<0 || roadLastSelected>71) ? -1 : roadLastSelected;
+        return (roadLastSelected < 0 || roadLastSelected > 71) ? -1 : roadLastSelected;
     }
 
     /**
@@ -604,7 +604,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the location the user last selected, or -1 if the user did not select anywhere
      */
     public int getBuildingLastSelected() {
-        return (buildingLastSelected<0 || buildingLastSelected>53) ? -1 : buildingLastSelected;
+        return (buildingLastSelected < 0 || buildingLastSelected > 53) ? -1 : buildingLastSelected;
     }
 
     /**
@@ -613,7 +613,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the location the user last selected, or -1 if the user did not select anywhere
      */
     public int getTileLastSelected() {
-        return (tileLastSelected<0 || tileLastSelected>18) ? -1 : tileLastSelected;
+        return (tileLastSelected < 0 || tileLastSelected > 18) ? -1 : tileLastSelected;
     }
 
     /**
@@ -624,7 +624,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @param yPos the screen Y coordinate where the user touched
      */
     public void selectRoad(double xPos, double yPos) {
-        if(gameState==null)
+        if (gameState == null)
             return;
 
         double x = inverseMapX(xPos, yPos); //x coordinate on the board of the last user touch
@@ -632,13 +632,13 @@ public class CatanSurfaceView extends SurfaceView {
         double closest = Integer.MAX_VALUE; //initially set the largest distance to be infinite
         int indexOfClosest = -1;
 
-        for(int i=0; i<roads.length; i++) {
+        for (int i = 0; i < roads.length; i++) {
             //if the user can build a road at site i;
-            if(gameState.canBuildRoad(i)) {
-                double rx = (sites[roads[i][0]][0] + sites[roads[i][1]][0])/2.0;
-                double ry = (sites[roads[i][0]][1] + sites[roads[i][1]][1])/2.0;
-                double distance = Math.hypot(x-rx, y-ry);
-                if(distance < closest) {
+            if (gameState.canBuildRoad(i)) {
+                double rx = (sites[roads[i][0]][0] + sites[roads[i][1]][0]) / 2.0;
+                double ry = (sites[roads[i][0]][1] + sites[roads[i][1]][1]) / 2.0;
+                double distance = Math.hypot(x - rx, y - ry);
+                if (distance < closest) {
                     closest = distance;
                     indexOfClosest = i;
                 }
@@ -664,12 +664,12 @@ public class CatanSurfaceView extends SurfaceView {
         double closest = Integer.MAX_VALUE; //initially set the largest distance to be infinite
         int indexOfClosest = -1;
 
-        for(int i=0; i<sites.length; i++) {
+        for (int i = 0; i < sites.length; i++) {
             //if the user can build a building at site i;
-            if(waitingForSettlementSelection && gameState.canBuildSettlement(i) ||
+            if (waitingForSettlementSelection && gameState.canBuildSettlement(i) ||
                     waitingForCitySelection && gameState.canUpgradeSettlement(i)) {
-                double distance = Math.hypot(x-sites[i][0], y-sites[i][1]);
-                if(distance < closest) {
+                double distance = Math.hypot(x - sites[i][0], y - sites[i][1]);
+                if (distance < closest) {
                     closest = distance;
                     indexOfClosest = i;
                 }
@@ -695,11 +695,11 @@ public class CatanSurfaceView extends SurfaceView {
         double closest = Integer.MAX_VALUE; //initially set the largest distance to be infinite
         int indexOfClosest = -1;
 
-        for(int i=0; i<tiles.length; i++) {
+        for (int i = 0; i < tiles.length; i++) {
             //if the tile is not the tile the robber is currently on;
-            if(i!=gameState.getRobber()) {
-                double distance = Math.hypot(x-tiles[i][0], y-tiles[i][1]);
-                if(distance < closest) {
+            if (i != gameState.getRobber()) {
+                double distance = Math.hypot(x - tiles[i][0], y - tiles[i][1]);
+                if (distance < closest) {
                     closest = distance;
                     indexOfClosest = i;
                 }
@@ -737,13 +737,13 @@ public class CatanSurfaceView extends SurfaceView {
             path.moveTo(mapX(x + 2, y), mapY(x + 2, y));
             path.lineTo(mapX(x + 1, y + r3), mapY(x + 1, y + r3));
             path.lineTo(mapX(x - 1, y + r3), mapY(x - 1, y + r3));
-            path.lineTo(mapX(x - 2, y),      mapY(x - 2, y));
+            path.lineTo(mapX(x - 2, y), mapY(x - 2, y));
             path.lineTo(mapX(x - 1, y - r3), mapY(x - 1, y - r3));
             path.lineTo(mapX(x + 1, y - r3), mapY(x + 1, y - r3));
             path.close();
 
             //select the color of the tile
-            if(gameState != null) {
+            if (gameState != null) {
                 switch (gameState.getTiles()[i].getResource()) {
                     case Tile.BRICK:
                         temp.setColor(brick);
@@ -820,21 +820,21 @@ public class CatanSurfaceView extends SurfaceView {
     private void updateABC() {
         if (phi <= 0)
             phi = 0;
-        else if (phi > 75)
-            phi = 75;
+        else if (phi > 60)
+            phi = 60;
         if (theta <= -180)
             theta += 360;
         else if (theta > 180)
             theta -= 360;
 
-        a = Math.sin(phi*deg)*Math.cos(theta * deg);
-        b = Math.sin(phi*deg)*Math.sin(theta*deg);
-        c = Math.cos(phi*deg);
-        k1 = -s*(d-p)*Math.sin(theta * deg);
-        k2 = s*(d-p)*Math.cos(theta * deg);
-        k3 = -s*(d-p)*Math.cos(phi*deg)*Math.cos(theta*deg);
-        k4 = -s*(d-p)*Math.cos(phi * deg)*Math.sin(theta * deg);
-        k5 = s*(d-p)*Math.sin(phi*deg);
+        a = Math.sin(phi * deg) * Math.cos(theta * deg);
+        b = Math.sin(phi * deg) * Math.sin(theta * deg);
+        c = Math.cos(phi * deg);
+        k1 = -s * (d - p) * Math.sin(theta * deg);
+        k2 = s * (d - p) * Math.cos(theta * deg);
+        k3 = -s * (d - p) * Math.cos(phi * deg) * Math.cos(theta * deg);
+        k4 = -s * (d - p) * Math.cos(phi * deg) * Math.sin(theta * deg);
+        k5 = s * (d - p) * Math.sin(phi * deg);
         cy = this.getHeight() / 2.0f;
         cx = this.getWidth() / 2.0f;
     }
@@ -849,7 +849,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the x coordinate on the screen of the point {x,y,z} in 3D space
      */
     public float mapX(double x, double y, double z) {
-        return cx+(float)((x*k1 + y*k2)/(a*x + b*y + c*z - d));
+        return cx + (float) ((x * k1 + y * k2) / (a * x + b * y + c * z - d));
     }
 
     /**
@@ -861,7 +861,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the x coordinate on the screen of the point {x,y,0} in 3D space
      */
     public float mapX(double x, double y) {
-        return cx+(float)((x*k1 + y*k2)/(a*x + b*y - d));
+        return cx + (float) ((x * k1 + y * k2) / (a * x + b * y - d));
     }
 
     /**
@@ -874,7 +874,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the y coordinate on the screen of the point {x,y,z} in 3D space
      */
     public float mapY(double x, double y, double z) {
-        return cy+(float)((x*k3 + y*k4 + z*k5)/(a*x + b*y + c*z - d));
+        return cy + (float) ((x * k3 + y * k4 + z * k5) / (a * x + b * y + c * z - d));
     }
 
     /**
@@ -886,7 +886,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the y coordinate on the screen of the point {x,y,0} in 3D space
      */
     public float mapY(double x, double y) {
-        return cy+(float)((x*k3 + y*k4)/(a*x + b*y - d));
+        return cy + (float) ((x * k3 + y * k4) / (a * x + b * y - d));
     }
 
     /**
@@ -898,7 +898,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the x coordinate of the point {x,y,0} in 3D space
      */
     public double inverseMapX(double x, double y) {
-        return d*(k4*(x-cx)-k2*(y-cy))/((a*k4-b*k3)*(x-cx)+(b*k1-a*k2)*(y-cy)+k2*k3-k1*k4);
+        return d * (k4 * (x - cx) - k2 * (y - cy)) / ((a * k4 - b * k3) * (x - cx) + (b * k1 - a * k2) * (y - cy) + k2 * k3 - k1 * k4);
     }
 
     /**
@@ -910,7 +910,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the y coordinate of the point {x,y,0} in 3D space
      */
     public double inverseMapY(double x, double y) {
-        return d*(k3*(x-cx)-k1*(y-cy))/((b*k3-a*k4)*(x-cx)+(a*k2-b*k1)*(y-cy)+k1*k4-k2*k3);
+        return d * (k3 * (x - cx) - k1 * (y - cy)) / ((b * k3 - a * k4) * (x - cx) + (a * k2 - b * k1) * (y - cy) + k1 * k4 - k2 * k3);
     }
 
     /**
@@ -922,7 +922,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the distance from the camera to the point {x,y,z} in 3D space
      */
     public double distance(double x, double y, double z) {
-        return Math.sqrt((d*a - x) * (d*a - x) + (d*b - y) * (d*b - y) + (d*c - z) * (d*c - z));
+        return Math.sqrt((d * a - x) * (d * a - x) + (d * b - y) * (d * b - y) + (d * c - z) * (d * c - z));
     }
 
     /**
@@ -931,31 +931,35 @@ public class CatanSurfaceView extends SurfaceView {
      * @param canvas the canvas where the face is drawn
      * @param color  int representing the color of the face to be shaded
      * @param pts    an array of the {x,y,z} coordinates of the points that define this polygon
-     *            Note: in order for this method to display only the faces that face the viewer,
-     *            these points MUST be passed to this method CLOCKWISE as viewed from the outside
+     *               Note: in order for this method to display only the faces that face the viewer,
+     *               these points MUST be passed to this method CLOCKWISE as viewed from the outside
      */
     public void drawFace(Canvas canvas, int color, double[][] pts) {
         double[] v1 = {pts[0][0] - pts[1][0], pts[0][1] - pts[1][1], pts[0][2] - pts[1][2]};
         double[] v2 = {pts[0][0] - pts[2][0], pts[0][1] - pts[2][1], pts[0][2] - pts[2][2]};
         double[] v3 = {v1[1] * v2[2] - v1[2] * v2[1], v1[2] * v2[0] - v1[0] * v2[2], v1[0] * v2[1] - v1[1] * v2[0]};
-        double normV3 = Math.sqrt(v3[0]*v3[0] + v3[1]*v3[1] + v3[2]*v3[2]);
-        v3[0] /= normV3; v3[1] /= normV3; v3[2] /= normV3; //normalize the vector
+        double normV3 = Math.sqrt(v3[0] * v3[0] + v3[1] * v3[1] + v3[2] * v3[2]);
+        v3[0] /= normV3;
+        v3[1] /= normV3;
+        v3[2] /= normV3; //normalize the vector
 
         //parameterize the vector from the camera to the face
-        double[] cam = {pts[0][0] - a*d, pts[0][1] - b*d, pts[0][2] - c*d};
-        double normCam = Math.sqrt(cam[0]*cam[0] + cam[1]*cam[1] + cam[2]*cam[2]);
-        cam[0] /= normCam; cam[1] /= normCam; cam[2] /= normCam;
+        double[] cam = {pts[0][0] - a * d, pts[0][1] - b * d, pts[0][2] - c * d};
+        double normCam = Math.sqrt(cam[0] * cam[0] + cam[1] * cam[1] + cam[2] * cam[2]);
+        cam[0] /= normCam;
+        cam[1] /= normCam;
+        cam[2] /= normCam;
 
         //dot the normal vector with the camera vector
-        double dot = cam[0]*v3[0] + cam[1]*v3[1] + cam[2]*v3[2];
+        double dot = cam[0] * v3[0] + cam[1] * v3[1] + cam[2] * v3[2];
 
         //if the dot product is positive, the face is facing the user
-        if(dot>0) {
+        if (dot > 0) {
             path.reset();
             path.moveTo(
                     mapX(pts[0][0], pts[0][1], pts[0][2]),
                     mapY(pts[0][0], pts[0][1], pts[0][2]));
-            for(int i=1; i<pts.length; i++) {
+            for (int i = 1; i < pts.length; i++) {
                 path.lineTo(
                         mapX(pts[i][0], pts[i][1], pts[i][2]),
                         mapY(pts[i][0], pts[i][1], pts[i][2]));
@@ -998,6 +1002,24 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void rotateDown() {
         phi = 5 * Math.round(phi / 5) + 5;
+    }
+
+    /**
+     * get the value of phi
+     *
+     * @return this.phi
+     */
+    public double getPhi() {
+        return phi;
+    }
+
+    /**
+     * get the value of theta
+     *
+     * @return this.theta
+     */
+    public double getTheta() {
+        return theta;
     }
 
     /**

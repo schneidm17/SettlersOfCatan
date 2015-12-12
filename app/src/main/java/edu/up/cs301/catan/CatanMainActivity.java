@@ -1,7 +1,5 @@
 package edu.up.cs301.catan;
 
-import android.view.View;
-
 import java.util.ArrayList;
 
 import edu.up.cs301.game.GameMainActivity;
@@ -9,9 +7,6 @@ import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.config.GameConfig;
 import edu.up.cs301.game.config.GamePlayerType;
-import edu.up.cs301.catan.CatanComputerPlayer;
-import edu.up.cs301.catan.CatanHumanPlayer;
-import edu.up.cs301.catan.CatanLocalGame;
 
 /**
  * this is the primary activity for Catan
@@ -29,8 +24,7 @@ public class CatanMainActivity extends GameMainActivity {
      * - one human player vs. several computer player
      * - minimum of 3 player, maximum of 4
      *
-     * @return
-     * 		the new configuration object, representing the default configuration
+     * @return the new configuration object, representing the default configuration
      */
     @Override
     public GameConfig createDefaultConfig() {
@@ -42,15 +36,18 @@ public class CatanMainActivity extends GameMainActivity {
         playerTypes.add(new GamePlayerType("Local Human Player") {
             public GamePlayer createPlayer(String name) {
                 return new CatanHumanPlayer(name);
-            }});
+            }
+        });
         playerTypes.add(new GamePlayerType("Dumb Computer Player") {
             public GamePlayer createPlayer(String name) {
                 return new CatanComputerPlayer(name);
-            }});
+            }
+        });
         playerTypes.add(new GamePlayerType("Smart Computer Player") {
             public GamePlayer createPlayer(String name) {
                 return new CatanSmartComputerPlayer(name);
-            }});
+            }
+        });
 
         // Create a game configuration class for Counter:
         GameConfig defaultConfig = new GameConfig(playerTypes, 3, 4, "Catan", PORT_NUMBER);
@@ -65,8 +62,7 @@ public class CatanMainActivity extends GameMainActivity {
     /**
      * create a local game
      *
-     * @return
-     * 		the local game, a counter game
+     * @return the local game, a counter game
      */
     @Override
     public LocalGame createLocalGame() {
