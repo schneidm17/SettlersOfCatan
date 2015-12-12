@@ -67,21 +67,22 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     ImageView[] oreCards = new ImageView[10];
 
     //Booleans to control what has been clicked
-    Boolean buildRoadClicked = false;
-    Boolean buildSettlementClicked = false;
-    Boolean buildCityClicked = false;
+    boolean buildRoadClicked = false;
+    boolean buildSettlementClicked = false;
+    boolean buildCityClicked = false;
 
     //Booleans to control the popups
-    public static Boolean popupAlreadyOpen = false;
-    public static Boolean statsPopupAlreadyOpen = false;
-    public static Boolean discardPopupOpened = false;
-    public static Boolean nextTurn = false;
+    public static boolean popupAlreadyOpen = false;
+    public static boolean statsPopupAlreadyOpen = false;
+    public static boolean discardPopupOpened = false;
+    public static boolean nextTurn = false;
 
     //Booleans to control what buttons have been clicked
-    private Boolean builtSettlement1 = false;
-    private Boolean builtRoad1 = false;
-    private Boolean builtSettlement2 = false;
-    private Boolean builtRoad2 = false;
+    private boolean waitingForSet1 = true;
+    private boolean waitingForRoad1 = false;
+    private boolean waitingForSet2 = false;
+    private boolean waitingForRoad2 = false;
+    private boolean waitingForSomething = true;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -110,31 +111,22 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     @Override
     public void receiveInfo(GameInfo info) {
         if (info instanceof CatanGameState) {
-            //Save versions of the gamestate to be used
+            //Save versions of the game state to be used
             final CatanGameState GAME_STATE = (CatanGameState) info;
             this.myGameState = (CatanGameState) info;
             mySurfaceView.setGameState(this.myGameState);
 
-            //If the initial round do initial setup
-            if(!builtSettlement1){
+            if(waitingForSet1 || waitingForSet2) {
                 buildSettlementClicked = true;
-                updateButtonStates();
+                buildRoadClicked = false;
                 mySurfaceView.waitForSettlementSelection(true);
-            }else if(!builtRoad1){
+            } else if (waitingForRoad1 || waitingForRoad2) {
+                buildSettlementClicked = false;
                 buildRoadClicked = true;
-                updateButtonStates();
-                mySurfaceView.waitForRoadSelection(true);
-            }else if(!builtSettlement2){
-                buildSettlementClicked = true;
-                updateButtonStates();
-                mySurfaceView.waitForSettlementSelection(true);
-            }else if(!builtRoad2){
-                buildRoadClicked = true;
-                updateButtonStates();
                 mySurfaceView.waitForRoadSelection(true);
             }
+            updateButtonStates();
 
-            //If the player needs to roll, roll unless in initial placement
             Hand playerHand = this.myGameState.getHand(playerNum);
             if(myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID() && playerHand.getRoadsAvail() < 14)
             {
@@ -229,7 +221,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     builder1.setTitle("What has happened since your last turn:");
                     builder1.setMessage(message);
                     builder1.setCancelable(false);
-                    builder1.setPositiveButton("Cancel",
+                    builder1.setPositiveButton(R.string.Cancel,
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
@@ -241,11 +233,11 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 }
 
                 //display resource cards for user
-                numWheat.setText("" + playerHand.getWheat());
-                numSheep.setText("" + playerHand.getWool());
-                numWood.setText("" + playerHand.getLumber());
-                numBrick.setText("" + playerHand.getBrick());
-                numOre.setText("" + playerHand.getOre());
+                numWheat.setText(Integer.toString(playerHand.getWheat()));
+                numSheep.setText(Integer.toString(playerHand.getWool()));
+                numWood.setText(Integer.toString(playerHand.getLumber()));
+                numBrick.setText(Integer.toString(playerHand.getBrick()));
+                numOre.setText(Integer.toString(playerHand.getOre()));
 
                 for (int x = 0; x < 10; x++) {
                     if (x < playerHand.getWheat()) {
@@ -358,7 +350,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
             //Set other buttons un-clickable
             buildRoad.setClickable(false);
-            buildSettlement.setTextColor(Color.GRAY);
+            buildRoad.setTextColor(Color.GRAY);
             buildSettlement.setClickable(false);
             buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
@@ -366,19 +358,18 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             trade.setClickable(false);
             trade.setTextColor(Color.GRAY);
         } else if (buildRoadClicked) {
-            //if initial setup
-            if(myGameState.getHand(playerNum).getRoadsAvail() > 13) {
+            //Show the done and cancel buttons, except during initial setup
+            if(waitingForRoad1 || waitingForRoad2) {
                 endTurn.setVisibility(View.GONE);
+                done.setVisibility(View.VISIBLE);
             } else {
-                //Make end turn button text be cancel
-                endTurn.setText("Cancel");
+                endTurn.setText(R.string.Cancel);
                 endTurn.setVisibility(View.VISIBLE);
+                done.setVisibility(View.VISIBLE);
             }
-            //Turn on done button
-            done.setVisibility(View.VISIBLE);
-
             //Set other buttons un-clickable
-            buildRoad.setClickable(false);
+            buildRoad.setClickable(true);
+            buildRoad.setTextColor(Color.BLACK);
             buildSettlement.setClickable(false);
             buildSettlement.setTextColor(Color.GRAY);
             buildCity.setClickable(false);
@@ -386,47 +377,59 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             trade.setClickable(false);
             trade.setTextColor(Color.GRAY);
         } else if (buildSettlementClicked) {
-            //if initial setup
-            if(myGameState.getHand(playerNum).getSettlementsAvail() > 3 &&
-                    myGameState.getHand(playerNum).getCitiesAvail() == 4) {
+            //Show the done and cancel buttons, except during initial setup
+            if(waitingForSet1 || waitingForSet2) {
                 endTurn.setVisibility(View.GONE);
+                done.setVisibility(View.VISIBLE);
             } else {
-                //Make end turn button text be cancel
-                endTurn.setText("Cancel");
+                endTurn.setText(R.string.Cancel);
                 endTurn.setVisibility(View.VISIBLE);
+                done.setVisibility(View.VISIBLE);
             }
-
-            //Turn on done button
-            done.setVisibility(View.VISIBLE);
-
             //Set other buttons un-clickable
-            buildSettlement.setClickable(false);
             buildRoad.setClickable(false);
             buildRoad.setTextColor(Color.GRAY);
+            buildSettlement.setClickable(true);
+            buildSettlement.setTextColor(Color.BLACK);
             buildCity.setClickable(false);
             buildCity.setTextColor(Color.GRAY);
             trade.setClickable(false);
             trade.setTextColor(Color.GRAY);
         } else if (buildCityClicked) {
-            //Make end turn button text be cancel
-            endTurn.setText("Cancel");
-            endTurn.setVisibility(View.VISIBLE);
-            //Turn on done button
+            //Show the done and cancel buttons
+            endTurn.setText(R.string.Cancel);
+            endTurn.setVisibility(View.GONE);
             done.setVisibility(View.VISIBLE);
 
             //Set other buttons un-clickable
-            buildCity.setClickable(false);
             buildSettlement.setClickable(false);
             buildSettlement.setTextColor(Color.GRAY);
             buildRoad.setClickable(false);
             buildRoad.setTextColor(Color.GRAY);
+            buildCity.setClickable(true);
+            buildCity.setTextColor(Color.BLACK);
+            trade.setClickable(false);
+            trade.setTextColor(Color.GRAY);
+        } else if(myGameState.getScores()[myGameState.getPlayersID()] >= CatanGameState.VICTORY_POINTS_TO_WIN) {
+            //if the game is over
+            endTurn.setVisibility(View.VISIBLE);
+            endTurn.setClickable(false);
+            endTurn.setText(R.string.GameOver);
+            done.setVisibility(View.GONE);
+
+            //Set other buttons un-clickable
+            buildRoad.setClickable(false);
+            buildRoad.setTextColor(Color.GRAY);
+            buildSettlement.setClickable(false);
+            buildSettlement.setTextColor(Color.GRAY);
+            buildCity.setClickable(false);
+            buildCity.setTextColor(Color.GRAY);
             trade.setClickable(false);
             trade.setTextColor(Color.GRAY);
         } else {
-            //Make end turn button text be cancel
-            endTurn.setText("End Turn");
+            //Make end turn button visible
+            endTurn.setText(R.string.EndTurn);
             endTurn.setVisibility(View.VISIBLE);
-            //Make done button invisible
             done.setVisibility(View.GONE);
 
             //Make buttons visible if the player has resources
@@ -457,7 +460,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     || Integer.parseInt(numWood.getText().toString()) >= 4){
                 trade.setClickable(true);
                 trade.setTextColor(Color.BLACK);
-            }else{
+            } else {
                 trade.setClickable(false);
                 trade.setTextColor(Color.GRAY);
             }
@@ -470,7 +473,9 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      * @param v the button that was clicked
      */
     public void onClick(View v) {
-        if (v.equals(rotateUpButton)) {//rotates board up
+        if(myGameState==null) {
+            return;
+        } else if (v.equals(rotateUpButton)) {//rotates board up
             Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
             mySurfaceView.rotateUp();
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
@@ -491,23 +496,80 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
             mySurfaceView.postInvalidate();
         } else if (v.equals(buildRoad)) {
-            //Set build road boolean to true
-            buildRoadClicked = true;
-            updateButtonStates(); //change button colors
-            //Figure out what was clicked on surface view
-            mySurfaceView.waitForRoadSelection(true);
+            //if the button has already been clicked
+            if (buildRoadClicked) {
+                int spot = mySurfaceView.getRoadLastSelected();
+                if (spot != -1) {
+                    buildRoadClicked = false;
+                    mySurfaceView.waitForRoadSelection(false);
+                    if(waitingForSomething) {
+                        if (waitingForRoad1) {
+                            waitingForRoad1 = false;
+                            waitingForSet2 = true;
+                            buildSettlementClicked = true;
+                            mySurfaceView.waitForSettlementSelection(true);
+                        } else if (waitingForRoad2) {
+                            waitingForRoad2 = false;
+                            waitingForSomething = false;
+                        }
+                    }
+                    updateButtonStates();
+                    game.sendAction(new CatanBuildRoadAction(this, spot));
+                }
+            } else {
+                //Set build road boolean to true
+                buildRoadClicked = true;
+                updateButtonStates(); //change button colors
+                //Figure out what was clicked on surface view
+                mySurfaceView.waitForRoadSelection(true);
+            }
         } else if (v.equals(buildSettlement)) {
-            //Set build settlement boolean to true
-            buildSettlementClicked = true;
-            updateButtonStates(); //change button colors
-            //Figure out what was clicked on surface view
-            mySurfaceView.waitForSettlementSelection(true);
+            //if the button has already been clicked
+            if(buildSettlementClicked) {
+                int spot = mySurfaceView.getBuildingLastSelected();
+                if(spot != -1) {
+                    buildSettlementClicked=false;
+                    mySurfaceView.waitForSettlementSelection(false);
+                    if(waitingForSomething) {
+                        if (waitingForSet1) {
+                            waitingForSet1 = false;
+                            waitingForRoad1 = true;
+                            buildRoadClicked = true;
+                            mySurfaceView.waitForRoadSelection(true);
+                        } else if (waitingForSet2) {
+                            waitingForSet2 = false;
+                            waitingForRoad2 = true;
+                            buildRoadClicked = true;
+                            mySurfaceView.waitForRoadSelection(true);
+                        }
+                    }
+                    updateButtonStates();
+                    game.sendAction(new CatanBuildSettlementAction(this,spot));
+                }
+            } else {
+                //Set build settlement boolean to true
+                buildSettlementClicked = true;
+                updateButtonStates(); //change button colors
+                //Figure out what was clicked on surface view
+                mySurfaceView.waitForSettlementSelection(true);
+            }
         } else if (v.equals(buildCity)) {
-            //Set build settlement boolean to true
-            buildCityClicked = true;
-            updateButtonStates(); //change button colors
-            //Figure out what was clicked on surface view
-            mySurfaceView.waitForCitySelection(true);
+            //if the button has already been clicked
+            if(buildCityClicked) {
+                int spot = mySurfaceView.getBuildingLastSelected();
+                if(spot != -1) {
+                    buildCityClicked=false;
+                    mySurfaceView.waitForCitySelection(false);
+                    updateButtonStates();
+                    game.sendAction(new CatanUpgradeSettlementAction(this,spot));
+                }
+            } else {
+                //Set build settlement boolean to true
+                buildCityClicked = true;
+                updateButtonStates(); //change button colors
+                //Figure out what was clicked on surface view
+                mySurfaceView.waitForCitySelection(true);
+            }
         } else if (v.equals(trade)){
             LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(myActivity.LAYOUT_INFLATER_SERVICE);
 
@@ -630,26 +692,40 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             } else if (buildRoadClicked) { //Build a road
                 int spot = mySurfaceView.getRoadLastSelected();
                 if(spot != -1) {
-                    if(!builtRoad1) {
-                        builtRoad1 = true;
-                    } else if (!builtRoad2) {
-                        builtRoad2 = true;
-                    }
                     buildRoadClicked=false;
                     mySurfaceView.waitForRoadSelection(false);
+                    if(waitingForSomething) {
+                        if (waitingForRoad1) {
+                            waitingForRoad1 = false;
+                            waitingForSet2 = true;
+                            buildSettlementClicked = true;
+                            mySurfaceView.waitForSettlementSelection(true);
+                        } else if (waitingForRoad2) {
+                            waitingForRoad2 = false;
+                            waitingForSomething = false;
+                        }
+                    }
                     updateButtonStates();
                     game.sendAction(new CatanBuildRoadAction(this,spot));
                 }
             } else if(buildSettlementClicked) { //build a settlement
                 int spot = mySurfaceView.getBuildingLastSelected();
                 if(spot != -1) {
-                    if(!builtSettlement1) {
-                        builtSettlement1 = true;
-                    } else if (!builtSettlement2) {
-                        builtSettlement2 = true;
-                    }
                     buildSettlementClicked=false;
                     mySurfaceView.waitForSettlementSelection(false);
+                    if(waitingForSomething) {
+                        if (waitingForSet1) {
+                            waitingForSet1 = false;
+                            waitingForRoad1 = true;
+                            buildRoadClicked = true;
+                            mySurfaceView.waitForRoadSelection(true);
+                        } else if (waitingForSet2) {
+                            waitingForSet2 = false;
+                            waitingForRoad2 = true;
+                            buildRoadClicked = true;
+                            mySurfaceView.waitForRoadSelection(true);
+                        }
+                    }
                     updateButtonStates();
                     game.sendAction(new CatanBuildSettlementAction(this,spot));
                 }
@@ -675,12 +751,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         if(v.equals(mySurfaceView) && myGameState != null) {
             if(myGameState.isRolled7()) {
                 mySurfaceView.selectTile(e.getX(), e.getY());
+                updateButtonStates();
                 return true;
             } else if (buildRoadClicked) {
                 mySurfaceView.selectRoad(e.getX(), e.getY());
+                updateButtonStates();
                 return true;
             } else if(buildSettlementClicked || buildCityClicked) {
                 mySurfaceView.selectBuilding(e.getX(), e.getY());
+                updateButtonStates();
                 return true;
             }
         }

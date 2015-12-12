@@ -23,4 +23,8 @@
 
     <string name="robber_popup_title">Discard Cards</string>
     <string name="done">Done</string>
+    <string name="Cancel">Cancel</string>
+    <string name="EndTurn">End Turn</string>
+    <string name="GameOver">Game Over</string>
+
 </resources>
