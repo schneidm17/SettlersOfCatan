@@ -874,7 +874,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the y coordinate on the screen of the point {x,y,z} in 3D space
      */
     public float mapY(double x, double y, double z) {
-        return cy+(int)((x*k3 + y*k4 + z*k5)/(a*x + b*y + c*z - d));
+        return cy+(float)((x*k3 + y*k4 + z*k5)/(a*x + b*y + c*z - d));
     }
 
     /**
@@ -886,7 +886,7 @@ public class CatanSurfaceView extends SurfaceView {
      * @return the y coordinate on the screen of the point {x,y,0} in 3D space
      */
     public float mapY(double x, double y) {
-        return cy+(int)((x*k3 + y*k4)/(a*x + b*y - d));
+        return cy+(float)((x*k3 + y*k4)/(a*x + b*y - d));
     }
 
     /**
