@@ -72,7 +72,12 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                                             score += 5;
                                         }
 
-                                        //Adds score for rollnum
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                         score += 2;
+                                        }
+
+                                        //Adds score for rollnu}
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2 + 1;
 
                                         //Add score if it 'red' number
@@ -153,6 +158,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                                         score += (6 - Math.abs(tiles[tileAdjList[j]].getRollNumber() - 7))/2;
 
+                                        if(tiles[tileAdjList[j]].getResource() == Tile.WHEAT)
+                                        {
+                                            score += 2;
+                                        }
+
                                         if(tiles[tileAdjList[j]].getRollNumber() == 6 || tiles[tileAdjList[j]].getRollNumber() == 8)
                                         {
                                             score += 1;
@@ -230,12 +240,6 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     this.placeRobber(gameState);
                     return;
                 }
-
-                if(checkResources(myHand)) //Checks hand to see if a trade should be done
-                {
-                    return;
-                }
-
 
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
@@ -352,6 +356,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                     return;
                 }
 
+                if(checkResources(myHand)) //Checks hand to see if a trade should be done
+                {
+                    return;
+                }
+
                 //No more actions, end the turn
                 game.sendAction(new CatanEndTurnAction(this));
             }
@@ -459,10 +468,10 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 if (hand.getWool() > 2) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 3, -1, 0, 0));
                     return true;
-                } else if (hand.getLumber() > 3) {
+                } else if (hand.getLumber() > 2) {
                     game.sendAction(new CatanRemoveResAction(this, 3, 0, -1, 0, 0));
                     return true;
-                } else if (hand.getBrick() > 3) {
+                } else if (hand.getBrick() > 2) {
                     game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 3, 0));
                     return true;
                 }

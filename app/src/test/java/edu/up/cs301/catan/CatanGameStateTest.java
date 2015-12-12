@@ -24,7 +24,6 @@ public class CatanGameStateTest {
         soc.generateBuilding(41, 2, Building.CITY); //creates a 2 city at 41
         soc.generateRoad(19, 3); //creates a 3 road at 19
         soc.givePlayerResources(1); //gives 1 10 of everything
-        soc.generateRoll(4, 1); //gives 0 1 brick, 2 2 rocks
         soc.generateRoll(4, 3); //alters robberWasRolled
 
         //Test Copy Ctor
@@ -51,155 +50,10 @@ public class CatanGameStateTest {
         assertEquals(testRoads[5].isEmpty(), true); //Should be empty
 
         assertEquals(testHands[1].getTotal(), 50);
-        assertEquals(testHands[0].getBrick(), 1);
-        assertEquals(testHands[2].getOre(), 2);
+        assertEquals(testHands[2].getOre(), 0);
         assertEquals(testHands[3].getTotal(), 0); //Should be at 0
 
         assertEquals(testRob[0], true); //Same result for all entries in matrix
-    }
-
-    @Test
-    //Also tests distributeResources and givePlayersCards as both methods are called from roll exclusively
-    public void testRoll() throws Exception {
-        CatanGameState soc = new CatanGameState();
-        soc.setNumPlayers(4);
-        soc.setPlayersID(0);
-        Hand[] testHand;
-        int[] testTots;
-        boolean[] testRob;
-
-        int initRoll = soc.getDie1() + soc.getDie2();
-
-        while (initRoll == soc.getDie1() + soc.getDie2())
-        {
-            soc.roll();
-        }
-
-        assertNotEquals(initRoll, soc.getDie1() + soc.getDie2());
-
-
-        //Tests the distributing features of roll
-        soc.generateBuilding(22, 0, Building.CITY); //player 0 city at spot 22
-        soc.generateBuilding(40, 1, Building.SETTLEMENT); //player 1 settlement at spot 40
-        soc.generateBuilding(19, 2, Building.CITY); //player 2 settlement at spot 19
-        soc.generateBuilding(11, 3, Building.SETTLEMENT); //player 3 city at spot 11
-
-        soc.generateRoll(2, 3); //3 gets 1 brick, 0 gets 2 bricks, 1 gets 1 rock
-
-        testHand = soc.getHands();
-        testTots = new int[4]; //gets totals to make sure nothing else happened to other resources
-        for(int i = 0; i < testTots.length; i++)
-        {
-            testTots[i] = testHand[i].getTotal();
-        }
-
-        assertEquals(testHand[0].getBrick(), 2);
-        assertEquals(testTots[0], 2);
-        assertEquals(testHand[3].getBrick(), 1);
-        assertEquals(testTots[3], 1);
-        assertEquals(testHand[1].getOre(), 1);
-        assertEquals(testTots[1], 1);
-
-
-        soc.generateRoll(1, 2); //2 gets 2 wood
-        testHand = soc.getHands();
-        for(int i = 0; i < testTots.length; i++)
-        {
-            testTots[i] = testHand[i].getTotal();
-        }
-        //repeat tests to make sure nothing changed
-        assertEquals(testHand[0].getBrick(), 2);
-        assertEquals(testTots[0], 2);
-        assertEquals(testHand[3].getBrick(), 1);
-        assertEquals(testTots[3], 1);
-        assertEquals(testHand[1].getOre(), 1);
-        assertEquals(testTots[1], 1);
-        //new test(s)
-        assertEquals(testHand[2].getLumber(), 2);
-        assertEquals(testTots[2], 2);
-
-        soc.generateRoll(1, 1); //nobody is on the 2, nothing should change
-        testHand = soc.getHands();
-        for(int i = 0; i < testTots.length; i++)
-        {
-            testTots[i] = testHand[i].getTotal();
-        }
-        //repeats all tests to make sure nothing changed
-        assertEquals(testHand[0].getBrick(), 2);
-        assertEquals(testTots[0], 2);
-        assertEquals(testHand[3].getBrick(), 1);
-        assertEquals(testTots[3], 1);
-        assertEquals(testHand[1].getOre(), 1);
-        assertEquals(testTots[1], 1);
-        assertEquals(testHand[2].getLumber(), 2);
-        assertEquals(testTots[2], 2);
-
-        testRob = soc.getRobberWasRolled(); //robberWasRolled shoudl all be false
-        //UNLESS A 7 WAS ROLLED EARLIER USING THE RANDOM METHOD
-        //In this case, these fail, so please retry.
-        assertEquals(testRob[0], false);
-        assertEquals(testRob[1], false);
-        assertEquals(testRob[2], false);
-        assertEquals(testRob[3], false);
-
-        soc.generateRoll(2, 5); //7 rolled, res not changed, robberWasRolled needs to be set to true
-        testRob = soc.getRobberWasRolled();
-        assertEquals(testRob[0], true);
-        assertEquals(testRob[1], true);
-        assertEquals(testRob[2], true);
-        assertEquals(testRob[3], true);
-
-    }
-
-    @Test
-    public void testMoveRobber() throws Exception {
-        CatanGameState soc = new CatanGameState();
-        soc.setNumPlayers(4);
-        soc.setPlayersID(0);
-        Hand[] testHands;
-        soc.generateBuilding(33, 0, Building.SETTLEMENT); //0 has a settlement at spot 33
-        soc.generateRoll(4, 5); //0 has 1 sheep
-
-        testHands = soc.getHands();
-        assertEquals(testHands[0].getTotal(), 1);
-        assertEquals(testHands[0].getWool(), 1);
-        assertEquals(soc.getRobber(), 7);
-
-
-        soc.endTurn(); //now player 1's turn
-        soc.generateRoll(4, 3);
-        soc.moveRobber(10); //1 moves robber to spot 10, 0 is adjacent
-        //0 should lose 1 sheep, 1 should gain 1 sheep
-
-        testHands = soc.getHands();
-        assertEquals(testHands[0].getTotal(), 0);
-        assertEquals(testHands[1].getTotal(), 1);
-        assertEquals(testHands[1].getWool(), 1);
-        assertEquals(soc.getRobber(), 10);
-
-
-        soc.endTurn(); //now player 2's turn
-        soc.generateRoll(3, 4);
-        soc.moveRobber(9); //2 moves robber to spot 9, 0 is adjacent
-        //0 has nothing, so nothing should be robbed
-
-        testHands = soc.getHands();
-        assertEquals(testHands[0].getTotal(), 0);
-        assertEquals(testHands[2].getTotal(), 0);
-        assertEquals(soc.getRobber(), 9);
-
-
-        soc.endTurn(); //now player 3's turn
-        soc.givePlayerResources(0); //0 now has 10 of everything
-        soc.generateRoll(3, 4);
-        soc.moveRobber(14);//3 moves robber to spot 14, 0 is adjacent
-        //Something is stolen from 0 and added to 3
-
-        testHands = soc.getHands();
-        assertEquals(testHands[0].getTotal(), 49);
-        assertEquals(testHands[3].getTotal(), 1);
-        assertEquals(soc.getRobber(), 14);
-
     }
 
     @Test
