@@ -243,6 +243,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
+                Road[] roads = gameState.getRoads();
                 ArrayList<GameAction> actions = new ArrayList<GameAction>(30);
 
                 //Used for ranking moves
@@ -342,10 +343,25 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Randomize the roads if no smart roads can be placed
+                //Does not include roads that lead to settlement dead ends
                 if (gameState.playerHasRoadRes() && myHand.getLumber() > spotChecker && myHand.getBrick() > spotChecker) {
                     for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
                         if (gameState.canBuildRoad(i)) {
-                            actions.add(new CatanBuildRoadAction(this, i));
+                            byte[] buildAdjList = gameState.roadToBuildingAdjList[i];
+                            boolean adjToSettlement = false;
+
+                            for(int j = 0; j < buildAdjList.length; j++)
+                            {
+                                if(buildings[buildAdjList[j]].getPlayer() != playerNum &&
+                                        buildings[buildAdjList[j]].getPlayer() != Building.EMPTY)
+                                {
+                                    adjToSettlement = true;
+                                }
+                            }
+
+                            if(!adjToSettlement) {
+                                actions.add(new CatanBuildRoadAction(this, i));
+                            }
                         }
                     }
                 }
@@ -776,20 +792,35 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         int maxScore = -1;
         int maxIndex = -1;
         Tile[] tiles = gameState.getTiles();
+        Building[] buildings = gameState.getBuildings();
         for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
             if (gameState.canBuildRoad(i)) {
 
-                //Creates a copy of gamestate, builds a road and checks new version
-                CatanGameState tempState = new CatanGameState(gameState);
-                tempState.buildRoad(i);
-
                 int score = 0;
-                byte[] adjList = tempState.roadToBuildingAdjList[i];
+                byte[] adjList = gameState.roadToBuildingAdjList[i];
                 for (int k = 0; k < adjList.length; k++) {
+                    boolean ableToBuildSettlement = true;
+
+                    if(!buildings[adjList[k]].isEmpty())
+                    {
+                        ableToBuildSettlement = false;
+                    }
+
+                    //Get list of adjacent buildings and roads to the current spot
+                    byte[] buildingAdjList = gameState.buildingToBuildingAdjList[adjList[k]];
+
+                    //Check to see if a building is too close, if so return false
+                    for(int j = 0; j < buildingAdjList.length; j++)
+                    {
+                        if(!buildings[buildingAdjList[j]].isEmpty())
+                        {
+                            ableToBuildSettlement = false;
+                        }
+                    }
 
                     //If the road leads to a settlement spot, adds score to the spot based on rollnums
-                    if (tempState.canBuildSettlement(adjList[k])) {
-                        byte[] tileAdjList = tempState.buildingToTileAdjList[adjList[k]];
+                    if (ableToBuildSettlement) {
+                        byte[] tileAdjList = gameState.buildingToTileAdjList[adjList[k]];
                         for (int j = 0; j < tileAdjList.length; j++) {
                             if (tiles[tileAdjList[j]].getResource() == Tile.DESERT) {
                                 score -= 5;
@@ -801,7 +832,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Reassigns max score if current score is larger
-                if (score > maxScore) {
+                if(score <= 0)
+                {
+                    //Do not place this road
+                }
+                else if (score > maxScore) {
                     maxScore = score;
                     maxIndex = i;
                 }
@@ -826,20 +861,35 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
         int maxScore = -1;
         int maxIndex = -1;
         Tile[] tiles = gameState.getTiles();
+        Building[] buildings = gameState.getBuildings();
         for (int i = Road.TOTAL_NUMBER_OF_ROAD_SPOTS - 1; i > -1; i--) {
             if (gameState.canBuildRoad(i)) {
 
-                //Creates a copy of gamestate, builds a road and checks new version
-                CatanGameState tempState = new CatanGameState(gameState);
-                tempState.buildRoad(i);
-
                 int score = 0;
-                byte[] adjList = tempState.roadToBuildingAdjList[i];
+                byte[] adjList = gameState.roadToBuildingAdjList[i];
                 for (int k = 0; k < adjList.length; k++) {
+                    boolean ableToBuildSettlement = true;
+
+                    if(!buildings[adjList[k]].isEmpty())
+                    {
+                        ableToBuildSettlement = false;
+                    }
+
+                    //Get list of adjacent buildings and roads to the current spot
+                    byte[] buildingAdjList = gameState.buildingToBuildingAdjList[adjList[k]];
+
+                    //Check to see if a building is too close, if so return false
+                    for(int j = 0; j < buildingAdjList.length; j++)
+                    {
+                        if(!buildings[buildingAdjList[j]].isEmpty())
+                        {
+                            ableToBuildSettlement = false;
+                        }
+                    }
 
                     //If the road leads to a settlement spot, adds score to the spot based on rollnums
-                    if (tempState.canBuildSettlement(adjList[k])) {
-                        byte[] tileAdjList = tempState.buildingToTileAdjList[adjList[k]];
+                    if (ableToBuildSettlement) {
+                        byte[] tileAdjList = gameState.buildingToTileAdjList[adjList[k]];
                         for (int j = 0; j < tileAdjList.length; j++) {
                             if (tiles[tileAdjList[j]].getResource() == Tile.DESERT) {
                                 score -= 5;
@@ -851,7 +901,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Reassigns max score if current score is larger
-                if (score > maxScore) {
+                if(score <= 0)
+                {
+                   //Do not place this road
+                }
+                else if (score > maxScore) {
                     maxScore = score;
                     maxIndex = i;
                 }
