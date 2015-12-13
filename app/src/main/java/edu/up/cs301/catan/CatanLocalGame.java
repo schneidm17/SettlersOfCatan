@@ -54,40 +54,24 @@ public class CatanLocalGame extends LocalGame {
             if(action instanceof CatanBuildRoadAction)
             {
                 gameState.buildRoad(((CatanBuildRoadAction) action).spot);
-                if(action.getPlayer() instanceof CatanComputerPlayer)
-                {
-                    try{Thread.sleep(500);}catch(Exception e){}
-                }
                 return true;
             }
             //Player wants to build settlement
             else if(action instanceof CatanBuildSettlementAction)
             {
                 gameState.buildSettlement(((CatanBuildSettlementAction) action).spot);
-                if(action.getPlayer() instanceof CatanComputerPlayer)
-                {
-                    try{Thread.sleep(500);}catch(Exception e){}
-                }
                 return true;
             }
             //Player wants to end turn
             else if(action instanceof CatanEndTurnAction)
             {
                 gameState.endTurn();
-                if(action.getPlayer() instanceof CatanComputerPlayer)
-                {
-                    try{Thread.sleep(500);}catch(Exception e){}
-                }
                 return true;
             }
             //Player wants to move robber
             else if(action instanceof CatanMoveRobberAction)
             {
                 gameState.moveRobber(((CatanMoveRobberAction) action).spot);
-                if(action.getPlayer() instanceof CatanComputerPlayer)
-                {
-                    try{Thread.sleep(500);}catch(Exception e){}
-                }
                 return true;
             }
             //Player wants to remove resources
@@ -110,17 +94,12 @@ public class CatanLocalGame extends LocalGame {
             else if(action instanceof CatanRollAction)
             {
                 gameState.roll();
-                try {Thread.sleep(500);} catch (Exception e) {}
                 return true;
             }
             //Player wants to upgrade settlements
             else if(action instanceof CatanUpgradeSettlementAction)
             {
                 gameState.upgradeSettlement(((CatanUpgradeSettlementAction) action).spot);
-                if(action.getPlayer() instanceof CatanComputerPlayer)
-                {
-                    try{Thread.sleep(500);}catch(Exception e){}
-                }
                 return true;
             }
         }
