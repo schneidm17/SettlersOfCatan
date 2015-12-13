@@ -19,6 +19,7 @@
     <string name="Cancel">Cancel</string>
     <string name="EndTurn">End Turn</string>
     <string name="GameOver">Game Over</string>
+    <string name="MoveRobber">Move Robber</string>
     <string name="add_player">Add Player</string>
     <string name="app_name">Settlers of Catan</string>
     <string name="begin_game">Begin Game</string>
