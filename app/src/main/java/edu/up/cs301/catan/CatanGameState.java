@@ -408,6 +408,13 @@ public class CatanGameState extends GameState implements Serializable{
         die2 = rng.nextInt(6) + 1;
         //Log.d("NEW ROLL:", ""+die1 + die2);
 
+        //Disable a 7 on the first turn only
+        while(die1 + die2 == 7 && turnCount < 1)
+        {
+            die1 = rng.nextInt(6) + 1;
+            die2 = rng.nextInt(6) + 1;
+        }
+
         if(die1 + die2 != 7) //not possible to give res on 7
         {
             for(byte i = 0; i < tiles.length; i++) //check all tiles for the roll number
