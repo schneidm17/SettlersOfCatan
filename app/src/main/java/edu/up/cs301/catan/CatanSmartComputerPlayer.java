@@ -243,6 +243,7 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
 
                 Building[] buildings = gameState.getBuildings();
                 Tile[] tiles = gameState.getTiles();
+                Road[] roads = gameState.getRoads();
                 ArrayList<GameAction> actions = new ArrayList<GameAction>(30);
 
                 //Used for ranking moves
@@ -342,10 +343,25 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Randomize the roads if no smart roads can be placed
+                //Does not include roads that lead to settlement dead ends
                 if (gameState.playerHasRoadRes() && myHand.getLumber() > spotChecker && myHand.getBrick() > spotChecker) {
                     for (int i = 0; i < Road.TOTAL_NUMBER_OF_ROAD_SPOTS; i++) {
                         if (gameState.canBuildRoad(i)) {
-                            actions.add(new CatanBuildRoadAction(this, i));
+                            byte[] buildAdjList = gameState.roadToBuildingAdjList[i];
+                            boolean adjToSettlement = false;
+
+                            for(int j = 0; j < buildAdjList.length; j++)
+                            {
+                                if(buildings[buildAdjList[j]].getPlayer() != playerNum &&
+                                        buildings[buildAdjList[j]].getPlayer() != Building.EMPTY)
+                                {
+                                    adjToSettlement = true;
+                                }
+                            }
+
+                            if(!adjToSettlement) {
+                                actions.add(new CatanBuildRoadAction(this, i));
+                            }
                         }
                     }
                 }
@@ -801,7 +817,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Reassigns max score if current score is larger
-                if (score > maxScore) {
+                if(score <= 0)
+                {
+                    //Do not place this road
+                }
+                else if (score > maxScore) {
                     maxScore = score;
                     maxIndex = i;
                 }
@@ -851,7 +871,11 @@ public class CatanSmartComputerPlayer extends CatanComputerPlayer{
                 }
 
                 //Reassigns max score if current score is larger
-                if (score > maxScore) {
+                if(score <= 0)
+                {
+                   //Do not place this road
+                }
+                else if (score > maxScore) {
                     maxScore = score;
                     maxIndex = i;
                 }
