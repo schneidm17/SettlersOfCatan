@@ -345,6 +345,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             if (myGameState.isRolled7()) {
                 //Show the correct buttons
                 endTurn.setVisibility(View.GONE);
+                done.setText(R.string.MoveRobber);
                 done.setVisibility(View.VISIBLE);
 
                 //Set other buttons un-clickable
@@ -360,12 +361,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 //Show the done and cancel buttons, except during initial setup
                 if (waitingForRoad1 || waitingForRoad2) {
                     endTurn.setVisibility(View.GONE);
-                    done.setVisibility(View.VISIBLE);
                 } else {
                     endTurn.setText(R.string.Cancel);
                     endTurn.setVisibility(View.VISIBLE);
-                    done.setVisibility(View.VISIBLE);
                 }
+                done.setText(R.string.done);
+                done.setVisibility(View.VISIBLE);
+
                 //Set other buttons un-clickable
                 buildRoad.setClickable(true);
                 buildRoad.setTextColor(Color.BLACK);
@@ -379,12 +381,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 //Show the done and cancel buttons, except during initial setup
                 if (waitingForSet1 || waitingForSet2) {
                     endTurn.setVisibility(View.GONE);
-                    done.setVisibility(View.VISIBLE);
                 } else {
                     endTurn.setText(R.string.Cancel);
                     endTurn.setVisibility(View.VISIBLE);
-                    done.setVisibility(View.VISIBLE);
                 }
+                done.setText(R.string.done);
+                done.setVisibility(View.VISIBLE);
+
                 //Set other buttons un-clickable
                 buildRoad.setClickable(false);
                 buildRoad.setTextColor(Color.GRAY);
@@ -398,6 +401,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 //Show the done and cancel buttons
                 endTurn.setText(R.string.Cancel);
                 endTurn.setVisibility(View.VISIBLE);
+                done.setText(R.string.done);
                 done.setVisibility(View.VISIBLE);
 
                 //Set other buttons un-clickable
