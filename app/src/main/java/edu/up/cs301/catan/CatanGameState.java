@@ -451,7 +451,7 @@ public class CatanGameState extends GameState implements Serializable{
                         hands[buildings[adjList[i]].getPlayer()].getTotal() != 0) {
                     int resourceToSteal = rng.nextInt(5) + 1; //adds randomness to the resource selection
                     for (int j = 0; j < 6; j++) {
-                        int type = (j + resourceToSteal) % 6;
+                        int type = (j + resourceToSteal) % 5 + 1;
                         if (!hands[buildings[adjList[i]].getPlayer()].checkIfEmpty(type)) {
                             hands[buildings[adjList[i]].getPlayer()].stealResource(type);
                             hands[playersID].addResource(type);
@@ -461,6 +461,9 @@ public class CatanGameState extends GameState implements Serializable{
                     }
                 }
             }
+
+            //Mercy adding of a resource if nothing can be stolen
+            hands[playersID].addResource(rng.nextInt(5) + 1);
         }
         return false;
     }
@@ -698,7 +701,40 @@ public class CatanGameState extends GameState implements Serializable{
             roads[spot].setPlayer(playersID);
             roads[spot].setIsEmpty(false);
             hands[playersID].buildRoad();
-            this.playersID = (playersID + 1) % numPlayers;
+            //this.playersID = (playersID + 1) % numPlayers;
+
+            int roads15 = 0;
+            int roads14 = 0;
+            for(int i = 0; i < numPlayers; i++)
+            {
+                if(hands[i].getRoadsAvail() == 15)
+                {
+                    roads15++;
+                }
+                else if(hands[i].getRoadsAvail() == 14)
+                {
+                    roads14++;
+                }
+            }
+
+            if(roads15 != 0)
+            {
+                //normal progression
+                this.playersID = (playersID + 1) % numPlayers;
+            }
+            else if(roads14 == 4)
+            {
+                //do nothing as this makes the next player to place the same
+            }
+            else if(roads14 != 0)
+            {
+                //backwards progression
+                this.playersID = (playersID - 1) % numPlayers;
+                if(playersID == -1)
+                {
+                    this.playersID = numPlayers - 1;
+                }
+            }
             return true;
         }
         //noninitial case
