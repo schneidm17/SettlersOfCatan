@@ -77,7 +77,14 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     public static boolean popupAlreadyOpen = false;
     public static boolean statsPopupAlreadyOpen = false;
     public static boolean discardPopupOpened = false;
-    public static boolean nextTurn = false;
+    public static boolean nextTurn = true;
+
+    //Ints to control the resource gained popup
+    private int oldWheat;
+    private int oldRock;
+    private int oldSheep;
+    private int oldBrick;
+    private int oldWood;
 
     //Booleans to control what buttons have been clicked
     private boolean waitingForSet1 = true;
@@ -90,10 +97,15 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     private GameMainActivity myActivity;
 
     /**
-     * constructor does nothing extra
+     * Constructor initializes old resource counts
      */
     public CatanHumanPlayer(String name) {
-        super(name);
+        super (name);
+        oldWheat = 0;
+        oldRock = 0;
+        oldSheep = 0;
+        oldBrick = 0;
+        oldWood = 0;
     }
 
     /**
@@ -138,8 +150,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
             int die1 = GAME_STATE.getDie1();
             int die2 = GAME_STATE.getDie2();
 
-            //If its the players turn set the dice images to the roll value
-            if (GAME_STATE.getPlayersID() == playerNum) {
+            //Set the dice images to the roll value
                 //Red dice
                 switch (die1) {
                     case 1:
@@ -185,15 +196,19 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
 
                 //Popup to display at the beginning of the players turn to tell them what resources
                 //they got during computer players turns
-                if (myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTurn) {
+            if (GAME_STATE.getPlayersID() == playerNum) {
+
+                if (myGameState.getPlayersID() == playerNum && !statsPopupAlreadyOpen && !discardPopupOpened && nextTurn
+                        && myGameState.getHand(playerNum).getRoadsAvail() < 14) {
                     statsPopupAlreadyOpen = true;
                     nextTurn = false;
+
                     //Calculate number gained
-                    int wheatGained = this.myGameState.getHand(playerNum).getWheat() - Integer.parseInt(numWheat.getText().toString());
-                    int rockGained = this.myGameState.getHand(playerNum).getOre() - Integer.parseInt(numOre.getText().toString());
-                    int woodGained = this.myGameState.getHand(playerNum).getLumber() - Integer.parseInt(numWood.getText().toString());
-                    int brickGained = this.myGameState.getHand(playerNum).getBrick() - Integer.parseInt(numBrick.getText().toString());
-                    int sheepGained = this.myGameState.getHand(playerNum).getWool() - Integer.parseInt(numSheep.getText().toString());
+                    int wheatGained = this.myGameState.getHand(playerNum).getWheat() - oldWheat;
+                    int rockGained = this.myGameState.getHand(playerNum).getOre() - oldRock;
+                    int woodGained = this.myGameState.getHand(playerNum).getLumber() - oldWood;
+                    int brickGained = this.myGameState.getHand(playerNum).getBrick() - oldBrick;
+                    int sheepGained = this.myGameState.getHand(playerNum).getWool() - oldSheep;
 
                     //If there was more than or less than zero display message
                     String message = "Resources Gained or Lost: ";
@@ -233,7 +248,113 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                     alert11.show();
                 }
 
-                //display resource cards for user
+                //display resource cards for user and reset old resources
+                numWheat.setText(Integer.toString(playerHand.getWheat()));
+                oldWheat = playerHand.getWheat();
+                numSheep.setText(Integer.toString(playerHand.getWool()));
+                oldSheep = playerHand.getWool();
+                numWood.setText(Integer.toString(playerHand.getLumber()));
+                oldWood = playerHand.getLumber();
+                numBrick.setText(Integer.toString(playerHand.getBrick()));
+                oldBrick = playerHand.getBrick();
+                numOre.setText(Integer.toString(playerHand.getOre()));
+                oldRock = playerHand.getOre();
+
+                for (int x = 0; x < 10; x++) {
+                    if (x < playerHand.getWheat()) {
+                        wheatCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        wheatCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getWool()) {
+                        sheepCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        sheepCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getLumber()) {
+                        woodCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        woodCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getBrick()) {
+                        brickCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        brickCards[x].setVisibility(View.INVISIBLE);
+                    }
+
+                    if (x < playerHand.getOre()) {
+                        oreCards[x].setVisibility(View.VISIBLE);
+                    } else {
+                        oreCards[x].setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                //When a seven is rolled and the player has more than seven cards a popup appears for
+                //them to discard
+                if (GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen) {
+                    //Popup will only be created if it is the players turn to make a move
+                    if (GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()) {
+                        discardPopupOpened = true;
+                        popupAlreadyOpen = true;
+                        LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                        //Opens up the robber popup
+                        final View POPUP_VIEW = layoutInflater.inflate(R.layout.popup_select_cards, null);
+
+                        //Opens up the popup at the center of the screen
+                        final PopupWindow POPUP_WINDOW = new PopupWindow(POPUP_VIEW, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        POPUP_WINDOW.showAtLocation(POPUP_VIEW, Gravity.CENTER, 0, 0);
+
+                        //Dims the background
+                        final LinearLayout BACK_DIM_LAYOUT = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
+                        BACK_DIM_LAYOUT.setVisibility(View.GONE);
+
+                        //Text for popup
+                        TextView text = (TextView) POPUP_VIEW.findViewById(R.id.cardSelectPopupText);
+                        String message = "A seven has been rolled and you have " + GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal() + " cards\n" +
+                                "You must discard " + (GAME_STATE.getHand(playerNum).getTotal() / 2) + " cards.";
+                        text.setText(message);
+
+                        final CardSelectView SELECT_VIEW = (CardSelectView) POPUP_VIEW.findViewById(R.id.cardSelectionView);
+                        SELECT_VIEW.setGameState(GAME_STATE);
+
+                        //Instance of class used for anonymous onClick class
+                        final CatanHumanPlayer PLAYER = this;
+
+                        //Dismisses the popup when the cancel button is clicked
+                        Button btnDismiss = (Button) POPUP_VIEW.findViewById(R.id.cardSelectDoneButton);
+                        btnDismiss.setOnClickListener(new Button.OnClickListener() {
+                            public void onClick(View v) {
+                                int[] cardsToLose = SELECT_VIEW.getCardsToRemove();
+                                if (SELECT_VIEW.enoughCardsSelected()) {
+                                    POPUP_WINDOW.dismiss();
+                                    game.sendAction(new CatanRemoveResAction(PLAYER, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
+                                    //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
+                                    BACK_DIM_LAYOUT.setVisibility(View.VISIBLE);
+                                    CatanHumanPlayer.popupAlreadyOpen = false;
+                                    updateButtonStates();
+                                }
+                            }
+                        });
+                    } else if (playerNum == GAME_STATE.getPlayersID()) {
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
+                    }
+                }
+
+                //If the robber was rolled on the players turn they must move the robber
+                if (myGameState.isRolled7() && playerNum == myGameState.getPlayersID()) {
+                    mySurfaceView.waitForRobberPlacement(true);
+                    updateButtonStates();
+                }
+
+                //Update the buttons based on what can be built
+                updateButtonStates();
+            }
+            else //Update the resource counters if not your turn
+            {
                 numWheat.setText(Integer.toString(playerHand.getWheat()));
                 numSheep.setText(Integer.toString(playerHand.getWool()));
                 numWood.setText(Integer.toString(playerHand.getLumber()));
@@ -271,69 +392,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                         oreCards[x].setVisibility(View.INVISIBLE);
                     }
                 }
-
             }
-
-            //When a seven is rolled and the player has more than seven cards a popup appears for
-            //them to discard
-            if (GAME_STATE.getRobberWasRolledPlayer() && !popupAlreadyOpen) {
-                //Popup will only be created if it is the players turn to make a move
-                if (GAME_STATE.getHand(playerNum).getTotal() > 7 && playerNum == GAME_STATE.getPlayersID()) {
-                    discardPopupOpened = true;
-                    popupAlreadyOpen = true;
-                    LayoutInflater layoutInflater = (LayoutInflater) myActivity.getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                    //Opens up the robber popup
-                    final View POPUP_VIEW = layoutInflater.inflate(R.layout.popup_select_cards, null);
-
-                    //Opens up the popup at the center of the screen
-                    final PopupWindow POPUP_WINDOW = new PopupWindow(POPUP_VIEW, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    POPUP_WINDOW.showAtLocation(POPUP_VIEW, Gravity.CENTER, 0, 0);
-
-                    //Dims the background
-                    final LinearLayout BACK_DIM_LAYOUT = (LinearLayout) myActivity.findViewById(R.id.top_gui_layout);
-                    BACK_DIM_LAYOUT.setVisibility(View.GONE);
-
-                    //Text for popup
-                    TextView text = (TextView) POPUP_VIEW.findViewById(R.id.cardSelectPopupText);
-                    String message = "A seven has been rolled and you have " + GAME_STATE.getHand(GAME_STATE.getPlayersID()).getTotal() + " cards\n" +
-                            "You must discard " + (GAME_STATE.getHand(playerNum).getTotal() / 2) + " cards.";
-                    text.setText(message);
-
-                    final CardSelectView SELECT_VIEW = (CardSelectView) POPUP_VIEW.findViewById(R.id.cardSelectionView);
-                    SELECT_VIEW.setGameState(GAME_STATE);
-
-                    //Instance of class used for anonymous onClick class
-                    final CatanHumanPlayer PLAYER = this;
-
-                    //Dismisses the popup when the cancel button is clicked
-                    Button btnDismiss = (Button) POPUP_VIEW.findViewById(R.id.cardSelectDoneButton);
-                    btnDismiss.setOnClickListener(new Button.OnClickListener() {
-                        public void onClick(View v) {
-                            int[] cardsToLose = SELECT_VIEW.getCardsToRemove();
-                            if (SELECT_VIEW.enoughCardsSelected()) {
-                                POPUP_WINDOW.dismiss();
-                                game.sendAction(new CatanRemoveResAction(PLAYER, cardsToLose[0], cardsToLose[1], cardsToLose[2], cardsToLose[3], cardsToLose[4]));
-                                //gameState.removeResources(0, wood.getValue(), sheep.getValue(), wheat.getValue(), brick.getValue(), rock.getValue());
-                                BACK_DIM_LAYOUT.setVisibility(View.VISIBLE);
-                                CatanHumanPlayer.popupAlreadyOpen = false;
-                                updateButtonStates();
-                            }
-                        }
-                    });
-                } else if (playerNum == GAME_STATE.getPlayersID()) {
-                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 0, 0));
-                }
-            }
-
-            //If the robber was rolled on the players turn they must move the robber
-            if (myGameState.isRolled7() && playerNum == myGameState.getPlayersID()) {
-                mySurfaceView.waitForRobberPlacement(true);
-                updateButtonStates();
-            }
-
-            //Update the buttons based on what can be built
-            updateButtonStates();
         }
     }//receiveInfo
 
@@ -435,27 +494,29 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 endTurn.setVisibility(View.VISIBLE);
                 done.setVisibility(View.GONE);
 
-                //Make buttons visible if the player has resources
-                if (!myGameState.playerHasRoadRes()) {
-                    buildRoad.setClickable(false);
-                    buildRoad.setTextColor(Color.GRAY);
-                } else {
-                    buildRoad.setClickable(true);
-                    buildRoad.setTextColor(Color.BLACK);
-                }
-                if (!myGameState.playerHasCityRes()) {
-                    buildCity.setClickable(false);
-                    buildCity.setTextColor(Color.GRAY);
-                } else {
-                    buildCity.setClickable(true);
-                    buildCity.setTextColor(Color.BLACK);
-                }
-                if (!myGameState.playerHasSettlementRes()) {
-                    buildSettlement.setClickable(false);
-                    buildSettlement.setTextColor(Color.GRAY);
-                } else {
-                    buildSettlement.setClickable(true);
-                    buildSettlement.setTextColor(Color.BLACK);
+                //Make buttons visible if the player has resources and is there turn
+                if (myGameState.getPlayersID() == playerNum) {
+                    if (!myGameState.playerHasRoadRes()) {
+                        buildRoad.setClickable(false);
+                        buildRoad.setTextColor(Color.GRAY);
+                    } else {
+                        buildRoad.setClickable(true);
+                        buildRoad.setTextColor(Color.BLACK);
+                    }
+                    if (!myGameState.playerHasCityRes()) {
+                        buildCity.setClickable(false);
+                        buildCity.setTextColor(Color.GRAY);
+                    } else {
+                        buildCity.setClickable(true);
+                        buildCity.setTextColor(Color.BLACK);
+                    }
+                    if (!myGameState.playerHasSettlementRes()) {
+                        buildSettlement.setClickable(false);
+                        buildSettlement.setTextColor(Color.GRAY);
+                    } else {
+                        buildSettlement.setClickable(true);
+                        buildSettlement.setTextColor(Color.BLACK);
+                    }
                 }
                 //Make trade button visible if more than 4 of a resource
                 if (Integer.parseInt(numSheep.getText().toString()) >= 4 || Integer.parseInt(numBrick.getText().toString()) >= 4 ||
@@ -792,6 +853,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateLeftButton = (Button) activity.findViewById(R.id.goLeftButton);
 
         mySurfaceView.setOnTouchListener(this);
+        mySurfaceView.setPlayerNum(playerNum);
         rotateUpButton.setOnClickListener(this);
         rotateRightButton.setOnClickListener(this);
         rotateDownButton.setOnClickListener(this);

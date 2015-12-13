@@ -49,6 +49,7 @@ public class CatanSurfaceView extends SurfaceView {
     public static final double r3 = Math.sqrt(3); //square root of 3
 
     private CatanGameState gameState; //a copy of the game state used to draw this surface view
+    private int playerNum = 0; //the playeNum this surface view is associated with
 
     /*
      * These local variables are only used within this class;
@@ -222,6 +223,9 @@ public class CatanSurfaceView extends SurfaceView {
         Road[] myRoads = gameState.getRoads();
         Building[] myBuildings = gameState.getBuildings();
 
+        //finds if it is the associated player's turn
+        boolean assocPlayerTurn = gameState.getPlayersID() == playerNum;
+
         //draw all the roads on the board
         for (Road road : myRoads) {
             if (!road.isEmpty()) {
@@ -235,7 +239,7 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         //if waiting to build a settlement or city, draw circles at all the places the user can build
-        if (waitingForSettlementSelection || waitingForCitySelection) {
+        if ((waitingForSettlementSelection || waitingForCitySelection) && assocPlayerTurn) {
             for (int x = 0; x < sites.length; x++) {
                 drawSelectedBuilding(canvas, x);
             }
@@ -252,14 +256,14 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         //if waiting to build a road, draw rectangles at all the places the user can build
-        if (waitingForRoadSelection) {
+        if (waitingForRoadSelection && assocPlayerTurn) {
             for (int x = 0; x < roads.length; x++) {
                 drawSelectedRoad(canvas, x);
             }
         }
 
         //if waiting to move the robber, draw an outline everywhere the robber can be placed
-        if (waitingForRobberPlacement) {
+        if (waitingForRobberPlacement && assocPlayerTurn) {
             for (int x = 0; x < tiles.length; x++) {
                 if (x == tileLastSelected) {
                     drawRobber(canvas, 0xFFFFFF00, x);
@@ -1038,5 +1042,15 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void setTheta(double angle) {
         this.theta = angle % 360;
+    }
+
+    /**
+     * ser which player this view is associated with
+     *
+     * @param playerNum the player associated
+     */
+    public void setPlayerNum(int playerNum)
+    {
+        this.playerNum = playerNum;
     }
 }

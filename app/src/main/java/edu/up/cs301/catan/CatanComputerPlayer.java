@@ -284,7 +284,21 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                     }
                 }
 
-                game.sendAction(actions.get(RNG.nextInt(actions.size())));
+                GameAction actionToSend = actions.get(RNG.nextInt(actions.size()));
+                if (actionToSend instanceof CatanEndTurnAction)
+                {
+                    if(checkResources(myHand))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        game.sendAction(actionToSend);
+                    }
+                }
+                else {
+                    game.sendAction(actionToSend);
+                }
             }
 
         }
@@ -393,5 +407,226 @@ public class CatanComputerPlayer extends GameComputerPlayer {
                                                         brickToLose, rockToLose));
         }
     }//removeResources
+
+    /**
+     * checkResources
+     *
+     * Checks the hand of resources to see if the player can trade in resources
+     *
+     * Computers trade at 3:1 ratio instead of 4:1 ratio for difficulty
+     *
+     * @param hand the player's hand
+     * @return if a trade was made
+     */
+    protected boolean checkResources(Hand hand)
+    {
+        //Trade resources for settlement res if possible
+        if(hand.getSettlementsAvail() > 1) {
+            if (hand.getBrick() == 0) {
+                if (hand.getWool() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 3, 0, -1, 0));
+                    return true;
+                } else if (hand.getOre() >= 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, -1, 3));
+                    return true;
+                } else if (hand.getLumber() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 3, 0, 0, -1, 0));
+                    return true;
+                } else if (hand.getWheat() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 3, -1, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getLumber() == 0) {
+                if (hand.getWool() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 3, 0, 0, 0));
+                    return true;
+                } else if (hand.getOre() >= 3) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 0, 3));
+                    return true;
+                } else if (hand.getWheat() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 3, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 3, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getWheat() == 0) {
+                if (hand.getWool() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 3, -1, 0, 0));
+                    return true;
+                } else if (hand.getOre() >= 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 0, 3));
+                    return true;
+                } else if (hand.getLumber() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 3, 0, -1, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 3, 0));
+                    return true;
+                }
+            }
+
+            if (hand.getWool() == 0) {
+                if (hand.getOre() >= 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 0, 3));
+                    return true;
+                } else if (hand.getWheat() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 3, 0, 0));
+                    return true;
+                } else if (hand.getLumber() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 3, -1, 0, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 3, 0));
+                    return true;
+                }
+            }
+        }
+        else if(hand.getCitiesAvail() > 0) //Trade for city res if only have 1 settlement or less left
+        {
+            if (hand.getOre() < 3) {
+                if (hand.getWool() > 2) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 3, 0, 0, -1));
+                    return true;
+                } else if (hand.getWheat() > 4) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 3, 0, -1));
+                    return true;
+                } else if (hand.getLumber() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 3, 0, 0, 0, -1));
+                    return true;
+                } else if (hand.getBrick() > 3) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 3, -1));
+                    return true;
+                }
+            }
+
+            if (hand.getWheat() < 2) {
+                if (hand.getWool() > 2) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 3, -1, 0, 0));
+                    return true;
+                } else if (hand.getLumber() > 2) {
+                    game.sendAction(new CatanRemoveResAction(this, 3, 0, -1, 0, 0));
+                    return true;
+                } else if (hand.getBrick() > 2) {
+                    game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 3, 0));
+                    return true;
+                }
+            }
+        }
+
+        if(hand.getTotal() > 7) //get rid of cards at random to go below 7 in case of robber
+        {
+            if(hand.getWool() > 3)
+            {
+                switch(RNG.nextInt(3))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 3, 0, 0, 0));
+                        return true;
+
+                    case 1: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 3, -1, 0, 0));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 3, 0, -1, 0));
+                        return true;
+
+                    case 3:
+                        game.sendAction(new CatanRemoveResAction(this, 0, 3, 0, 0, -1));
+                        return true;
+                }
+            }
+            else if(hand.getOre() >= 3)
+            {
+                switch(RNG.nextInt(3))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 0, 3));
+                        return true;
+
+                    case 1: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 0, 3));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, -1, 3));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 0, 3));
+                        return true;
+                }
+            }
+            else if(hand.getWheat() > 3)
+            {
+                switch(RNG.nextInt(3))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 3, 0, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 3, 0, -1));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 3, -1, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 3, 0, 0));
+                        return true;
+                }
+            }
+            else if(hand.getLumber() > 3)
+            {
+                switch(RNG.nextInt(3))
+                {
+                    case 0: //Add a wheat to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, 3, 0, -1, 0, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 3, 0, 0, 0, -1));
+                        return true;
+
+                    case 2: //Add brick
+                        game.sendAction(new CatanRemoveResAction(this, 3, 0, 0, -1, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 3, -1, 0, 0, 0));
+                        return true;
+                }
+            }
+            else if(hand.getBrick() > 3)
+            {
+                switch(RNG.nextInt(3))
+                {
+                    case 0: //Add a wood to reduce amount down
+                        game.sendAction(new CatanRemoveResAction(this, -1, 0, 0, 3, 0));
+                        return true;
+
+                    case 1: //Add rock
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, 0, 3, -1));
+                        return true;
+
+                    case 2: //Add wheat
+                        game.sendAction(new CatanRemoveResAction(this, 0, 0, -1, 3, 0));
+                        return true;
+
+                    case 3: //Add sheep
+                        game.sendAction(new CatanRemoveResAction(this, 0, -1, 0, 3, 0));
+                        return true;
+                }
+            }
+        }
+        return false;
+    }//checkResources
 
 }//CatanComputerPlayer
