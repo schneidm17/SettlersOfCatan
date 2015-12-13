@@ -722,7 +722,7 @@ public class CatanGameState extends GameState implements Serializable{
                 //normal progression
                 this.playersID = (playersID + 1) % numPlayers;
             }
-            else if(roads14 == 4)
+            else if(roads14 == numPlayers)
             {
                 //do nothing as this makes the next player to place the same
             }
