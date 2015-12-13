@@ -163,7 +163,7 @@ public class CatanGameState extends GameState implements Serializable{
         die2 = 1;
         //robber = 7;
         rolled7 = false;
-        needToRoll = false;
+        needToRoll = true;
         round1Placing = true;
         round2Placing = false;
 
@@ -441,6 +441,7 @@ public class CatanGameState extends GameState implements Serializable{
         if(rolled7)
         {
             robber = spot;
+            boolean adjToOthers = false;
             byte[] adjList = tileToBuildingAdjList[spot];
             rolled7 = false; //Resets the boolean for next turn
             //Log.d("ROBBER MOVED: ", "Player " + playersID + " placed robber at " +spot);
@@ -460,10 +461,17 @@ public class CatanGameState extends GameState implements Serializable{
                         }
                     }
                 }
+                else if(buildings[adjList[i]].getPlayer() != Building.EMPTY &&
+                        buildings[adjList[i]].getPlayer() != playersID)
+                {
+                    adjToOthers = true;
+                }
             }
 
-            //Mercy adding of a resource if nothing can be stolen
-            hands[playersID].addResource(rng.nextInt(5) + 1);
+            if(adjToOthers) {
+                //Mercy adding of a resource if nothing can be stolen
+                hands[playersID].addResource(rng.nextInt(5) + 1);
+            }
         }
         return false;
     }
