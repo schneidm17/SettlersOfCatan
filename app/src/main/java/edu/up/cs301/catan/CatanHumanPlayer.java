@@ -538,28 +538,28 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
      * @param v the button that was clicked
      */
     public void onClick(View v) {
-        if (myGameState != null) {
-            if (v.equals(rotateUpButton)) {//rotates board up
-                Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
-                mySurfaceView.rotateUp();
-                mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
-                mySurfaceView.postInvalidate();
-            } else if (v.equals(rotateRightButton)) {//rotates board right
-                Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
-                mySurfaceView.rotateRight();
-                mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
-                mySurfaceView.postInvalidate();
-            } else if (v.equals(rotateDownButton)) {//rotates board down
-                Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
-                mySurfaceView.rotateDown();
-                mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
-                mySurfaceView.postInvalidate();
-            } else if (v.equals(rotateLeftButton)) {//rotates board left
-                Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
-                mySurfaceView.rotateLeft();
-                mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
-                mySurfaceView.postInvalidate();
-            } else if (v.equals(buildRoad)) {
+        if (v.equals(rotateUpButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateUp();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateRightButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateRight();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateDownButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateDown();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (v.equals(rotateLeftButton)) {
+            Canvas myCanvas = mySurfaceView.getHolder().lockCanvas();
+            mySurfaceView.rotateLeft();
+            mySurfaceView.getHolder().unlockCanvasAndPost(myCanvas);
+            mySurfaceView.postInvalidate();
+        } else if (myGameState != null) {
+            if (v.equals(buildRoad)) {
                 //if the button has already been clicked
                 if (buildRoadClicked) {
                     int spot = mySurfaceView.getRoadLastSelected();
@@ -853,7 +853,6 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         rotateLeftButton = (Button) activity.findViewById(R.id.goLeftButton);
 
         mySurfaceView.setOnTouchListener(this);
-        mySurfaceView.setPlayerNum(playerNum);
         rotateUpButton.setOnClickListener(this);
         rotateRightButton.setOnClickListener(this);
         rotateDownButton.setOnClickListener(this);

@@ -19,7 +19,7 @@ import edu.up.cs301.game.R;
  * If you aren't Matthew Schneider, please don't touch anything in this class!
  *
  * @author Matthew Schneider
- * @version 8 December 2015
+ * @version 14 December 2015
  */
 public class CatanSurfaceView extends SurfaceView {
 
@@ -49,7 +49,6 @@ public class CatanSurfaceView extends SurfaceView {
     public static final double r3 = Math.sqrt(3); //square root of 3
 
     private CatanGameState gameState; //a copy of the game state used to draw this surface view
-    private int playerNum = 0; //the playeNum this surface view is associated with
 
     /*
      * These local variables are only used within this class;
@@ -59,7 +58,7 @@ public class CatanSurfaceView extends SurfaceView {
     Bitmap bitmap; //temporary bitmap (frequently reused);
     Paint temp; //style Paint.Style.FILL (frequently reused);
     Paint outline; //style Paint.Style.STROKE
-    Paint message; //message that appears if waiting for players
+    Paint text; //Paint used by the tutorial
 
     /*
      * These ints represent colors that are used in this class
@@ -82,6 +81,35 @@ public class CatanSurfaceView extends SurfaceView {
     private boolean waitingForSettlementSelection = false;
     private boolean waitingForCitySelection = false;
     private boolean waitingForRobberPlacement = false;
+
+    /*
+     * These variables are used during the tutorial
+     */
+    private boolean tutorial = true; //to disable the tutorial, set this to false
+    private static final int messageSize = 40;
+    private static final String [] tutorialMessages = {
+            "Waiting for other players",
+            "to join the game...",
+            "Now press here →",
+            "Welcome to the Island of Catan!",
+            "To build your first settlement, select one of the",
+            "circles on the screen, then press the \"Done\" button",
+            "If the numbers on each tile is rolled, you gain those resources",
+            "You can use those resources to build more settlements or cities",
+            "Select a second settlement, then press the \"Done\" button",
+            "To build a city, select a settlement and press the \"Done\" button",
+            "Cities get twice as many resources as settlements each turn",
+            "You can press the arrow buttons to rotate the game board",
+            "To build your first road, select one of the rectangles",
+            "around your first settlement, then press the \"Done\" button",
+            "The objective of the game is to get 10 victory points",
+            "Each settlement is worth 1 point, and each city is worth 2 points",
+            "Now select a road, then press the \"Done\" button to start the game",
+            "A seven was rolled on your turn, so you get to move the robber",
+            "Select where you want to move the robber, then press the \"Done\" button"
+    }; //messages displayed on the screen during the tutorial
+    private boolean robberTutorial = true; //true if the user has not moved the robber yet
+
 
     //These bitmaps represent the numbers on the board
     Bitmap num2, num3, num4, num5, num6, num8, num9, num10, num11, num12;
@@ -114,10 +142,6 @@ public class CatanSurfaceView extends SurfaceView {
             {39, 40}, {41, 40}, {41, 42}, {43, 42}, {43, 44}, {45, 44}, {45, 46}, {47, 39},
             {49, 41}, {51, 43}, {53, 45}, {48, 47}, {48, 49}, {50, 49}, {50, 51}, {52, 51},
             {52, 53}};
-
-    //the {x,y} location of every port on the board
-    public static final double ports[][] = {{-9, 3 * r3}, {-9, -r3}, {-6, -4 * r3}, {-3, 5 * r3},
-            {0, -6 * r3}, {3, 5 * r3}, {6, -4 * r3}, {9, -r3}, {9, 3 * r3}};
 
     //the {x,y} coordinates of the path that draws the coastline
     public static final double coastline[][] = {{-8, 3.2 * r3}, {-8, 3 * r3}, {-7.4, 3 * r3},
@@ -154,9 +178,10 @@ public class CatanSurfaceView extends SurfaceView {
         super(context, attrs);
         setWillNotDraw(false);
 
-        //initialize the game board rotation
+        //initialize the game board rotation and tutorial
         this.phi = 40;
         this.theta = -60;
+        tutorial = true;
 
         //initialize Paints to save time in onDraw
         path = new Path();
@@ -166,11 +191,12 @@ public class CatanSurfaceView extends SurfaceView {
         outline.setColor(Color.BLACK);
         outline.setStyle(Paint.Style.STROKE);
         outline.setStrokeWidth(1);
-        message = new Paint();
-        message.setColor(Color.BLACK);
-        message.setTextSize(90);
-        message.setTextAlign(Paint.Align.CENTER);
-        message.setTypeface(Typeface.SERIF);
+
+        text = new Paint();
+        text.setColor(Color.BLACK);
+        text.setStyle(Paint.Style.FILL);
+        text.setTextAlign(Paint.Align.CENTER);
+        text.setTypeface(Typeface.DEFAULT);
 
         //initialize bitmaps
         num2 = BitmapFactory.decodeResource(getResources(), R.drawable.num_2);
@@ -214,17 +240,18 @@ public class CatanSurfaceView extends SurfaceView {
         if (gameState == null) {
             temp.setColor(0xC0FFFFFF);
             canvas.drawPaint(temp); //make the screen looked washed out
-            canvas.drawText("Waiting for other players", cx, cy, message);
-            canvas.drawText("to join the game...", cx, cy + 100, message);
+            text.setTextSize(90);
+            text.setTypeface(Typeface.SERIF);
+            canvas.drawText(tutorialMessages[0], cx, cy, text);
+            canvas.drawText(tutorialMessages[1], cx, cy + 100, text);
+            text.setTextSize(messageSize);
+            text.setTypeface(Typeface.DEFAULT);
             return; //do not draw anything else
         }
 
         //set these temporary variables so we don't have to call these methods repeatedly
         Road[] myRoads = gameState.getRoads();
         Building[] myBuildings = gameState.getBuildings();
-
-        //finds if it is the associated player's turn
-        boolean assocPlayerTurn = gameState.getPlayersID() == playerNum;
 
         //draw all the roads on the board
         for (Road road : myRoads) {
@@ -239,7 +266,29 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         //if waiting to build a settlement or city, draw circles at all the places the user can build
-        if ((waitingForSettlementSelection || waitingForCitySelection) && assocPlayerTurn) {
+        if (waitingForSettlementSelection || waitingForCitySelection) {
+            //display the tutorial messages
+            if(tutorial) {
+                Hand hand = gameState.getHand(gameState.getPlayersID());
+                if (hand.getCitiesAvail() == 4 && hand.getSettlementsAvail() == 5) {
+                    text.setTextSize(messageSize);
+                    canvas.drawText(tutorialMessages[3], cx, 150, text);
+                    canvas.drawText(tutorialMessages[4], cx, 180 + messageSize, text);
+                    canvas.drawText(tutorialMessages[5], cx, 180 + 2 * messageSize, text);
+                    if (buildingLastSelected != -1) {
+                        text.setTextAlign(Paint.Align.RIGHT);
+                        canvas.drawText(tutorialMessages[2], canvas.getWidth() - 25, canvas.getHeight() - 25, text);
+                        text.setTextAlign(Paint.Align.CENTER);
+                    }
+                } else if (hand.getCitiesAvail() == 4 && hand.getSettlementsAvail() == 4) {
+                    canvas.drawText(tutorialMessages[6], cx, 150, text);
+                    canvas.drawText(tutorialMessages[7], cx, 150 + messageSize, text);
+                    canvas.drawText(tutorialMessages[8], cx, 180 + 2 * messageSize, text);
+                } else if (waitingForCitySelection && hand.getCitiesAvail() == 4) {
+                    canvas.drawText(tutorialMessages[9], cx, 150, text);
+                    canvas.drawText(tutorialMessages[10], cx, 150 + messageSize, text);
+                }
+            }
             for (int x = 0; x < sites.length; x++) {
                 drawSelectedBuilding(canvas, x);
             }
@@ -256,14 +305,44 @@ public class CatanSurfaceView extends SurfaceView {
         }
 
         //if waiting to build a road, draw rectangles at all the places the user can build
-        if (waitingForRoadSelection && assocPlayerTurn) {
+        if (waitingForRoadSelection) {
+            //display the tutorial messages
+            if(tutorial) {
+                Hand hand = gameState.getHand(gameState.getPlayersID());
+                if (hand.getRoadsAvail() == 15) {
+                    canvas.drawText(tutorialMessages[11], cx, 150, text);
+                    canvas.drawText(tutorialMessages[12], cx, 180 + messageSize, text);
+                    canvas.drawText(tutorialMessages[13], cx, 180 + 2 * messageSize, text);
+                    if (roadLastSelected != -1) {
+                        text.setTextAlign(Paint.Align.RIGHT);
+                        canvas.drawText(tutorialMessages[2], canvas.getWidth() - 25, canvas.getHeight() - 25, text);
+                        text.setTextAlign(Paint.Align.CENTER);
+                    }
+                } else if (hand.getRoadsAvail() == 14) {
+                    canvas.drawText(tutorialMessages[14], cx, 150, text);
+                    canvas.drawText(tutorialMessages[15], cx, 150 + messageSize, text);
+                    canvas.drawText(tutorialMessages[16], cx, 180 + 2 * messageSize, text);
+                }
+            }
             for (int x = 0; x < roads.length; x++) {
                 drawSelectedRoad(canvas, x);
             }
         }
 
         //if waiting to move the robber, draw an outline everywhere the robber can be placed
-        if (waitingForRobberPlacement && assocPlayerTurn) {
+        if (waitingForRobberPlacement) {
+            //display the tutorial messages
+            if(tutorial) {
+                if(robberTutorial) {
+                    canvas.drawText(tutorialMessages[17], cx, 150, text);
+                    canvas.drawText(tutorialMessages[18], cx, 150 + messageSize, text);
+                    if (tileLastSelected != -1) {
+                        text.setTextAlign(Paint.Align.RIGHT);
+                        canvas.drawText(tutorialMessages[2], canvas.getWidth() - 25, canvas.getHeight() - 25, text);
+                        text.setTextAlign(Paint.Align.CENTER);
+                    }
+                }
+            }
             for (int x = 0; x < tiles.length; x++) {
                 if (x == tileLastSelected) {
                     drawRobber(canvas, 0xFFFFFF00, x);
@@ -590,6 +669,9 @@ public class CatanSurfaceView extends SurfaceView {
         waitingForSettlementSelection = false;
         waitingForCitySelection = false;
         waitingForRobberPlacement = set;
+        if(robberTutorial && !set) {
+            robberTutorial = false;
+        }
         this.postInvalidate();
     }
 
@@ -1006,51 +1088,5 @@ public class CatanSurfaceView extends SurfaceView {
      */
     public void rotateDown() {
         phi = 5 * Math.round(phi / 5) + 5;
-    }
-
-    /**
-     * get the value of phi
-     *
-     * @return this.phi
-     */
-    public double getPhi() {
-        return phi;
-    }
-
-    /**
-     * get the value of theta
-     *
-     * @return this.theta
-     */
-    public double getTheta() {
-        return theta;
-    }
-
-    /**
-     * change the value of phi based on user touch
-     *
-     * @param angle the new value of phi
-     */
-    public void setPhi(double angle) {
-        this.phi = angle % 360;
-    }
-
-    /**
-     * change the value of theta based on user touch
-     *
-     * @param angle the new value of theta
-     */
-    public void setTheta(double angle) {
-        this.theta = angle % 360;
-    }
-
-    /**
-     * ser which player this view is associated with
-     *
-     * @param playerNum the player associated
-     */
-    public void setPlayerNum(int playerNum)
-    {
-        this.playerNum = playerNum;
     }
 }
