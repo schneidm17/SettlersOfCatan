@@ -131,6 +131,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView10"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Your Resources"
                 android:id="@+id/textView" />
 
@@ -598,4 +605,4 @@
 
     </LinearLayout>
 
-</LinearLayout><!-- From: file:/Users/matthewschneider/AndroidStudioProjects/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->
+</LinearLayout><!-- From: file:/C:/Users/jarre_000/AndroidStudioProjects/SettlersOfCatan/app/src/main/res/layout/catan_layout.xml -->

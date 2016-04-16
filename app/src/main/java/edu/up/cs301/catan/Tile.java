@@ -42,6 +42,14 @@ public class Tile implements Serializable {
         adjacentBuildings = newAdjacentBuildings;
     }
 
+    public Tile (Tile t, byte[] newAdjacentBuildings)
+    {
+        setNumber(t.getNumber());
+        setRollNumber(t.getRollNumber());
+        resource = t.getResource();
+        adjacentBuildings = newAdjacentBuildings;
+    }
+
     /**
      * Method to return the tile number
      * @return tile number

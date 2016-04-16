@@ -44,7 +44,7 @@ public class CatanSurfaceView extends SurfaceView {
 
     public final double d = 24; //distance of the camera from the origin (constant)
     public final double p = 18; //distance of the view plane from the origin (constant)
-    public final double s = 250; //scale factor on the view plane
+    public double s = 250; //scale factor on the view plane
     public static final double deg = 0.017453292519943295; //conversion factor for deg to rad
     public static final double r3 = Math.sqrt(3); //square root of 3
 
@@ -183,6 +183,11 @@ public class CatanSurfaceView extends SurfaceView {
         this.theta = -60;
         tutorial = true;
 
+        if(Build.MANUFACTURER.equalsIgnoreCase("asus"))
+        {
+            s = 145;
+        }
+
         //initialize Paints to save time in onDraw
         path = new Path();
         temp = new Paint();
@@ -272,21 +277,21 @@ public class CatanSurfaceView extends SurfaceView {
                 Hand hand = gameState.getHand(gameState.getPlayersID());
                 if (hand.getCitiesAvail() == 4 && hand.getSettlementsAvail() == 5) {
                     text.setTextSize(messageSize);
-                    canvas.drawText(tutorialMessages[3], cx, 150, text);
-                    canvas.drawText(tutorialMessages[4], cx, 180 + messageSize, text);
-                    canvas.drawText(tutorialMessages[5], cx, 180 + 2 * messageSize, text);
+                    canvas.drawText(tutorialMessages[3], cx, 120, text);
+                    canvas.drawText(tutorialMessages[4], cx, 150 + messageSize, text);
+                    canvas.drawText(tutorialMessages[5], cx, 150 + 2 * messageSize, text);
                     if (buildingLastSelected != -1) {
                         text.setTextAlign(Paint.Align.RIGHT);
                         canvas.drawText(tutorialMessages[2], canvas.getWidth() - 25, canvas.getHeight() - 25, text);
                         text.setTextAlign(Paint.Align.CENTER);
                     }
                 } else if (hand.getCitiesAvail() == 4 && hand.getSettlementsAvail() == 4) {
-                    canvas.drawText(tutorialMessages[6], cx, 150, text);
-                    canvas.drawText(tutorialMessages[7], cx, 150 + messageSize, text);
-                    canvas.drawText(tutorialMessages[8], cx, 180 + 2 * messageSize, text);
+                    canvas.drawText(tutorialMessages[6], cx, 120, text);
+                    canvas.drawText(tutorialMessages[7], cx, 120 + messageSize, text);
+                    canvas.drawText(tutorialMessages[8], cx, 150 + 2 * messageSize, text);
                 } else if (waitingForCitySelection && hand.getCitiesAvail() == 4) {
-                    canvas.drawText(tutorialMessages[9], cx, 150, text);
-                    canvas.drawText(tutorialMessages[10], cx, 150 + messageSize, text);
+                    canvas.drawText(tutorialMessages[9], cx, 120, text);
+                    canvas.drawText(tutorialMessages[10], cx, 120 + messageSize, text);
                 }
             }
             for (int x = 0; x < sites.length; x++) {
@@ -571,6 +576,11 @@ public class CatanSurfaceView extends SurfaceView {
             height = (int) (2000 * Math.cos(phi * deg) / distance(x, y, 0));
         }
 
+        if(Build.MANUFACTURER.equalsIgnoreCase("asus"))
+        {
+            width /= 3;
+        }
+
         //select the color for the spot
         if (location == buildingLastSelected) {
             temp.setColor(0xFFFFFF00);
@@ -580,8 +590,10 @@ public class CatanSurfaceView extends SurfaceView {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawOval(mapX(x, y) - width / 2, mapY(x, y) - height / 2, mapX(x, y) + width / 2, mapY(x, y) + height / 2, temp);
+
         } else {
             canvas.drawCircle(mapX(x, y), mapY(x, y), width, temp);
+
         }
     }
 

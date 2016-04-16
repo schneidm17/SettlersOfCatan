@@ -35,6 +35,16 @@ public class Road implements Serializable {
         adjacentBuildings = newAdjacentBuildings;
     }
 
+    public Road(Road r, byte[] newAdjacentRoads, byte[] newAdjacentBuildings)
+    {
+        setNumber(r.getNumber());
+        isEmpty = r.isEmpty();
+        player = r.getPlayer();
+        adjacentRoads = newAdjacentRoads;
+        adjacentBuildings = newAdjacentBuildings;
+
+    }
+
     /**
      * Method to return the road number
      * @return road number

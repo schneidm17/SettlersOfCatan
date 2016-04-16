@@ -39,6 +39,15 @@ public class Building implements Serializable {
         adjacentTiles = newAdjacentTiles;
     }
 
+    public Building (Building b, byte[] newAdjacentRoads, byte[] newAdjacentTiles){
+        setNumber(b.getNumber());
+        isEmpty = b.isEmpty();
+        player = b.getPlayer();
+        typeOfBuilding = b.getTypeOfBuilding();
+        adjacentRoads = newAdjacentRoads;
+        adjacentTiles = newAdjacentTiles;
+    }
+
     /**
      * Method to return the building number
      * @return building number

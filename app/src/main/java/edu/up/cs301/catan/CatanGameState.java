@@ -217,41 +217,63 @@ public class CatanGameState extends GameState implements Serializable{
     }
 
     /**
-     * Constructor to set all instance variables to values passed in as parameters
+     * Copy constructor to create an identical version of the given game state
+     * @param s gamestate to copy
      */
-    public CatanGameState(int ID, int numPlayers, int[] scores, int die1, int die2,
-                          int robber, Road[] roads, Tile[] tiles, Building[] buildings, Hand[] hands,
-                          boolean[] robberWasRolled, boolean rolled7, boolean needToRoll,
-                          boolean round1Placing, boolean round2Placing, int turnCount)
-    {
-        this.playersID = ID;
-        this.numPlayers = numPlayers;
-        this.scores = new int[numPlayers];
-        this.scores = scores;
-        this.die1 = die1;
-        this.die2 = die2;
-        this.robber = robber;
-        this.roads = roads;
-        this.tiles = tiles;
-        this.buildings = buildings;
-        this.hands = hands;
-        this.robberWasRolled = robberWasRolled;
-        this.rolled7 = rolled7;
-        this.needToRoll = needToRoll;
-        this.round1Placing = round1Placing;
-        this.round2Placing = round2Placing;
-        this.turnCount = turnCount;
+    public CatanGameState(CatanGameState s){
+        this.playersID = s.getPlayersID();
+        this.numPlayers = s.getNumPlayers();
+
+        int[] temp = s.getScores();
+        this.scores = new int[4];
+        for(int i = 0; i < scores.length; i++)
+        {
+            scores[i] = temp[i];
+        }
+
+        this.die1 = s.getDie1();
+        this.die2 = s.getDie2();
+        this.robber = s.getRobber();
+
+        Road[] temp1 = s.getRoads();
+        this.roads = new Road[72];
+        for(int i = 0; i < roads.length; i++)
+        {
+            roads[i] = new Road(temp1[i], roadToRoadAdjList[i], roadToBuildingAdjList[i]);
+        }
+
+        Tile[] temp2 = s.getTiles();
+        tiles = new Tile[19];
+        for(int i = 0; i < tiles.length; i++)
+        {
+            tiles[i] = new Tile(temp2[i], tileToBuildingAdjList[i]);
+        }
+
+        Building[] temp3 = s.getBuildings();
+        buildings = new Building[54];
+        for(int i = 0; i < buildings.length; i++)
+        {
+            buildings[i] = new Building(temp3[i], buildingToRoadAdjList[i], buildingToTileAdjList[i]);
+        }
+
+        Hand[] temp4 = s.getHands();
+        hands = new Hand[4];
+        for(int i = 0; i < hands.length; i++)
+        {
+            hands[i] = new Hand(temp4[i]);
+        }
+
+        this.robberWasRolled = s.getRobberWasRolled();
+        this.rolled7 = s.getRolled7();
+        this.needToRoll = s.getNeedToRoll();
+        this.round1Placing = s.getRound1Placing();
+        this.round2Placing = s.getRound2Placing();
+        this.turnCount = s.getTurnCount();
     }
 
-    /**
-     * Copy constructor to create an identical version of the given game state
-     * @param soc gamestate to copy
-     */
-    public CatanGameState(CatanGameState soc){
-        this(soc.getPlayersID(), soc.getNumPlayers(), soc.getScores(), soc.getDie1(), soc.getDie2(),
-                soc.getRobber(), soc.getRoads(), soc.getTiles(), soc.getBuildings(),
-                soc.getHands(), soc.getRobberWasRolled(), soc.isRolled7(), soc.getNeedToRoll(),
-                soc.getRound1Placing(), soc.getRound2Placing(), soc.getTurnCount());
+    public boolean getRolled7()
+    {
+        return rolled7;
     }
 
     /**

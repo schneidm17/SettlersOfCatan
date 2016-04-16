@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * Class used to keep track of how many cards a player has at any time
  */
-public class Hand implements Serializable{
+public class Hand implements Serializable {
     private int wheat;
     private int wool;
     private int lumber;
@@ -19,11 +19,10 @@ public class Hand implements Serializable{
 
     /**
      * Hand
-     *
+     * <p/>
      * Constructor for the Hand class, sets default start of game values
      */
-    public Hand()
-    {
+    public Hand() {
         wheat = 0;
         wool = 0;
         lumber = 0;
@@ -32,6 +31,18 @@ public class Hand implements Serializable{
         roadsAvail = 15;
         settlementsAvail = 5;
         citiesAvail = 4;
+    }
+
+    public Hand(Hand h)
+    {
+        this.wheat = h.getWheat();
+        this.wool = h.getWool();
+        this.lumber = h.getLumber();
+        this.brick = h.getBrick();
+        this.ore = h.getOre();
+        this.roadsAvail = h.getRoadsAvail();
+        this.settlementsAvail = h.getSettlementsAvail();
+        this.citiesAvail = h.getCitiesAvail();
     }
 
     /**

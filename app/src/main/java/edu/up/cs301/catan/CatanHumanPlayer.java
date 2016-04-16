@@ -57,6 +57,7 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
     Button done;
     ImageView dice1;
     ImageView dice2;
+    TextView curPlayer;
     TextView numWheat;
     TextView numSheep;
     TextView numWood;
@@ -140,6 +141,13 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
                 mySurfaceView.waitForRoadSelection(true);
             }
             updateButtonStates();
+
+            if(this.playerNum == myGameState.getPlayersID()) {
+                curPlayer.setText("Your turn!");
+            }
+            else {
+                curPlayer.setText("Player's turn: " + (myGameState.getPlayersID()+1));
+            }
 
             Hand playerHand = this.myGameState.getHand(playerNum);
             if (myGameState.getNeedToRoll() && playerNum == myGameState.getPlayersID() && playerHand.getRoadsAvail() < 14) {
@@ -874,6 +882,8 @@ public class CatanHumanPlayer extends GameHumanPlayer implements OnClickListener
         endTurn.setOnClickListener(this);
         trade.setOnClickListener(this);
         done.setOnClickListener(this);
+
+        curPlayer = (TextView) activity.findViewById(R.id.textView10);
 
         numWheat = (TextView) activity.findViewById(R.id.numWheat);
         numSheep = (TextView) activity.findViewById(R.id.numSheep);
